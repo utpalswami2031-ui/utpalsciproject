@@ -1,474 +1,527 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>India Energy Minister Game</title>
-  <script>
-  // Block right-click
-  document.addEventListener('contextmenu', e => e.preventDefault());
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>India Energy Minister Game</title>
+    <style>
+        :root {
+            --bg-canvas: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-title: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            
+            /* Accurate UI Colors matching your design elements */
+            --color-env: #10b981;
+            --color-econ: #3b82f6;
+            --color-app: #6366f1;
+            --color-grid: #b45309;
+        }
 
-  // Block Ctrl+C, Ctrl+U, and F12 keys
-  document.addEventListener('keydown', function(e) {
-    if (
-      (e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'u' || e.key === 's') || 
-      e.key === 'F12'
-    ) {
-      e.preventDefault();
-      alert('Copying code or viewing source is disabled. All Rights Reserved © 2026 Utpal Swami');
-    }
-  });
-</script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            user-select: none;
+        }
 
-    :root {
-      --bg-primary: #ffffff;
-      --bg-secondary: #f5f5f4;
-      --bg-info: #e6f1fb;
-      --bg-success: #eaf3de;
-      --bg-danger: #fcebeb;
-      --text-primary: #1a1a18;
-      --text-secondary: #5f5e5a;
-      --text-info: #185fa5;
-      --text-success: #3b6d11;
-      --text-danger: #a32d2d;
-      --border: rgba(0,0,0,0.12);
-      --border-md: rgba(0,0,0,0.22);
-      --radius-md: 8px;
-      --radius-lg: 12px;
-    }
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--text-body);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg-primary: #1c1c1a;
-        --bg-secondary: #2a2a28;
-        --bg-info: #042c53;
-        --bg-success: #173404;
-        --bg-danger: #501313;
-        --text-primary: #f0ede6;
-        --text-secondary: #b4b2a9;
-        --text-info: #85b7eb;
-        --text-success: #97c459;
-        --text-danger: #f09595;
-        --border: rgba(255,255,255,0.1);
-        --border-md: rgba(255,255,255,0.2);
-      }
-    }
+        .game-container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+        }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-      min-height: 100vh;
-      padding: 1rem;
-    }
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 24px;
+        }
 
-    .game {
-      max-width: 720px;
-      margin: 0 auto;
-      background: var(--bg-primary);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      border: 0.5px solid var(--border);
-    }
+        header h1 {
+            color: var(--text-title);
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.25rem;
-    }
+        header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 4px;
+        }
 
-    .title { font-size: 18px; font-weight: 500; color: var(--text-primary); }
+        /* Matches your dashboard image perfectly */
+        .status-bar {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
 
-    .year-badge {
-      background: var(--bg-info);
-      color: var(--text-info);
-      padding: 4px 14px;
-      border-radius: var(--radius-md);
-      font-size: 13px;
-      font-weight: 500;
-    }
+        @media (min-width: 640px) {
+            .status-bar {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
 
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-bottom: 1.25rem;
-    }
+        .stat-card {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
 
-    @media (max-width: 500px) {
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
-      .decisions { grid-template-columns: 1fr !important; }
-    }
+        .stat-header {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
 
-    .stat-card {
-      background: var(--bg-secondary);
-      border-radius: var(--radius-md);
-      padding: 0.75rem 1rem;
-    }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-title);
+            line-height: 1;
+            margin-bottom: 12px;
+        }
 
-    .stat-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
-    .stat-value { font-size: 22px; font-weight: 500; color: var(--text-primary); }
+        .progress-container {
+            background: #e2e8f0;
+            border-radius: 9999px;
+            height: 6px;
+            width: 100%;
+            overflow: hidden;
+        }
 
-    .stat-bar {
-      height: 4px;
-      border-radius: 2px;
-      margin-top: 6px;
-      background: var(--border);
-      overflow: hidden;
-    }
+        .progress-bar {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.4s ease;
+        }
 
-    .stat-fill { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+        .meta-strip {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 12px 20px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
 
-    .news-box {
-      background: var(--bg-secondary);
-      border-left: 3px solid var(--text-info);
-      border-radius: var(--radius-md);
-      padding: 0.75rem 1rem;
-      margin-bottom: 1.25rem;
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.6;
-    }
+        .scenario-box {
+            background: #fafafa;
+            border-left: 4px solid var(--text-title);
+            padding: 24px;
+            border-radius: 4px;
+            margin-bottom: 28px;
+        }
 
-    .news-title { font-size: 12px; font-weight: 500; color: var(--text-info); margin-bottom: 4px; }
-    .section-title { font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 10px; }
-    .energy-mix { margin-bottom: 1.25rem; }
+        .scenario-box h3 {
+            font-size: 1.15rem;
+            color: var(--text-title);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
 
-    .mix-bar {
-      display: flex;
-      height: 8px;
-      border-radius: 4px;
-      overflow: hidden;
-      margin-top: 6px;
-      background: var(--border);
-    }
+        .scenario-box p {
+            color: var(--text-body);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
 
-    .mix-seg { transition: width 0.5s ease; }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
 
-    .decisions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 1.25rem;
-    }
+        .option-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-body);
+            padding: 16px 20px;
+            border-radius: 6px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.98rem;
+            line-height: 1.5;
+            font-weight: 500;
+        }
 
-    .decision-card {
-      background: var(--bg-primary);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1rem;
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-    }
+        .option-btn:hover {
+            border-color: #94a3b8;
+            background: #f8fafc;
+            transform: translateY(-1px);
+        }
 
-    .decision-card:hover { border-color: var(--border-md); background: var(--bg-secondary); }
-    .decision-card.selected { border: 2px solid var(--text-info); }
+        .screen {
+            display: none;
+        }
 
-    .d-icon { font-size: 20px; margin-bottom: 6px; }
-    .d-title { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
-    .d-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 8px; }
-    .d-effects { display: flex; gap: 6px; flex-wrap: wrap; }
+        .screen.active {
+            display: block;
+        }
 
-    .effect-tag {
-      font-size: 11px;
-      padding: 2px 7px;
-      border-radius: var(--radius-md);
-      font-weight: 500;
-    }
+        .end-screen {
+            text-align: center;
+            padding: 40px 10px;
+        }
 
-    .pos { background: var(--bg-success); color: var(--text-success); }
-    .neg { background: var(--bg-danger); color: var(--text-danger); }
-    .neu { background: var(--bg-secondary); color: var(--text-secondary); }
+        .end-screen h2 {
+            font-size: 2.25rem;
+            color: var(--text-title);
+            margin-bottom: 16px;
+        }
 
-    .confirm-btn {
-      width: 100%;
-      padding: 12px;
-      border: 0.5px solid var(--border-md);
-      border-radius: var(--radius-md);
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s;
-      margin-bottom: 0.75rem;
-    }
+        .end-screen p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 32px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
 
-    .confirm-btn:hover:not(:disabled) { background: var(--bg-secondary); }
-    .confirm-btn:disabled { opacity: 0.4; cursor: default; }
+        .restart-btn {
+            background: var(--text-title);
+            color: white;
+            border: none;
+            padding: 14px 36px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
 
-    .result-box {
-      display: none;
-      background: var(--bg-secondary);
-      border-radius: var(--radius-lg);
-      padding: 1rem 1.25rem;
-      margin-bottom: 1.25rem;
-    }
+        .restart-btn:hover {
+            background: #1e293b;
+        }
+    </style>
 
-    .result-box.show { display: block; }
-    .result-title { font-size: 14px; font-weight: 500; margin-bottom: 6px; color: var(--text-primary); }
-    .result-text { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
-
-    .next-btn {
-      width: 100%;
-      padding: 12px;
-      background: var(--bg-primary);
-      border: 0.5px solid var(--border-md);
-      border-radius: var(--radius-md);
-      color: var(--text-primary);
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      display: none;
-    }
-
-    .next-btn.show { display: block; }
-    .next-btn:hover { background: var(--bg-secondary); }
-
-    .game-over { text-align: center; padding: 2rem 1rem; display: none; }
-    .game-over.show { display: block; }
-    .go-title { font-size: 22px; font-weight: 500; margin-bottom: 0.5rem; }
-    .go-sub { font-size: 14px; color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.6; }
-
-    .restart-btn {
-      padding: 10px 28px;
-      border: 0.5px solid var(--border-md);
-      border-radius: var(--radius-md);
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .restart-btn:hover { background: var(--bg-secondary); }
-  </style>
+    <script>
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', function(e) {
+            if (
+                (e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'u' || e.key === 's') || 
+                e.key === 'F12'
+            ) {
+                e.preventDefault();
+                alert('Source exploration and raw copying are restricted. All Rights Reserved © 2026 Utpal Swami.');
+            }
+        });
+    </script>
 </head>
 <body>
-<div class="game" id="game">
-  <div class="header">
-    <div class="title">⚡ India Energy Minister</div>
-    <div class="year-badge" id="year-badge">Year 2024</div>
-  </div>
 
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-label">🌿 Environment</div>
-      <div class="stat-value" id="env-val">50</div>
-      <div class="stat-bar"><div class="stat-fill" id="env-bar" style="width:50%; background:#1D9E75;"></div></div>
+    <div class="game-container">
+        <header>
+            <h1>Cabinet Minister Strategy Desk</h1>
+            <p>Union Ministry of Power, New & Renewable Energy — Shashtri Bhawan, New Delhi</p>
+        </header>
+
+        <div id="game-screen" class="screen active">
+            <div class="status-bar">
+                <div class="stat-card">
+                    <div class="stat-header">🌿 Environment</div>
+                    <div id="stat-env" class="stat-value">50</div>
+                    <div class="progress-container"><div id="bar-env" class="progress-bar" style="background-color: var(--color-env);"></div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">💰 Economy</div>
+                    <div id="stat-econ" class="stat-value">50</div>
+                    <div class="progress-container"><div id="bar-econ" class="progress-bar" style="background-color: var(--color-econ);"></div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">👥 Approval</div>
+                    <div id="stat-app" class="stat-value">50</div>
+                    <div class="progress-container"><div id="bar-app" class="progress-bar" style="background-color: var(--color-app);"></div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">🔌 Power Supply</div>
+                    <div id="stat-grid" class="stat-value">50</div>
+                    <div class="progress-container"><div id="bar-grid" class="progress-bar" style="background-color: var(--color-grid);"></div></div>
+                </div>
+            </div>
+
+            <div class="meta-strip">
+                <span id="game-year">Year: 1 of 13</span>
+                <span id="game-phase" style="color: #166534;">Parliamentary Mandate: Active</span>
+            </div>
+
+            <div class="scenario-box">
+                <h3 id="crisis-title">Loading Intelligence Dossier...</h3>
+                <p id="crisis-desc">Fetching ministerial updates...</p>
+            </div>
+
+            <div class="options-list" id="options-container"></div>
+        </div>
+
+        <div id="end-screen" class="screen">
+            <div class="end-screen">
+                <h2 id="end-title">Term Concluded</h2>
+                <p id="end-desc">Dossier evaluation summary goes here.</p>
+                <button class="restart-btn" onclick="resetGame()">Re-take Ministerial Oath</button>
+            </div>
+        </div>
     </div>
-    <div class="stat-card">
-      <div class="stat-label">💰 Economy</div>
-      <div class="stat-value" id="eco-val">65</div>
-      <div class="stat-bar"><div class="stat-fill" id="eco-bar" style="width:65%; background:#378ADD;"></div></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">👥 Approval</div>
-      <div class="stat-value" id="app-val">60</div>
-      <div class="stat-bar"><div class="stat-fill" id="app-bar" style="width:60%; background:#7F77DD;"></div></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">🔌 Power Supply</div>
-      <div class="stat-value" id="pow-val">55</div>
-      <div class="stat-bar"><div class="stat-fill" id="pow-bar" style="width:55%; background:#BA7517;"></div></div>
-    </div>
-  </div>
 
-  <div class="energy-mix">
-    <div class="section-title">Energy Mix — <span id="mix-label">Coal 60% · Solar 20% · Wind 10% · Nuclear 10%</span></div>
-    <div class="mix-bar">
-      <div class="mix-seg" id="mix-coal" style="width:60%; background:#888780;"></div>
-      <div class="mix-seg" id="mix-solar" style="width:20%; background:#EF9F27;"></div>
-      <div class="mix-seg" id="mix-wind" style="width:10%; background:#378ADD;"></div>
-      <div class="mix-seg" id="mix-nuke" style="width:10%; background:#7F77DD;"></div>
-    </div>
-  </div>
+    <script>
+        let currentYear = 1;
+        let stats = { env: 50, econ: 55, app: 50, grid: 55 };
 
-  <div class="news-box">
-    <div class="news-title">📋 Situation Report</div>
-    <div id="news-text">India is the world's 3rd largest emitter. Coal powers 60% of the grid. Villages still face daily blackouts. The G20 is watching your climate pledge. What's your first move, Minister?</div>
-  </div>
+        // 13 Rigorous real-world structural crises facing modern India
+        const scenarios = {
+            1: {
+                title: "Year 1: The 260 GW Summer Peak Load",
+                desc: "An unprecedented May heatwave pushes national peak electricity demand to a historical 260 GW. Evening peak loads are collapsing localized transmission grids because solar capacity drops out completely at sunset. Coal stocks are down to 3 days at thermal units.",
+                options: [
+                    { text: "Bypass tribal land environmental protections to force immediate emergency domestic coal mining expansions.", change: { env: -25, econ: 15, app: 5, grid: 15 } },
+                    { text: "Order emergency rolling daily 4-hour power cuts to rural regions and small businesses to preserve the capital's power grid.", change: { env: 5, econ: -20, app: -25, grid: 10 } },
+                    { text: "Purchase hyper-expensive emergency spot-market imported LNG and coal, forcing state distribution units further into bankruptcy.", change: { env: -10, econ: -30, app: 10, grid: 20 } }
+                ]
+            },
+            2: {
+                title: "Year 2: The Thar Solar vs. Great Indian Bustard Supreme Court Deadlock",
+                desc: "The Supreme Court demands all transmission lines passing through Rajasthan's desert be laid underground to protect the critically endangered Great Indian Bustard bird. Private developers state undergrounding lines will raise project costs by 300%, stopping 15GW of green infrastructure.",
+                options: [
+                    { text: "File an aggressive judicial modification request, arguing that national energy transition targets override specific localized environmental risks.", change: { env: -25, econ: 20, app: -5, grid: 20 } },
+                    { text: "Enforce the court's protective mandate, absorbing the massive implementation cost with public taxpayers' money to bail out developers.", change: { env: 20, econ: -25, app: -10, grid: -10 } },
+                    { text: "Halt all Thar desert solar projects entirely and shift budget focus back toward processing central thermal power extensions.", change: { env: -20, econ: -10, app: 10, grid: 10 } }
+                ]
+            },
+            3: {
+                title: "Year 3: Domestic Solar PLI Tariff Trade War",
+                desc: "To protect local manufacturing under the Production Linked Incentive (PLI) scheme, heavy basic customs duties remain clamped on cheap imported Chinese solar components. However, domestic production is lagging, completely stalling active green energy build speeds.",
+                options: [
+                    { text: "Abolish import tariffs to let developers buy cheap components to meet green installation targets, decimating local Indian factory investments.", change: { env: 25, econ: -20, app: -10, grid: 15 } },
+                    { text: "Maintain strict tariffs to defend domestic supply chains, accepting that clean power build rates will stall out for years.", change: { env: -20, econ: 25, app: -5, grid: -20 } },
+                    { text: "Impose direct carbon manufacturing taxes across all industries to fund fast-tracked state-owned solar parks.", change: { env: 15, econ: -25, app: -15, grid: 10 } }
+                ]
+            },
+            4: {
+                title: "Year 4: ELECTION CRUNCH: The Free Power Mandate",
+                desc: "CRITICAL ELECTION YEAR. To guarantee victory, your political party high command directs you to pass structural regulations offering completely free agricultural power supply across several crucial voting states.",
+                options: [
+                    { text: "Authorize unconditional free power. It wins the election but cripples state utilities and depletes critical water tables due to unmetered pumping.", change: { env: -20, econ: -35, app: 40, grid: -15 } },
+                    { text: "Compromise with direct-benefit cash transfers capped at low limits. Voters feel shortchanged while state budgets remain moderately squeezed.", change: { env: -5, econ: -15, app: 10, grid: -5 } },
+                    { text: "Block the policy to protect modern grid discipline. State distribution infrastructure stays solvent, but your party's base is furious.", change: { env: 10, econ: 30, app: -35, grid: 15 } }
+                ]
+            },
+            5: {
+                title: "Year 5: Western Ghats Pumped Hydro vs. Eco-Sensitive Zones",
+                desc: "To manage massive solar intermittency, engineers propose a crucial 4,000 MW Pumped Hydro Storage facility. However, it requires submerging 300 hectares of pristine, bio-diverse forests within an Eco-Sensitive Zone in the Western Ghats, sparking severe public protests.",
+                options: [
+                    { text: "Deploy police security to clear demonstrators and fast-track the project, prioritizing long-term grid balancing power.", change: { env: -30, econ: 15, app: -25, grid: 30 } },
+                    { text: "Scrap the project to honor ecological boundaries, leaving the grid dependent on fossil-fuel peaker plants for evening stability.", change: { env: 15, econ: -15, app: 20, grid: -25 } },
+                    { text: "Relocate the plant to a less optimal, hyper-expensive barren site, delaying execution by 4 years and doubling debt lines.", change: { env: 5, econ: -25, app: -5, grid: -10 } }
+                ]
+            },
+            6: {
+                title: "Year 6: The Electoral Trust 'Donation' Dilemma",
+                desc: "A powerful fossil-fuel industrial conglomerate approaches you privately. They offer a massive, undisclosed 500-crore 'electoral trust donation' to your party's upcoming campaign. In exchange, they want you to sit on your hands and delay the enforcement of new mandatory coal desulfurization and carbon-tax laws for another 4 years.",
+                options: [
+                    { text: "Accept the funding quietly and stall the regulation. Your party gets massive campaign power and industry booms, but toxic emissions spike.", change: { env: -35, econ: 25, app: 20, grid: 5 } },
+                    { text: "Reject the compromise and enforce the green laws. The furious conglomerate cuts funding and uses their massive media channels to attack your governance daily.", change: { env: 25, econ: -15, app: -35, grid: -10 } },
+                    { text: "Go completely rogue: expose the lobbyist bribe publicly to the media. You become an overnight national hero, but corporate investments panic and completely freeze.", change: { env: 10, econ: -35, app: 40, grid: -5 } }
+                ]
+            },
+            7: {
+                title: "Year 7: Mandatory Smart-Meter Riot Backlash",
+                desc: "Under the financial turnaround scheme, you mandate pre-paid smart electrical meters to curb widespread energy theft. Widespread public riots erupt across low-income urban districts as automated disconnections leave homes dark during intense summer heatwaves.",
+                options: [
+                    { text: "Hold the line firmly. Order local enforcement to secure meters, cutting theft loops and establishing utility solvency.", change: { env: 0, econ: 30, app: -35, grid: 15 } },
+                    { text: "Roll back the mandate, allowing legacy unmetered connections to preserve peace, condemning distribution units to bankruptcy.", change: { env: -10, econ: -30, app: 30, grid: -15 } },
+                    { text: "Offer massive fiscal write-offs for outstanding electricity bills, draining the national treasury to appease protestors.", change: { env: 0, econ: -25, app: 20, grid: 0 } }
+                ]
+            },
+            8: {
+                title: "Year 8: The Delhi Fly-Ash and Smog Mandate",
+                desc: "During winter, dense hazardous smog chokes northern cities. Environmental tribunals threaten to fine your ministry unless you immediately shut down several old, coal-fired power stations lacking advanced desulfurization tech located around urban pockets.",
+                options: [
+                    { text: "Order absolute operational shutdowns. Urban air quality improves immediately, but industrial regions face power supply drops.", change: { env: 30, econ: -20, app: 15, grid: -30 } },
+                    { text: "Defy the pollution tribunal, stating industrial manufacturing demands and base-load stability take precedence over temporary smog phases.", change: { env: -35, econ: 20, app: -20, grid: 25 } },
+                    { text: "Force the plants to implement immediate retrofits, passing the enormous capital expenditure onto consumers via highly inflated power bills.", change: { env: 15, econ: -15, app: -25, grid: 5 } }
+                ]
+            },
+            9: {
+                title: "Year 9: MID-TERM BALLOT: Inter-State Carbon Taxes",
+                desc: "ANOTHER ELECTION CYCLE. International climate panels press India to implement an domestic carbon border adjustment tax. Imposing this right now will anger industrial steel and cement lobbies, hurting your party's campaign financing.",
+                options: [
+                    { text: "Enforce the carbon penalty to elevate India's international standing, risking an industrial slowdown and losing campaign backing.", change: { env: 30, econ: -25, app: -20, grid: -5 } },
+                    { text: "Defer the tax indefinitely to safeguard factory profits, secure job indices, and lock down corporate political alignment.", change: { env: -25, econ: 25, app: 15, grid: 5 } },
+                    { text: "Impose a heavily watered-down tax containing major loopholes, satisfying absolutely no one while generating minor state revenue.", change: { env: -5, econ: -5, app: -10, grid: 0 } }
+                ]
+            },
+            10: {
+                title: "Year 10: EV Charging Spikes vs. Local Distribution Transformers",
+                desc: "A massive surge in electric vehicle sales across metro centers strains residential grids. Localized transformers are blowing up during evening hours when thousands of vehicles plug in simultaneously.",
+                options: [
+                    { text: "Enact a strict ban on domestic EV fast-charging between 6 PM and 11 PM, enraging urban middle-class EV buyers.", change: { env: -10, econ: -15, app: -30, grid: 25 } },
+                    { text: "Fund a massive, multi-billion-dollar urban transformer overhaul project, adding intense stress to public budgets.", change: { env: 15, econ: -30, app: 10, grid: 15 } },
+                    { text: "Introduce aggressive surge pricing for peak hours, making evening charging incredibly expensive for consumers.", change: { env: 5, econ: 15, app: -25, grid: 10 } }
+                ]
+            },
+            11: {
+                title: "Year 11: The Nuclear Renaissance Public Panic",
+                desc: "To expand non-fossil base-load power, you plan a major 6,000 MW coastal nuclear power facility using imported technology. Activists and local fishermen launch volatile protests over potential radiation and disruption to marine life.",
+                options: [
+                    { text: "Overrule all local objections and deploy state machinery to construct the plant, ensuring long-term emissions-free base-load supply.", change: { env: 25, econ: -20, app: -30, grid: 25 } },
+                    { text: "Shelve the nuclear project permanently to appease voters, turning back to expanding thermal power options to keep up with industrial growth.", change: { env: -30, econ: 15, app: 25, grid: -5 } },
+                    { text: "Delay the project to conduct endless rounds of public safety reviews, inflating engineering debts while leaving supply unresolved.", change: { env: -5, econ: -20, app: -5, grid: -15 } }
+                ]
+            },
+            12: {
+                title: "Year 12: Decarbonization vs. Coal Belt Unemployment Riots",
+                desc: "As solar arrays assume a larger grid share, old unprofitable coal mines in Jharkhand and Chhattisgarh face planned closures. Massive labor unions launch severe strikes, warning of total economic ruin for millions of mining families.",
+                options: [
+                    { text: "Force the mine closures to proceed, offering minimal state rehabilitation support to protect environmental performance metrics.", change: { env: 30, econ: -15, app: -35, grid: -15 } },
+                    { text: "Keep unviable mines open via heavy state subsidies to avoid labor unrest, damaging the transition and worsening fiscal deficits.", change: { env: -30, econ: -20, app: 30, grid: 10 } },
+                    { text: "Mandate private manufacturing companies to build factories in the coal belts to absorb workers, triggering corporate pushback.", change: { env: 10, econ: -25, app: -10, grid: 5 } }
+                ]
+            },
+            13: {
+                title: "Year 13: The Grand Multi-State Grid Collapse Risk",
+                desc: "A massive cyclone hits western generation facilities while Northern India faces intense heat. Frequencies across the National Grid are fluctuating wildly near safe limits, raising the risk of a catastrophic multi-state blackout.",
+                options: [
+                    { text: "Order immediate massive load-shedding across half the country, intentionally cutting power to millions to protect the grid infrastructure.", change: { env: 5, econ: -25, app: -30, grid: 35 } },
+                    { text: "Run all thermal units past safe technical limits, bypassing safety features to keep power flowing, risking a complete grid meltdown.", change: { env: -35, econ: 10, app: 20, grid: -30 } },
+                    { text: "Force heavy industries to shut down operations for two full weeks, protecting residential supply but severely impacting manufacturing GDP.", change: { env: 15, econ: -35, app: -10, grid: 20 } }
+                ]
+            }
+        };
 
-  <div id="main-game">
-    <div class="section-title">Choose your policy this year:</div>
-    <div class="decisions" id="decisions-grid"></div>
-    <button class="confirm-btn" id="confirm-btn" disabled onclick="confirmDecision()">Confirm Decision →</button>
-    <div class="result-box" id="result-box">
-      <div class="result-title" id="result-title"></div>
-      <div class="result-text" id="result-text"></div>
-    </div>
-    <button class="next-btn" id="next-btn" onclick="nextYear()">Next Year →</button>
-  </div>
+        function updateUI() {
+            document.getElementById("stat-env").innerText = stats.env;
+            document.getElementById("stat-econ").innerText = stats.econ;
+            document.getElementById("stat-app").innerText = stats.app;
+            document.getElementById("stat-grid").innerText = stats.grid;
 
-  <div class="game-over" id="game-over">
-    <div class="go-title" id="go-title"></div>
-    <div class="go-sub" id="go-sub"></div>
-    <button class="restart-btn" onclick="restartGame()">Play Again</button>
-  </div>
-</div>
+            document.getElementById("bar-env").style.width = `${stats.env}%`;
+            document.getElementById("bar-econ").style.width = `${stats.econ}%`;
+            document.getElementById("bar-app").style.width = `${stats.app}%`;
+            document.getElementById("bar-grid").style.width = `${stats.grid}%`;
 
-<script>
-const allDecisions = [
-  [
-    { icon: "☀️", title: "Solar farm subsidies", desc: "Fund 50 GW of solar panels across Rajasthan. High upfront cost, huge long-term gain.", effects: ["+12 Env", "+6 Power", "-8 Economy", "+5 Approval"], delta: { env: 12, eco: -8, app: 5, pow: 6 }, mix: { coal: -5, solar: 10, wind: 0, nuke: 0 } },
-    { icon: "⚡", title: "Build new coal plants", desc: "Fast, cheap power for millions. But emissions surge and international pressure mounts.", effects: ["-15 Env", "+14 Power", "+5 Economy", "-4 Approval"], delta: { env: -15, eco: 5, app: -4, pow: 14 }, mix: { coal: 12, solar: 0, wind: -3, nuke: -4 } },
-    { icon: "💨", title: "Offshore wind expansion", desc: "Invest in wind energy along the Gujarat coast. Medium cost, steady clean power.", effects: ["+9 Env", "+7 Power", "-5 Economy", "+6 Approval"], delta: { env: 9, eco: -5, app: 6, pow: 7 }, mix: { coal: -4, solar: 0, wind: 8, nuke: 0 } },
-    { icon: "🔬", title: "Nuclear power research", desc: "Partner with France to build 3 nuclear reactors. Slow but emissions-free and reliable.", effects: ["+6 Env", "-3 Economy", "+3 Approval", "+2 Power"], delta: { env: 6, eco: -3, app: 3, pow: 2 }, mix: { coal: -2, solar: 0, wind: 0, nuke: 6 } }
-  ],
-  [
-    { icon: "🌿", title: "Carbon tax on industry", desc: "Charge heavy industries for their emissions. Funds green tech but raises costs.", effects: ["+10 Env", "-7 Economy", "+4 Approval", "-2 Power"], delta: { env: 10, eco: -7, app: 4, pow: -2 }, mix: { coal: -6, solar: 3, wind: 2, nuke: 0 } },
-    { icon: "🏙️", title: "Smart grid upgrade", desc: "Modernise the power distribution network. Reduces waste and blackouts nationwide.", effects: ["+4 Env", "+10 Power", "-6 Economy", "+8 Approval"], delta: { env: 4, eco: -6, app: 8, pow: 10 }, mix: { coal: 0, solar: 2, wind: 2, nuke: 0 } },
-    { icon: "🛢️", title: "Subsidise LPG cooking gas", desc: "Cheap gas for rural households. Reduces wood burning but still fossil fuel.", effects: ["+5 Env", "+7 Approval", "-5 Economy", "+4 Power"], delta: { env: 5, eco: -5, app: 7, pow: 4 }, mix: { coal: -2, solar: 0, wind: 0, nuke: 0 } },
-    { icon: "🚗", title: "EV charging network", desc: "Build a national EV charging infrastructure. Cuts transport emissions long-term.", effects: ["+8 Env", "-8 Economy", "+6 Approval", "+1 Power"], delta: { env: 8, eco: -8, app: 6, pow: 1 }, mix: { coal: -3, solar: 5, wind: 0, nuke: 0 } }
-  ],
-  [
-    { icon: "🌊", title: "Hydro dam project", desc: "Build mega-dams in Arunachal Pradesh. Clean power but displaces river communities.", effects: ["+6 Env", "+12 Power", "-5 Economy", "-7 Approval"], delta: { env: 6, eco: -5, app: -7, pow: 12 }, mix: { coal: -8, solar: 0, wind: 0, nuke: 2 } },
-    { icon: "📋", title: "Net Zero law by 2070", desc: "Pass a legally binding climate target. Bold signal to the world, no immediate cost.", effects: ["+12 Env", "+8 Approval", "-1 Economy", "0 Power"], delta: { env: 12, eco: -1, app: 8, pow: 0 }, mix: { coal: -2, solar: 2, wind: 2, nuke: 0 } },
-    { icon: "🔋", title: "Battery storage investment", desc: "Store excess solar/wind energy for nights and winters. Reduces blackouts.", effects: ["+5 Env", "+8 Power", "-9 Economy", "+5 Approval"], delta: { env: 5, eco: -9, app: 5, pow: 8 }, mix: { coal: -5, solar: 5, wind: 3, nuke: 0 } },
-    { icon: "🏭", title: "Retrofit old coal plants", desc: "Add carbon capture to existing plants. Expensive compromise that keeps industry happy.", effects: ["+7 Env", "+5 Power", "-10 Economy", "+2 Approval"], delta: { env: 7, eco: -10, app: 2, pow: 5 }, mix: { coal: -3, solar: 0, wind: 0, nuke: 2 } }
-  ],
-  [
-    { icon: "☢️", title: "Fast-track nuclear plants", desc: "Override local protests to speed up 5 nuclear plants. Power secured, approval hit.", effects: ["+8 Env", "+15 Power", "-3 Economy", "-10 Approval"], delta: { env: 8, eco: -3, app: -10, pow: 15 }, mix: { coal: -10, solar: 0, wind: 0, nuke: 12 } },
-    { icon: "🌍", title: "Join global green fund", desc: "Receive $20bn from rich nations to fund India's clean energy transition.", effects: ["+10 Env", "+12 Economy", "+9 Approval", "+4 Power"], delta: { env: 10, eco: 12, app: 9, pow: 4 }, mix: { coal: -5, solar: 8, wind: 5, nuke: 0 } },
-    { icon: "⚗️", title: "Green hydrogen push", desc: "Invest in hydrogen fuel production from renewable energy. Costly but futuristic.", effects: ["+11 Env", "-11 Economy", "+5 Approval", "+3 Power"], delta: { env: 11, eco: -11, app: 5, pow: 3 }, mix: { coal: -5, solar: 5, wind: 3, nuke: 0 } },
-    { icon: "💡", title: "National efficiency drive", desc: "Mandate energy efficient appliances and buildings. Low cost, slow burn savings.", effects: ["+6 Env", "+5 Economy", "+6 Approval", "+3 Power"], delta: { env: 6, eco: 5, app: 6, pow: 3 }, mix: { coal: -3, solar: 2, wind: 1, nuke: 0 } }
-  ],
-  [
-    { icon: "🌱", title: "Reforestation + carbon sinks", desc: "Plant 100 million trees and restore wetlands. Boosts environment and rural jobs.", effects: ["+13 Env", "+6 Approval", "+2 Economy", "-1 Power"], delta: { env: 13, eco: 2, app: 6, pow: -1 }, mix: { coal: -2, solar: 2, wind: 0, nuke: 0 } },
-    { icon: "🏘️", title: "Rural solar microgrids", desc: "Give off-grid solar to 100,000 villages. Popular and clean but expensive.", effects: ["+9 Env", "+11 Approval", "-9 Economy", "+7 Power"], delta: { env: 9, eco: -9, app: 11, pow: 7 }, mix: { coal: -4, solar: 12, wind: 0, nuke: 0 } },
-    { icon: "🤝", title: "Coal exit deal", desc: "Negotiate a 5-year coal phase-out with miners' unions. Painful but historic.", effects: ["+16 Env", "-5 Economy", "-8 Approval", "+2 Power"], delta: { env: 16, eco: -5, app: -8, pow: 2 }, mix: { coal: -18, solar: 8, wind: 6, nuke: 4 } },
-    { icon: "📡", title: "Smart meters for all", desc: "Deploy smart meters across India. Reduces waste and gives real-time grid data.", effects: ["+4 Env", "+6 Economy", "+5 Approval", "+6 Power"], delta: { env: 4, eco: 6, app: 5, pow: 6 }, mix: { coal: -2, solar: 2, wind: 1, nuke: 0 } }
-  ]
-];
+            document.getElementById("game-year").innerText = `Year: ${currentYear} of 13`;
+            
+            if (currentYear <= 4) document.getElementById("game-phase").innerText = "Parliamentary Mandate: First Term";
+            else if (currentYear <= 9) document.getElementById("game-phase").innerText = "Parliamentary Mandate: Second Term";
+            else document.getElementById("game-phase").innerText = "Parliamentary Mandate: Legacy Phase";
+        }
 
-const situations = [
-  "India is the world's 3rd largest emitter. Coal powers 60% of the grid. Villages still face daily blackouts. The G20 is watching your climate pledge. What's your first move, Minister?",
-  "A heatwave knocked out 3 coal plants. Blackouts hit 200 million people. The opposition is calling for your resignation. Industry wants more power. Greens want faster transition.",
-  "The IMF praises your early moves but warns: economy needs attention. Floods in Assam linked to climate change. New Delhi's air quality index is 'severe'. Your mandate is halfway done.",
-  "India's solar sector now employs 1 million people. But rural coal mining states are restless — unemployment is rising. International investors are watching your next big call.",
-  "Final year. This is your legacy. The world is asking if India can lead the clean energy transition. What's your last major policy?"
-];
+        function loadScenario() {
+            checkStructuralCollapses();
+            
+            if (currentYear > 13) {
+                endGame("Statesman Victory", "Incredible. You survived a full 13-year double-term as India's Energy Minister. You navigated intense growth demands, structural corruption loops, and harsh election cycles. Your name will go down in policy history.");
+                return;
+            }
 
-let state = {}, selectedDecision = null, currentYear = 0;
+            let data = scenarios[currentYear];
+            document.getElementById("crisis-title").innerText = data.title;
+            document.getElementById("crisis-desc").innerText = data.desc;
 
-function clamp(v) { return Math.max(0, Math.min(100, v)); }
+            let optionsContainer = document.getElementById("options-container");
+            optionsContainer.innerHTML = "";
 
-function initGame() {
-  state = { env: 50, eco: 65, app: 60, pow: 55, coal: 60, solar: 20, wind: 10, nuke: 10 };
-  currentYear = 0; selectedDecision = null;
-  document.getElementById('game-over').classList.remove('show');
-  document.getElementById('main-game').style.display = '';
-  renderYear();
-}
+            data.options.forEach((opt) => {
+                let btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerText = opt.text;
+                btn.onclick = () => handleChoice(opt.change);
+                optionsContainer.appendChild(btn);
+            });
+        }
 
-function renderYear() {
-  document.getElementById('year-badge').textContent = 'Year ' + (2024 + currentYear);
-  document.getElementById('news-text').textContent = situations[currentYear];
-  updateStats(); updateMix(); renderDecisions();
-  document.getElementById('confirm-btn').disabled = true;
-  document.getElementById('result-box').classList.remove('show');
-  document.getElementById('next-btn').classList.remove('show');
-  document.getElementById('confirm-btn').style.display = '';
-}
+        function handleChoice(changeValues) {
+            stats.env = Math.min(100, Math.max(0, stats.env + changeValues.env));
+            stats.econ = Math.min(100, Math.max(0, stats.econ + changeValues.econ));
+            stats.app = Math.min(100, Math.max(0, stats.app + changeValues.app));
+            stats.grid = Math.min(100, Math.max(0, stats.grid + changeValues.grid));
 
-function updateStats() {
-  ['env','eco','app','pow'].forEach(k => {
-    const v = Math.round(state[k]);
-    document.getElementById(k+'-val').textContent = v;
-    document.getElementById(k+'-bar').style.width = v + '%';
-  });
-}
+            updateUI();
 
-function updateMix() {
-  const total = Math.max(1, state.coal + state.solar + state.wind + state.nuke);
-  const c = Math.max(0, Math.round(state.coal / total * 100));
-  const s = Math.max(0, Math.round(state.solar / total * 100));
-  const w = Math.max(0, Math.round(state.wind / total * 100));
-  const n = Math.max(0, 100 - c - s - w);
-  document.getElementById('mix-coal').style.width = c + '%';
-  document.getElementById('mix-solar').style.width = s + '%';
-  document.getElementById('mix-wind').style.width = w + '%';
-  document.getElementById('mix-nuke').style.width = n + '%';
-  document.getElementById('mix-label').textContent = `Coal ${c}% · Solar ${s}% · Wind ${w}% · Nuclear ${n}%`;
-}
+            // Election Cycle Evaluators
+            if (currentYear === 4) {
+                if (stats.app < 50) {
+                    endGame("Defeated at the Polls", `General Election Failure! Your public approval sat at ${stats.app}%. The electorate voted out your regional alliance. Your cabinet seat is stripped.`);
+                    return;
+                } else {
+                    alert(`🗳️ ELECTION REPORT: With an Approval rating of ${stats.app}%, your coalition secures a thin parliamentary majority. Welcome to your Second Term, Minister.`);
+                }
+            }
 
-function renderDecisions() {
-  const grid = document.getElementById('decisions-grid');
-  grid.innerHTML = '';
-  allDecisions[currentYear].forEach((d, i) => {
-    const card = document.createElement('div');
-    card.className = 'decision-card';
-    card.onclick = () => selectDecision(i);
-    card.innerHTML = `<div class="d-icon">${d.icon}</div><div class="d-title">${d.title}</div><div class="d-desc">${d.desc}</div><div class="d-effects">${d.effects.map(e=>`<span class="effect-tag ${e.startsWith('+')?'pos':e.startsWith('-')?'neg':'neu'}">${e}</span>`).join('')}</div>`;
-    grid.appendChild(card);
-  });
-}
+            if (currentYear === 9) {
+                if (stats.app < 55) {
+                    endGame("Coalition Collapse", `Mid-Term Crisis! Your structural moves brought public approval down to ${stats.app}%. Key coalition allies pulled out of the government, forcing early elections that your party lost.`);
+                    return;
+                } else {
+                    alert(`🗳️ BALLOT REPORT: A strong economy and solid grid security help you clear the mid-term hurdle. You enter the Legacy Phase.`);
+                }
+            }
 
-function selectDecision(i) {
-  selectedDecision = i;
-  document.querySelectorAll('.decision-card').forEach((c,j) => c.classList.toggle('selected', j===i));
-  document.getElementById('confirm-btn').disabled = false;
-}
+            currentYear++;
+            loadScenario();
+        }
 
-function confirmDecision() {
-  if (selectedDecision === null) return;
-  const d = allDecisions[currentYear][selectedDecision];
-  state.env = clamp(state.env + d.delta.env); state.eco = clamp(state.eco + d.delta.eco);
-  state.app = clamp(state.app + d.delta.app); state.pow = clamp(state.pow + d.delta.pow);
-  state.coal = Math.max(0, state.coal + d.mix.coal); state.solar = Math.max(0, state.solar + d.mix.solar);
-  state.wind = Math.max(0, state.wind + d.mix.wind); state.nuke = Math.max(0, state.nuke + d.mix.nuke);
-  updateStats(); updateMix();
-  document.getElementById('result-title').textContent = '📰 Outcome: ' + d.title;
-  document.getElementById('result-text').textContent = generateOutcome(d, currentYear);
-  document.getElementById('result-box').classList.add('show');
-  document.getElementById('confirm-btn').style.display = 'none';
-  if (state.env <= 10 || state.eco <= 10 || state.app <= 10 || state.pow <= 10) { setTimeout(() => endGame(false), 800); return; }
-  if (currentYear >= 4) { setTimeout(() => endGame(true), 800); return; }
-  document.getElementById('next-btn').classList.add('show');
-}
+        function checkStructuralCollapses() {
+            if (stats.grid <= 15) {
+                endGame("Cascading Grid Collapse", "The national transmission network suffered a severe frequency drop, leading to a complete black-start scenario. Half the country lost power for 48 hours, grinding the economy to a halt and forcing an emergency cabinet reshuffle.");
+            } else if (stats.econ <= 15) {
+                endGame("Sovereign Credit Default", "Your heavy spending and subsidy rollouts completely bankrupt the state power distribution companies, triggering an intervention by the Ministry of Finance. Your portfolio was stripped.");
+            } else if (stats.env <= 15) {
+                endGame("Ecological Breakdown", "Severe environmental degradation triggered a national healthcare emergency. Severe winter toxic smog layers led to widespread public protests and international sanctions, cutting your term short.");
+            } else if (stats.app <= 15) {
+                endGame("Forced Resignation", "Your approval ratings collapsed completely. Facing immense public anger and local protests, your party high command forced your resignation to safeguard their parliamentary majority.");
+            }
+        }
 
-function generateOutcome(d, yr) {
-  const msgs = [
-    ["Your solar push sparks a boom in Rajasthan. 200,000 green jobs created. But the coal lobby demands a meeting.","Three new coal plants are approved. Greenpeace holds protests in 40 cities. Power is stable — for now.","The Gujarat wind farms start generating. Fishermen demand coastal protections.","Nuclear deal signed. Construction begins. It will take 8 years — critics say India can't wait."],
-    ["Industry howls at the carbon tax but renewables funding triples. Air quality in cities improves slightly.","Smart grid reduces blackouts by 30%. Tech firms cheer. Rural areas say they're still last.","Cooking gas subsidy reaches 80 million homes. Women in villages spend less time gathering wood.","First 10,000 EV chargers installed across highways. EV sales jump 40%."],
-    ["The mega-dam is built. Clean power flows. But 50,000 people are resettled — protests hit the headlines.","India's Net Zero 2070 law passes Parliament. The UN Secretary-General calls it 'historic'.","Battery factories open in Pune and Hyderabad. India's storage capacity doubles.","Retrofitting costs overrun by 30%. Industry threatens to lobby against you at the next election."],
-    ["Nuclear plants go online 2 years later than planned. Protests left scars — but the power is clean.","The $20bn green fund arrives. India suddenly becomes a global clean energy leader.","India exports green hydrogen to Japan. You're on the cover of TIME magazine.","Smart meters installed in 50 million homes. Energy waste drops by 18%."],
-    ["100 million trees planted. Satellite images show India getting greener. Rural youth celebrate.","Every village now has solar power. The last diesel generator shuts off.","The coal exit deal is signed. It's painful. But 30 years from now, they'll name a park after you.","Smart meters complete. India's grid is now the most efficient in Asia."]
-  ];
-  let outcome = msgs[yr][selectedDecision];
-  if (state.app < 35) outcome += " Public trust is dangerously low.";
-  else if (state.env < 30) outcome += " Environmental crisis is near.";
-  else if (state.eco < 30) outcome += " The economy is struggling.";
-  else if (state.pow < 30) outcome += " Blackouts are worsening.";
-  return outcome;
-}
+        function endGame(title, description) {
+            document.getElementById("game-screen").classList.remove("active");
+            document.getElementById("end-screen").classList.add("active");
+            document.getElementById("end-title").innerText = title;
+            document.getElementById("end-desc").innerText = description;
+        }
 
-function nextYear() { currentYear++; selectedDecision = null; renderYear(); }
+        function resetGame() {
+            currentYear = 1;
+            stats = { env: 50, econ: 55, app: 50, grid: 55 };
+            document.getElementById("end-screen").classList.remove("active");
+            document.getElementById("game-screen").classList.add("active");
+            updateUI();
+            loadScenario();
+        }
 
-function endGame(completed) {
-  document.getElementById('main-game').style.display = 'none';
-  document.getElementById('result-box').classList.remove('show');
-  document.getElementById('game-over').classList.add('show');
-  const score = Math.round((state.env + state.eco + state.app + state.pow) / 4);
-  let title, sub;
-  if (!completed) {
-    const lowest = ['env','eco','app','pow'].reduce((a,b) => state[a] < state[b] ? a : b);
-    const reasons = { env: 'environmental collapse', eco: 'economic meltdown', app: 'a vote of no confidence', pow: 'nationwide blackouts' };
-    title = "⚡ Your term ended early";
-    sub = `India fell into ${reasons[lowest]}. Average score: ${score}/100. The next minister has a tough job ahead.`;
-  } else {
-    const ratings = [[80,"🌟 Legacy Minister — India is now a global green energy leader. History will remember you."],[60,"✅ Solid Term — Good progress on renewables. A few more years and India could lead the world."],[40,"⚠️ Mixed Record — Some wins, some losses. The next minister must accelerate the transition."],[0,"❌ Rough Ride — India's emissions barely moved. The planet is less forgiving than voters."]];
-    const [, msg] = ratings.find(([s]) => score >= s);
-    title = `Term Complete — Score: ${score}/100`; sub = msg;
-  }
-  document.getElementById('go-title').textContent = title;
-  document.getElementById('go-sub').textContent = sub;
-}
-
-function restartGame() { initGame(); }
-initGame();
-</script>
+        updateUI();
+        loadScenario();
+    </script>
 </body>
 </html>
