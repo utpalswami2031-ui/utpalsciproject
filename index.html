@@ -4,6 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>India Energy Minister Game</title>
+  <script>
+  // Block right-click
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  // Block Ctrl+C, Ctrl+U, and F12 keys
+  document.addEventListener('keydown', function(e) {
+    if (
+      (e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'u' || e.key === 's') || 
+      e.key === 'F12'
+    ) {
+      e.preventDefault();
+      alert('Copying code or viewing source is disabled. All Rights Reserved © 2026 Utpal Swami');
+    }
+  });
+</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
