@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>India Energy Minister Game - Master Command</title>
+    <title>India Energy Minister Game - God Command Desk</title>
     <style>
         :root {
             --bg-canvas: #f8fafc;
@@ -11,14 +11,17 @@
             --text-title: #0f172a;
             --text-body: #334155;
             --text-muted: #64748b;
-            --border-color: #e2e8f0;
+            --border-color: #cbd5e1;
             
-            /* UI Dashboard Core Colors */
+            /* Dashboard Parameters */
             --color-env: #10b981;
             --color-econ: #3b82f6;
             --color-app: #6366f1;
             --color-grid: #b45309;
             --color-danger: #ef4444;
+            --color-sisi: #ea580c;
+            --color-gold: #d97706;
+            --color-purple: #a855f7;
         }
 
         * {
@@ -43,17 +46,18 @@
 
         .game-container {
             width: 100%;
-            max-width: 1000px;
+            max-width: 1050px;
             background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
             padding: 32px;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
-            margin-bottom: 60px; /* Space for fixed bottom ticker */
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.08);
+            margin-bottom: 60px;
+            position: relative;
         }
 
         header {
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 2px solid #e2e8f0;
             padding-bottom: 20px;
             margin-bottom: 24px;
             display: flex;
@@ -63,276 +67,196 @@
 
         header h1 {
             color: var(--text-title);
-            font-size: 1.6rem;
-            font-weight: 700;
+            font-size: 1.9rem;
+            font-weight: 900;
             letter-spacing: -0.5px;
         }
 
         header p {
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             margin-top: 2px;
         }
 
-        .emblem {
-            font-size: 2.2rem;
-            opacity: 0.85;
-        }
+        .emblem { font-size: 2.5rem; }
 
-        /* Stats Grid with dynamic flash warning animation */
+        /* SCREENS ENGINE */
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        /* DIFFICULTY SELECTION INTERFACE (FRONT MENU) */
+        .diff-container {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .diff-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 20px;
+            margin-top: 28px;
+        }
+        @media (min-width: 768px) {
+            .diff-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        .diff-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 26px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .diff-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--text-title);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+        }
+        .diff-card h3 { font-size: 1.4rem; margin-bottom: 10px; font-weight: 800; }
+        .diff-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+
+        /* STATS DASHBOARD PANEL */
         .status-bar {
             display: grid;
             grid-template-columns: repeat(1, 1fr);
             gap: 16px;
             margin-bottom: 24px;
         }
-
         @media (min-width: 640px) {
-            .status-bar {
-                grid-template-columns: repeat(4, 1fr);
-            }
+            .status-bar { grid-template-columns: repeat(4, 1fr); }
         }
-
         .stat-card {
             background: #f8fafc;
-            border: 1px solid var(--border-color);
+            border: 1px solid #e2e8f0;
             padding: 16px;
-            border-radius: 8px;
+            border-radius: 10px;
             transition: all 0.3s ease;
         }
-
         @keyframes pulse-danger {
-            0% { background-color: #ffffff; border-color: var(--border-color); }
-            50% { background-color: #fef2f2; border-color: var(--color-danger); box-shadow: 0 0 10px rgba(239, 68, 68, 0.2); }
-            100% { background-color: #ffffff; border-color: var(--border-color); }
+            0% { background-color: #ffffff; border-color: #e2e8f0; }
+            50% { background-color: #fef2f2; border-color: var(--color-danger); box-shadow: 0 0 14px rgba(239, 68, 68, 0.3); }
+            100% { background-color: #ffffff; border-color: #e2e8f0; }
         }
+        .stat-card.danger-alert { animation: pulse-danger 1s infinite ease-in-out; }
+        .stat-header { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
+        .stat-value { font-size: 2rem; font-weight: 800; color: var(--text-title); line-height: 1; margin-bottom: 10px; }
+        .progress-container { background: #e2e8f0; border-radius: 9999px; height: 8px; overflow: hidden; }
+        .progress-bar { height: 100%; border-radius: 9999px; transition: width 0.4s ease; }
 
-        .stat-card.danger-alert {
-            animation: pulse-danger 1.5s infinite ease-in-out;
+        /* CABINET FRICTION PANEL */
+        .friction-panel {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+            background: #f8fafc;
+            border: 1px dashed var(--border-color);
+            padding: 12px;
+            border-radius: 8px;
         }
+        .friction-badge { font-size: 0.8rem; font-weight: 700; text-align: center; color: var(--text-muted); padding: 6px; background: #ffffff; border-radius: 6px; border: 1px solid #e2e8f0; }
+        .friction-badge.active-warning { color: var(--color-danger); background: #fef2f2; border-color: #fca5a5; }
 
-        .stat-header {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 8px;
+        /* POLITICAL CAPITAL TOKEN SYSTEMS */
+        .favor-panel {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
-
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--text-title);
-            line-height: 1;
-            margin-bottom: 10px;
+        @media (min-width: 768px) {
+            .favor-panel { flex-direction: row; align-items: center; justify-content: space-between; }
         }
-
-        .progress-container {
-            background: #e2e8f0;
-            border-radius: 9999px;
-            height: 6px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            border-radius: 9999px;
-            transition: width 0.4s ease;
-        }
+        .favor-info { font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
+        .favor-tokens { background: var(--color-gold); padding: 2px 10px; border-radius: 9999px; font-weight: 900; color: #0f172a; }
+        .favor-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .favor-btn { background: #334155; border: 1px solid #475569; color: white; padding: 6px 14px; font-size: 0.8rem; font-weight: 700; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+        .favor-btn:hover:not(:disabled) { background: var(--color-gold); color: #0f172a; }
+        .favor-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
         .meta-strip {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            padding: 10px 18px;
-            border-radius: 6px;
-            margin-bottom: 24px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        /* Crisis Scenario Area */
-        .scenario-box {
-            background: #fafafa;
-            border-left: 4px solid var(--text-title);
-            padding: 20px;
-            border-radius: 4px;
-            margin-bottom: 24px;
-        }
-
-        .scenario-box h3 {
-            font-size: 1.1rem;
-            color: var(--text-title);
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
-
-        .scenario-box p {
-            color: var(--text-body);
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
-        /* Immersive Intelligence Advisor Cabinet Section */
-        .advisor-heading {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .advisor-grid {
-            display: grid;
-            grid-template-columns: repeat(1, 1fr);
-            gap: 12px;
-            margin-bottom: 28px;
-        }
-
-        @media (min-width: 768px) {
-            .advisor-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        .advisor-card {
             background: #f1f5f9;
             border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 12px 14px;
-            font-size: 0.85rem;
-            line-height: 1.4;
-        }
-
-        .advisor-title {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
             font-weight: 700;
-            margin-bottom: 4px;
-            color: #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 4px;
+            font-size: 0.95rem;
         }
 
-        /* High-Stakes Tactical Choices */
-        .options-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .option-btn {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-body);
-            padding: 16px 20px;
+        /* CRISIS EXPOSURE PANEL */
+        .scenario-box {
+            background: #fafafa;
+            border-left: 5px solid var(--text-title);
+            padding: 24px;
             border-radius: 6px;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            margin-bottom: 24px;
+            transition: all 0.3s;
         }
-
-        .option-btn:hover {
-            border-color: #94a3b8;
-            background: #f8fafc;
-            transform: translateY(-1px);
+        .scenario-box.flash-alert-active {
+            border-left-color: var(--color-danger);
+            background: #fff5f5;
+            animation: border-blink 0.8s infinite alternate;
         }
-
-        .impact-tray {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 14px;
-            margin-top: 10px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            border-top: 1px dashed var(--border-color);
-            padding-top: 8px;
+        @keyframes border-blink {
+            0% { border-left-color: var(--color-danger); }
+            100% { border-left-color: #b91c1c; box-shadow: 0 0 15px rgba(239,68,68,0.15); }
         }
+        .scenario-box h3 { font-size: 1.3rem; color: var(--text-title); margin-bottom: 10px; font-weight: 800; }
+        .scenario-box p { color: var(--text-body); font-size: 1rem; line-height: 1.6; }
 
-        /* Delhi Media Ticker System */
-        .ticker-wrap {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: #0f172a;
-            color: #f1f5f9;
-            overflow: hidden;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
-            z-index: 1000;
-        }
+        /* ADVISORY FIELD PANELS */
+        .advisor-heading { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-muted); margin-bottom: 12px; font-weight: 800; }
+        .advisor-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 14px; margin-bottom: 28px; }
+        @media (min-width: 768px) { .advisor-grid { grid-template-columns: repeat(3, 1fr); } }
+        .advisor-card { background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; font-size: 0.9rem; line-height: 1.4; }
+        .advisor-title { font-weight: 800; margin-bottom: 6px; color: #1e293b; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
 
-        .ticker-title {
-            background: #ef4444;
+        /* OPTIONS LIST */
+        .options-list { display: flex; flex-direction: column; gap: 14px; }
+        .option-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-body); padding: 18px 22px; border-radius: 8px; text-align: left; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+        .option-btn:hover { border-color: #64748b; background: #f8fafc; transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .impact-tray { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; font-size: 0.85rem; font-weight: 800; border-top: 1px dashed #e2e8f0; padding-top: 10px; }
+
+        /* POST TERM EVALUATION PANEL */
+        .end-screen { text-align: center; padding: 20px 10px; }
+        .end-screen h2 { font-size: 2.6rem; color: var(--text-title); margin-bottom: 12px; font-weight: 900; }
+        
+        .medal-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
             color: white;
-            padding: 0 16px;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            font-weight: 800;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-            z-index: 1010;
-        }
-
-        .ticker-text {
-            white-space: nowrap;
-            padding-left: 100%;
-            animation: marquee-speed 25s linear infinite;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #cbd5e1;
-        }
-
-        @keyframes marquee-speed {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(-100%, 0, 0); }
-        }
-
-        .screen { display: none; }
-        .screen.active { display: block; }
-
-        .end-screen {
-            text-align: center;
-            padding: 40px 10px;
-        }
-
-        .end-screen h2 {
-            font-size: 2.25rem;
-            color: var(--text-title);
-            margin-bottom: 16px;
-        }
-
-        .end-screen p {
-            color: var(--text-muted);
+            padding: 8px 24px;
+            border-radius: 9999px;
+            font-weight: 900;
             font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 32px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            letter-spacing: 0.5px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 14px rgba(217,119,6,0.3);
+        }
+        .medal-badge.arrest-badge {
+            background: linear-gradient(135deg, #dc2626, #7f1d1d);
+            box-shadow: 0 4px 14px rgba(220,38,38,0.4);
         }
 
-        .restart-btn {
-            background: var(--text-title);
-            color: white;
-            border: none;
-            padding: 14px 36px;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+        .end-screen p { color: var(--text-muted); font-size: 1.15rem; line-height: 1.7; margin-bottom: 32px; max-width: 680px; margin-left: auto; margin-right: auto; }
+        .restart-btn { background: var(--text-title); color: white; border: none; padding: 16px 40px; font-size: 1.05rem; font-weight: 700; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .restart-btn:hover { background: #1e293b; transform: scale(1.02); }
 
-        .restart-btn:hover {
-            background: #1e293b;
-        }
+        /* SISI TIMES LIVE MEDIA TICKER */
+        .ticker-wrap { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; color: #f1f5f9; overflow: hidden; height: 40px; display: flex; align-items: center; box-shadow: 0 -4px 20px rgba(0,0,0,0.15); z-index: 1000; border-top: 2px solid var(--color-sisi); }
+        .ticker-title { background: linear-gradient(135deg, #ea580c, #ff781f); color: white; padding: 0 18px; height: 100%; display: flex; flex-direction: column; justify-content: center; font-weight: 900; font-size: 0.85rem; letter-spacing: 1px; white-space: nowrap; z-index: 1010; }
+        .ticker-title span { font-size: 0.55rem; font-weight: 700; opacity: 0.9; letter-spacing: 0.5px; }
+        .live-badge { color: #ff4444; font-weight: 900; animation: blinker 1s linear infinite; margin-right: 6px; }
+        @keyframes blinker { 50% { opacity: 0; } }
+        .ticker-text { white-space: nowrap; padding-left: 100%; animation: marquee-speed 30s linear infinite; font-size: 0.9rem; font-weight: 600; color: #cbd5e1; display: flex; align-items: center; }
+        @keyframes marquee-speed { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
     </style>
 
     <script>
@@ -340,7 +264,7 @@
         document.addEventListener('keydown', function(e) {
             if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'u' || e.key === 's') || e.key === 'F12') {
                 e.preventDefault();
-                alert('Source exploration restricted. All Rights Reserved © 2026 Utpal Swami.');
+                alert('Command infrastructure locked. All Rights Reserved © 2026 Utpal Swami.');
             }
         });
     </script>
@@ -356,7 +280,31 @@
             <div class="emblem">🇮🇳</div>
         </header>
 
-        <div id="game-screen" class="screen active">
+        <div id="start-screen" class="screen active">
+            <div class="diff-container">
+                <h2>Select Parliamentary Mandate Environment</h2>
+                <p style="color: var(--text-muted); margin-top: 4px;">Choose your starting difficulty to assume executive office</p>
+                <div class="diff-grid">
+                    <div class="diff-card" onclick="startGame('easy')">
+                        <h3 style="color: var(--color-env);">Easy Mode</h3>
+                        <p style="color:#0f172a; font-weight:700; margin-bottom:6px;">Absolute Majority</p>
+                        <p><strong>Starting Stats:</strong> 60% All Metrics<br><strong>Friction Penalty:</strong> 1.5x Low Drain<br><strong>Political Capital:</strong> 3 Tokens<br><span style="display:inline-block; margin-top:8px; font-weight:700; color:var(--text-muted);">Ideal for relaxed administrative rule.</span></p>
+                    </div>
+                    <div class="diff-card" onclick="startGame('medium')">
+                        <h3 style="color: var(--color-econ);">Medium Mode</h3>
+                        <p style="color:#0f172a; font-weight:700; margin-bottom:6px;">Stable Coalition</p>
+                        <p><strong>Starting Stats:</strong> 50%-55% Metrics<br><strong>Friction Penalty:</strong> 3.0x Normal Drain<br><strong>Political Capital:</strong> 2 Tokens<br><span style="display:inline-block; margin-top:8px; font-weight:700; color:var(--text-muted);">Standard balanced tactical political simulator.</span></p>
+                    </div>
+                    <div class="diff-card" onclick="startGame('hard')">
+                        <h3 style="color: var(--color-danger);">Hard Mode</h3>
+                        <p style="color:#0f172a; font-weight:700; margin-bottom:6px;">Hung Parliament</p>
+                        <p><strong>Starting Stats:</strong> 40% Deficit Basis<br><strong>Friction Penalty:</strong> 5.0x Aggressive Compound<br><strong>Political Capital:</strong> 1 Token<br><span style="display:inline-block; margin-top:8px; font-weight:700; color:var(--text-muted);">God-Level political complexity. True survival.</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="game-screen" class="screen">
             
             <div class="status-bar">
                 <div id="card-env" class="stat-card">
@@ -381,29 +329,48 @@
                 </div>
             </div>
 
+            <div class="friction-panel">
+                <div id="fric-finance" class="friction-badge">Finance Friction: 0</div>
+                <div id="fric-climate" class="friction-badge">Climate Friction: 0</div>
+                <div id="fric-ib" class="friction-badge">Intelligence Friction: 0</div>
+            </div>
+
+            <div class="favor-panel">
+                <div class="favor-info">
+                    🛡️ Emergency Political Capital Deployment: 
+                    <span id="favor-token-count" class="favor-tokens">2</span> Tokens Remaining
+                </div>
+                <div class="favor-actions">
+                    <button id="btn-favor-finance" class="favor-btn" onclick="expendPoliticalCapital('finance')">Pacify Finance Ministry</button>
+                    <button id="btn-favor-climate" class="favor-btn" onclick="expendPoliticalCapital('climate')">Appease Climate Chiefs</button>
+                    <button id="btn-favor-ib" class="favor-btn" onclick="expendPoliticalCapital('ib')">Quiet Intelligence Bureau</button>
+                </div>
+            </div>
+
             <div class="meta-strip">
-                <span id="game-year">Year: 1 of 13</span>
-                <span id="game-phase" style="color: #166534;">Mandate: Active</span>
+                <span id="game-year">Year: 1 of 12</span>
+                <span id="game-difficulty-badge" style="text-transform: uppercase; color: var(--color-gold);">MODE: Stable Coalition</span>
+                <span id="game-phase" style="color: #166534;">Mandate Check: Active</span>
             </div>
 
-            <div class="scenario-box">
-                <h3 id="crisis-title">Loading Intelligence Dossier...</h3>
-                <p id="crisis-desc">Fetching intelligence updates...</p>
+            <div id="crisis-box-element" class="scenario-box">
+                <h3 id="crisis-title">Loading Dossier...</h3>
+                <p id="crisis-desc">Aligning high-frequency macro telemetry...</p>
             </div>
 
-            <div class="advisor-heading">🔒 Secret Cabinet Briefings</div>
-            <div class="advisor-grid">
-                <div class="advisor-card">
-                    <div class="advisor-title">💼 Finance Sec.</div>
-                    <div id="adv-finance">Awaiting intelligence packet...</div>
+            <div id="advisories-header" class="advisor-heading">🔒 Secret Cabinet Advisories</div>
+            <div id="advisories-grid" class="advisor-grid">
+                <div class="advisor-card" style="border-top: 3px solid var(--color-econ);">
+                    <div class="advisor-title">💼 Finance Secretary Brief</div>
+                    <div id="adv-finance">Processing metrics...</div>
                 </div>
-                <div class="advisor-card">
-                    <div class="advisor-title">🌱 Climate Chief</div>
-                    <div id="adv-climate">Awaiting intelligence packet...</div>
+                <div class="advisor-card" style="border-top: 3px solid var(--color-env);">
+                    <div class="advisor-title">🌱 Climate Scientist Brief</div>
+                    <div id="adv-climate">Processing metrics...</div>
                 </div>
-                <div class="advisor-card">
-                    <div class="advisor-title">👁️ IB Chief</div>
-                    <div id="adv-ib">Awaiting intelligence packet...</div>
+                <div class="advisor-card" style="border-top: 3px solid var(--color-app);">
+                    <div class="advisor-title">👁️ Intelligence Bureau Command</div>
+                    <div id="adv-ib">Processing metrics...</div>
                 </div>
             </div>
 
@@ -412,219 +379,341 @@
 
         <div id="end-screen" class="screen">
             <div class="end-screen">
-                <h2 id="end-title">Term Evaluated</h2>
-                <p id="end-desc">Summary dossier goes here.</p>
-                <button class="restart-btn" onclick="resetGame()">Re-take Ministerial Oath</button>
+                <h2 id="end-title">Term Concluded</h2>
+                <div id="end-medal" class="medal-badge">Title Received</div>
+                <p id="end-desc">Dossier evaluation summary processing...</p>
+                <button class="restart-btn" onclick="returnToMenu()">Return to Strategic Menu</button>
             </div>
         </div>
     </div>
 
     <div class="ticker-wrap">
-        <div class="ticker-title">LUTYENS NEWS LINE</div>
-        <div id="ticker-scroll" class="ticker-text">Cabinet Desk initialized. Shashtri Bhawan monitors the active load balance...</div>
+        <div class="ticker-title">SISI TIMES<span>INDIA'S ENERGY DESK</span></div>
+        <div class="ticker-text"><span class="live-badge">● LIVE</span><span id="ticker-scroll">SISI TIMES System online. Real-time ministerial tracking engines running...</span></div>
     </div>
 
     <script>
         let currentYear = 1;
         let stats = { env: 50, econ: 55, app: 50, grid: 55 };
+        let friction = { finance: 0, climate: 0, ib: 0 };
+        let activeScenarios = [];
+        
+        // God-Level configuration variables
+        let selectedDifficulty = 'medium';
+        let frictionWeight = 3;
+        let tokensCount = 2;
+        let flashCrisesTriggered = { env: false, econ: false, app: false, grid: false };
+        let insideFlashCrisisMode = false;
 
-        const scenarios = {
-            1: {
-                title: "Year 1: The 260 GW Summer Peak Load",
-                desc: "An unprecedented May heatwave pushes national peak electricity demand to a historical 260 GW. Evening peak loads are collapsing localized transmission grids because solar capacity drops out completely at sunset. Coal stocks are down to 3 days at thermal units.",
+        const scenariosMasterPool = [
+            {
+                title: "The 260 GW Summer Peak Emergency",
+                desc: "An unprecedented heatwave pushes peak electricity demand to 260 GW. Evening loads are tripping regional grids because solar generation drops to zero at sunset. Coal stocks are down to a 3-day buffer across central power stations.",
                 advices: {
-                    finance: "Spot market gas is hitting $30/MMBtu. Importing fuel to keep generators online will totally blow up state fiscal buffers.",
-                    climate: "Do not bypass local forest mining limits. Short-term emission boosts will completely destroy our global clean-air metrics.",
-                    ib: "Widespread rural blackouts will prompt immediate, violent blockades across major national expressways."
+                    finance: "Spot market gas is over $30/MMBtu. Importing fuel immediately will fully bankrupt state fiscal buffers.",
+                    climate: "Do not bypass regulatory forest limits for mining. Carbon boosts will shatter global net-zero promises.",
+                    ib: "Widespread grid drop-offs will trigger massive, unpredictable civil protests across major arterial expressways."
                 },
-                ticker: "HEATWAVE BITES: National grid frequency hovers at critical safety bounds... Ministry warns of thermal overdraw...",
+                ticker: "CRITICAL LOAD ALERT: National grid frequencies hover near dangerous trip limits as cities cook...",
                 options: [
-                    { text: "Bypass tribal land environmental protections to force immediate emergency domestic coal mining expansions.", change: { env: -25, econ: 15, app: 5, grid: 15 } },
-                    { text: "Order emergency rolling daily 4-hour power cuts to rural regions and small businesses to preserve the capital's power grid.", change: { env: 5, econ: -20, app: -25, grid: 10 } },
-                    { text: "Purchase hyper-expensive emergency spot-market imported LNG and coal, forcing state distribution units further into bankruptcy.", change: { env: -10, econ: -30, app: 10, grid: 20 } }
+                    { text: "Bypass regional forest land laws to force an emergency expansion of domestic coal extraction.", change: { env: -20, econ: 15, app: 5, grid: 15 }, defies: "climate" },
+                    { text: "Order emergency 4-hour rolling blackouts in rural zones to protect the infrastructure of major tier-1 cities.", change: { env: 5, econ: -15, app: -25, grid: 10 }, defies: "ib" },
+                    { text: "[CORRUPT DEAL / BRIBE] Accept a ₹15 Crore cash kickback into a Dubai account from a private diesel generator lobby to stall grid upgrades.", change: { env: -30, econ: -10, app: -10, grid: -10 }, bribe: true },
+                    { text: "Deploy central capital to acquire emergency spot-market imported LNG, absorbing immense public fiscal debt.", change: { env: -10, econ: -25, app: 10, grid: 20 }, defies: "finance" },
+                    { text: "Enforce aggressive power-consumption rationing across heavy steel and automobile plants to save household grids.", change: { env: 10, econ: -30, app: -10, grid: 5 }, defies: "none" }
                 ]
             },
-            2: {
-                title: "Year 2: Thar Desert Solar vs. Great Indian Bustard Deadlock",
-                desc: "The Supreme Court demands all high-tension transmission lines passing through Rajasthan's desert be laid underground to protect the critically endangered Great Indian Bustard bird. Private developers state undergrounding lines will raise project costs by 300%, stopping 15GW of green infrastructure.",
+            {
+                title: "The Great Indian Bustard High-Tension Legal Gridlock",
+                desc: "The Apex Court rules that all high-voltage solar evacuation lines in Rajasthan must be laid underground to protect the critically endangered Great Indian Bustard bird. Private developers state this raises capital costs by 300%, halting 15 GW of clean installations.",
                 advices: {
-                    finance: "Absorbing underground engineering costs with public funding means canceling several state health allocations.",
-                    climate: "The Bustard is on the absolute verge of extinction. Allowing massive overhead lines is an ecological death sentence.",
-                    ib: "Global green funds are threatening a complete capital strike if we don't fix this legal gridlock quickly."
+                    finance: "Financing this massive underground conversion via public grants means freezing several infrastructure layouts.",
+                    climate: "The Bustard is on the absolute verge of extinction. Overhanging lines represent an ecological disaster.",
+                    ib: "International clean energy funds are threatening a complete capital strike if policy paralysis remains unresolved."
                 },
-                ticker: "LEGAL STANDOFF: Apex Court issues strict notice to Ministry over Great Indian Bustard habitat preservation...",
+                ticker: "LEGAL STANDOFF: Apex court demands absolute compliance on green wildlife infrastructure corridors...",
                 options: [
-                    { text: "File an aggressive judicial modification request, arguing that national energy transition targets override specific localized environmental risks.", change: { env: -25, econ: 20, app: -5, grid: 20 } },
-                    { text: "Enforce the court's protective mandate, absorbing the massive implementation cost with public taxpayers' money to bail out developers.", change: { env: 20, econ: -25, app: -10, grid: -10 } },
-                    { text: "Halt all Thar desert solar projects entirely and shift budget focus back toward processing central thermal power extensions.", change: { env: -20, econ: -10, app: 10, grid: 10 } }
+                    { text: "File an aggressive judicial review, asserting that massive green transition speeds supersede specific localized ecosystem threats.", change: { env: -25, econ: 20, app: -5, grid: 20 }, defies: "climate" },
+                    { text: "Absorb project overhead margins directly through public subsidies to bail out stranded solar assets.", change: { env: 20, econ: -25, app: -5, grid: -5 }, defies: "finance" },
+                    { text: "Cancel the Rajasthan green contracts entirely and pivot development back to state-managed thermal facility add-ons.", change: { env: -20, econ: -10, app: 10, grid: 10 }, defies: "climate" },
+                    { text: "Enforce a temporary transmission freeze while setting up an infinite inter-ministerial study commission, halting all field work.", change: { env: 5, econ: -20, app: -20, grid: -15 }, defies: "ib" }
                 ]
             },
-            3: {
-                title: "Year 3: Domestic Solar PLI Tariff Trade War",
-                desc: "To protect local manufacturing under the Production Linked Incentive (PLI) scheme, heavy basic customs duties remain clamped on cheap imported Chinese solar components. However, domestic production is lagging, completely stalling active green energy build speeds.",
+            {
+                title: "Solar PLI Import Duty Trade Wars",
+                desc: "Heavy import tariffs are levied on cheap Chinese solar modules to protect domestic assembly factories under the PLI scheme. However, local manufacturing volumes are severely lacking, grinding the national green pipeline to a complete halt.",
                 advices: {
-                    finance: "Abolishing tariffs completely kills domestic investment sentiment and enrages local tech conglomerates.",
-                    climate: "We are sacrificing real-world decarbonization schedules to protect a few domestic component assembly plants.",
-                    ib: "Border checks show a massive spike in mislabeled components smuggled via third-party free-trade networks."
+                    finance: "Abolishing these strategic tariffs completely alienates India's primary domestic industrial conglomerates.",
+                    climate: "We are actively sacrificing real-world emissions reductions just to shield uncompetitive component plants.",
+                    ib: "Intelligence streams reveal complex smuggling rings routes passing mislabeled hardware via third-party trade agreements."
                 },
-                ticker: "DOMESTIC TARIFFS DEBATED: Solar developers lodge protest at Shashtri Bhawan over component supply blockades...",
+                ticker: "GREEN MANUFACTURE CRUNCH: Domestic module producers lobby for higher protections amidst supply deficits...",
                 options: [
-                    { text: "Abolish import tariffs to let developers buy cheap components to meet green installation targets, decimating local Indian factory investments.", change: { env: 25, econ: -20, app: -10, grid: 15 } },
-                    { text: "Maintain strict tariffs to defend domestic supply chains, accepting that clean power build rates will stall out for years.", change: { env: -20, econ: 25, app: -5, grid: -20 } },
-                    { text: "Impose direct carbon manufacturing taxes across all industries to fund fast-tracked state-owned solar parks.", change: { env: 15, econ: -25, app: -15, grid: 10 } }
+                    { text: "Abolish basic customs tariffs immediately to allow cheap hardware inputs, boosting green deployment at the expense of local factories.", change: { env: 25, econ: -20, app: -10, grid: 15 }, defies: "finance" },
+                    { text: "Double down on protectionist tariffs to shield the local industrial base, accepting that emission reductions will lag for years.", change: { env: -20, econ: 25, app: -5, grid: -20 }, defies: "climate" },
+                    { text: "[CORRUPT DEAL / BRIBE] Take a secret ₹40 Crore offshore payment from a foreign module importer to secretly bypass customs checks via a custom loophole.", change: { env: 10, econ: 10, app: 0, grid: 10 }, bribe: true },
+                    { text: "Implement a sweeping carbon manufacturing levy on domestic industries to subsidize state-owned solar component fabs.", change: { env: 15, econ: -25, app: -15, grid: 10 }, defies: "ib" },
+                    { text: "Retain current tariffs but offer special emergency tax holidays to international suppliers who promise future factories.", change: { env: 5, econ: -5, app: 5, grid: -5 }, defies: "none" }
                 ]
             },
-            4: {
-                title: "Year 4: ELECTION CRUNCH: The Free Power Mandate",
-                desc: "CRITICAL ELECTION YEAR. To guarantee victory, your political party high command directs you to pass structural regulations offering completely free agricultural power supply across several crucial voting states.",
+            {
+                title: "The Agrarian Free Power Populist Demand",
+                desc: "Ahead of a critical election cycle, party leadership commands you to mandate unmetered, completely free electricity to the agricultural pumping sectors across five swing states to guarantee voter turnouts.",
                 advices: {
-                    finance: "Unconditional free supply will trigger immediate sovereign credit rating reviews for state-backed banks.",
-                    climate: "Free unmetered pumping will turn critical northern agricultural aquifers completely dry within a decade.",
-                    ib: "Failing to clear this directive guarantees an absolute rout across 45 crucial rural parliamentary seats."
+                    finance: "Unconditional free supply will trigger immediate downward credit rating shifts across state banks.",
+                    climate: "Unmetered pumping structures will drop groundwater tables to irreversible depths across the northern food bowl.",
+                    ib: "Failing to execute this policy directive guarantees an absolute collapse across major rural parliamentary seats."
                 },
-                ticker: "POLL FRENZY: Populist energy manifestos dominate headlines; grid stability experts warn of immense systemic risk...",
+                ticker: "ELECTION FRENZY: Populist farm energy packages dominate regional political campaigns...",
                 options: [
-                    { text: "Authorize unconditional free power. It wins the election but cripples state utilities and depletes critical water tables due to unmetered pumping.", change: { env: -20, econ: -35, app: 40, grid: -15 } },
-                    { text: "Compromise with direct-benefit cash transfers capped at low limits. Voters feel shortchanged while state budgets remain moderately squeezed.", change: { env: -5, econ: -15, app: 10, grid: -5 } },
-                    { text: "Block the policy to protect modern grid discipline. State distribution infrastructure stays solvent, but your party's base is furious.", change: { env: 10, econ: 30, app: -35, grid: 15 } }
+                    { text: "Approve completely free agricultural electricity, winning the election but bankrupting distribution assets and depleting aquifers.", change: { env: -25, econ: -30, app: 35, grid: -15 }, defies: "finance" },
+                    { text: "[CORRUPT DEAL / BRIBE] Take a secret cash briefcase from a wealthy agricultural pumping syndicate to legalize unauthorized high-power deep boring wells.", change: { env: -35, econ: -10, app: 10, grid: -20 }, bribe: true },
+                    { text: "Implement restricted Direct Benefit Cash Transfers with fixed consumption caps, triggering moderate public pushback.", change: { env: -10, econ: -15, app: 10, grid: -5 }, defies: "ib" },
+                    { text: "Reject the directive flatly to preserve grid discipline and state solvency, sparking deep anger from party high command.", change: { env: 15, econ: 25, app: -35, grid: 15 }, defies: "ib" },
+                    { text: "Provide free power but restrict its transmission exclusively to off-peak daytime solar hours, limiting overall aquifer strain.", change: { env: 5, econ: -15, app: 15, grid: 0 }, defies: "none" }
                 ]
             },
-            5: {
-                title: "Year 5: Western Ghats Pumped Hydro vs. Eco-Sensitive Zones",
-                desc: "To manage massive solar intermittency, engineers propose a crucial 4,000 MW Pumped Hydro Storage facility. However, it requires submerging 300 hectares of pristine, bio-diverse forests within an Eco-Sensitive Zone in the Western Ghats, sparking severe public protests.",
+            {
+                title: "Western Ghats Hydro Pumped Storage Dilemma",
+                desc: "Engineers blueprint a massive 4,000 MW Pumped Hydro Storage plant to counter renewable generation drops. However, the reservoir layout requires clearing 300 hectares of bio-diverse forests inside an Eco-Sensitive Zone, igniting environmental resistance.",
                 advices: {
-                    finance: "Without this pumped balance storage asset, our peak evening commercial tariffs will double next winter.",
-                    climate: "The Western Ghats are an irreplaceable global biodiversity hotspot. Submerging it means irreversible damage.",
-                    ib: "Protest networks are scaling fast; deploying state machinery will spark significant local clashes."
+                    finance: "Without this specific balancing asset, grid operators must purchase hyper-volatile gas peaks next winter.",
+                    climate: "The Western Ghats are a critical global biodiversity sanctuary. Submerging them causes permanent damage.",
+                    ib: "Activists are pooling international support; deploying police units will spark heavy negative global coverage."
                 },
-                ticker: "WESTERN GHATS DISPUTE: Massive eco-activist groups establish forest blockades against planned hydro dam grids...",
+                ticker: "HYDRO CONFLICT: Grassroots resistance groups setup permanent blockades inside deep forest tracts...",
                 options: [
-                    { text: "Deploy police security to clear demonstrators and fast-track the project, prioritizing long-term grid balancing power.", change: { env: -30, econ: 15, app: -25, grid: 30 } },
-                    { text: "Scrap the project to honor ecological boundaries, leaving the grid dependent on fossil-fuel peaker plants for evening stability.", change: { env: 15, econ: -15, app: 20, grid: -25 } },
-                    { text: "Relocate the plant to a less optimal, hyper-expensive barren site, delaying execution by 4 years and doubling debt lines.", change: { env: 5, econ: -25, app: -5, grid: -10 } }
+                    { text: "Authorize force to clear the blockade, prioritizing deep grid security and balancing capacity over local biome disruption.", change: { env: -30, econ: 15, app: -25, grid: 30 }, defies: "climate" },
+                    { text: "Shelve the hydro project completely to respect ecological boundaries, remaining reliant on coal peaker facilities.", change: { env: 15, econ: -15, app: 20, grid: -25 }, defies: "finance" },
+                    { text: "Relocate the facility to a highly sub-optimal barren location, inflating execution costs by 200% and stalling timeline goals.", change: { env: 5, econ: -25, app: -5, grid: -10 }, defies: "finance" },
+                    { text: "Issue an executive decree converting all nearby local communities into project equity stakeholders, diluting state earnings.", change: { env: -15, econ: -10, app: 15, grid: 10 }, defies: "none" }
                 ]
             },
-            6: {
-                title: "Year 6: The Electoral Trust 'Donation' Dilemma",
-                desc: "A powerful fossil-fuel industrial conglomerate approaches you privately. They offer a massive, undisclosed 500-crore 'electoral trust donation' to your party's upcoming campaign. In exchange, they want you to sit on your hands and delay the enforcement of new mandatory coal desulfurization and carbon-tax laws for another 4 years.",
+            {
+                title: "The Electoral Trust Corporate Influx Offer",
+                desc: "A major private fossil-fuel industrial syndicate offers a covert injection to your political systems. In exchange, they require you to delay the active enforcement of new industrial coal-scrubbing emission norms for four years.",
                 advices: {
-                    finance: "This capital influx stabilizes party financing and guarantees corporate collaboration for national mega-infrastructure.",
-                    climate: "Delaying this will release millions of tons of untreated sulfur dioxide, choking major urban valleys.",
-                    ib: "If the opposition intercepts leaks regarding this policy delay, it will prompt an immediate parliamentary inquiry."
+                    finance: "This massive capital baseline secures your party's election machinery and ensures private sector infrastructure investments.",
+                    climate: "Delaying this rule will release unmitigated sulfur compounds, choking millions across downwind metropolitan valleys.",
+                    ib: "Information leaks concerning a deliberate regulatory rollback will trigger instant parliamentary investigative panels."
                 },
-                ticker: "INSIDER BUZZ: Corporate funding shifts dominate policy corridors; environmental bodies watch sulfur laws closely...",
+                ticker: "REGULATORY WATCH: Corporate financing movements scrutinized heavily as clean air mandates approach execution deadlines...",
                 options: [
-                    { text: "Accept the funding quietly and stall the regulation. Your party gets massive campaign power and industry booms, but toxic emissions spike.", change: { env: -35, econ: 25, app: 20, grid: 5 } },
-                    { text: "Reject the compromise and enforce the green laws. The furious conglomerate cuts funding and uses their massive media channels to attack your governance daily.", change: { env: 25, econ: -15, app: -35, grid: -10 } },
-                    { text: "Go completely rogue: expose the lobbyist bribe publicly to the media. You become an overnight national hero, but corporate investments panic and completely freeze.", change: { env: 10, econ: -35, app: 40, grid: -5 } }
+                    { text: "[CORRUPT DEAL / BRIBE] Route a personal ₹75 Crore payment directly into a Swiss bank account to completely erase the corporate emission violation files.", change: { env: -40, econ: 20, app: 0, grid: 5 }, bribe: true },
+                    { text: "Accept the funding pipeline via public electoral trust structures and defer the clean air rules legally to stimulate short-term corporate capital expansions.", change: { env: -35, econ: 25, app: 15, grid: 5 }, defies: "climate" },
+                    { text: "Reject the compromise out of hand and rigorously enforce the emission penalties, facing a massive media campaign from the syndicate.", change: { env: 25, econ: -15, app: -30, grid: -10 }, defies: "finance" },
+                    { text: "Expose the corporate lobbying attempt directly to the press, boosting public popularity while alarming private investors.", change: { env: 10, econ: -35, app: 40, grid: -5 }, defies: "finance" },
+                    { text: "Apply the emission laws but offer the conglomerate customized corporate tax credits that fully offset their compliance costs.", change: { env: 15, econ: -15, app: -5, grid: 0 }, defies: "none" }
                 ]
             },
-            7: {
-                title: "Year 7: Mandatory Smart-Meter Riot Backlash",
-                desc: "Under the financial turnaround scheme, you mandate pre-paid smart electrical meters to curb widespread energy theft. Widespread public riots erupt across low-income urban districts as automated disconnections leave homes dark during intense summer heatwaves.",
+            {
+                title: "Pre-Paid Smart Meter Urban Backlash",
+                desc: "To eliminate massive commercial power theft, you mandate the installation of pre-paid smart electrical meters. Widespread street riots erupt in low-income urban hubs as automated lockouts cutoff non-paying households during peak humidity waves.",
                 advices: {
-                    finance: "Cutting technical and commercial line theft is the absolute only way to save distribution infrastructure from liquidating.",
-                    climate: "Smart meters stabilize automated load profiles, dropping the absolute peak coal-burn requirements.",
-                    ib: "Local underground syndicates are actively capitalizing on public anger to escalate urban riots."
+                    finance: "Eradicating technical theft loops is the absolute baseline condition required to keep utilities from default.",
+                    climate: "Smart load profiles allow automated demand-side mitigation, dropping dirty base-load requirements.",
+                    ib: "Localized criminal syndicates are weaponizing consumer anger to expand organized physical attacks on grid substations."
                 },
-                ticker: "RIOTS IN METROS: Automated disconnections spark widespread physical confrontations at city distribution centers...",
+                ticker: "METRO UNREST: Security units deployed as automated power lockouts trigger widespread community blockades...",
                 options: [
-                    { text: "Hold the line firmly. Order local enforcement to secure meters, cutting theft loops and establishing utility solvency.", change: { env: 0, econ: 30, app: -35, grid: 15 } },
-                    { text: "Roll back the mandate, allowing legacy unmetered connections to preserve peace, condemning distribution units to bankruptcy.", change: { env: -10, econ: -30, app: 30, grid: -15 } },
-                    { text: "Offer massive fiscal write-offs for outstanding electricity bills, draining the national treasury to appease protestors.", change: { env: 0, econ: -25, app: 20, grid: 0 } }
+                    { text: "Stand firm on utility modernization. Utilize law enforcement to protect state infrastructure and eliminate power theft.", change: { env: 0, econ: 30, app: -35, grid: 15 }, defies: "ib" },
+                    { text: "Suspend the smart meter project entirely, allowing unmetered consumption loops to resume to preserve urban peace.", change: { env: -10, econ: -30, app: 30, grid: -15 }, defies: "finance" },
+                    { text: "Absorb outstanding consumer default balances via massive direct treasury write-offs, burning central financial reserves.", change: { env: 0, econ: -25, app: 20, grid: 0 }, defies: "finance" },
+                    { text: "Modify the smart meter software to prevent any disconnections during high-heat warning weeks, risking ongoing theft losses.", change: { env: -5, econ: -10, app: 15, grid: -5 }, defies: "none" }
                 ]
             },
-            8: {
-                title: "Year 8: The Delhi Fly-Ash and Smog Mandate",
-                desc: "During winter, dense hazardous smog chokes northern cities. Environmental tribunals threaten to fine your ministry unless you immediately shut down several old, coal-fired power stations lacking advanced desulfurization tech located around urban pockets.",
+            {
+                title: "Winter Smog Emergency Shutdown Order",
+                desc: "Hazardous winter smog envelops northern tier cities. Environmental tribunals order your ministry to immediately shut down three older base-load coal generation stations lacking modern emission scrubbers surrounding metropolitan fringes.",
                 advices: {
-                    finance: "An abrupt shut down of these vintage base-loads will trigger immense manufacturing blackouts across regional industrial zones.",
-                    climate: "Particulate matter readings are exceeding 15 times the globally acceptable metrics. We are facing a health catastrophe.",
-                    ib: "Sudden economic cut-offs to local factories will trigger immediate, massive corporate labor layoffs."
+                    finance: "A sudden operational shutdown of these plants will trigger major manufacturing blackouts across nearby industrial zones.",
+                    climate: "Particulate metrics are exceeding healthy levels by 15 times. This represents a catastrophic healthcare crisis.",
+                    ib: "Mass manufacturing layoffs following industrial power cuts will cause major labor volatility."
                 },
-                ticker: "SMOG CRISIS: National Capital Region enveloped in dense winter haze; regulatory tribunals pressure Ministry panel...",
+                ticker: "SMOG EMERGENCY: Air toxicity indicators cross historic alert levels across capital monitoring zones...",
                 options: [
-                    { text: "Order absolute operational shutdowns. Urban air quality improves immediately, but industrial regions face power supply drops.", change: { env: 30, econ: -20, app: 15, grid: -30 } },
-                    { text: "Defy the pollution tribunal, stating industrial manufacturing demands and base-load stability take precedence over temporary smog phases.", change: { env: -35, econ: 20, app: -20, grid: 25 } },
-                    { text: "Force the plants to implement immediate retrofits, passing the enormous capital expenditure onto consumers via highly inflated power bills.", change: { env: 15, econ: -15, app: -25, grid: 5 } }
+                    { text: "Order absolute operational shutdowns of the aging units, prioritizing public health over industrial production indices.", change: { env: 30, econ: -20, app: 15, grid: -30 }, defies: "finance" },
+                    { text: "Defy the environmental tribunal's order, citing that manufacturing base-loads and grid frequency supersede air metrics.", change: { env: -35, econ: 20, app: -20, grid: 25 }, defies: "climate" },
+                    { text: "Force the plants to perform immediate emergency retrofits, passing the enormous cost onto consumers via inflated utility bills.", change: { env: 15, econ: -15, app: -25, grid: 5 }, defies: "ib" },
+                    { text: "Mothball the facilities but construct hyper-expensive emergency high-voltage lines to wheel replacement power from southern grids.", change: { env: 10, econ: -25, app: 0, grid: -5 }, defies: "none" }
                 ]
             },
-            9: {
-                title: "Year 9: MID-TERM BALLOT: Inter-State Carbon Taxes",
-                desc: "ANOTHER ELECTION CYCLE. International climate panels press India to implement an domestic carbon border adjustment tax. Imposing this right now will anger industrial steel and cement lobbies, hurting your party's campaign financing.",
+            {
+                title: "The National Carbon Border Adjustment Tax Clash",
+                desc: "International environmental bodies pressure India to implement an active domestic industrial carbon tax. Implementing this mandate now will hit heavy steel and infrastructure manufacturing syndicates, affecting economic economic parameters.",
                 advices: {
-                    finance: "A heavy domestic tax right now drops manufacturing competitiveness relative to Southeast Asian production hubs.",
-                    climate: "If we don't clear a carbon pricing benchmark, our exports will face severe penalties at Western trade borders.",
-                    ib: "Industrial trade federations are threatening to divert all upcoming state investment allocations to alternative regions."
+                    finance: "Imposing heavy structural carbon fees right now drops our global trade competitiveness against other manufacturing hubs.",
+                    climate: "Failing to set clear carbon pricing mechanisms risks heavy tax penalties on our exports at European ports later.",
+                    ib: "Heavy manufacturing trade unions warn of immediate funding cutoffs and strikes across core states."
                 },
-                ticker: "CARBON BENCHMARKS DEBATED: Core manufacturing syndicates warn of capital relocation over prospective eco taxes...",
+                ticker: "FISCAL REFORMS: Speculation over sovereign carbon taxing triggers volatility across manufacturing equities...",
                 options: [
-                    { text: "Enforce the carbon penalty to elevate India's international standing, risking an industrial slowdown and losing campaign backing.", change: { env: 30, econ: -25, app: -20, grid: -5 } },
-                    { text: "Defer the tax indefinitely to safeguard factory profits, secure job indices, and lock down corporate political alignment.", change: { env: -25, econ: 25, app: 15, grid: 5 } },
-                    { text: "Impose a heavily watered-down tax containing major loopholes, satisfying absolutely no one while generating minor state revenue.", change: { env: -5, econ: -5, app: -10, grid: 0 } }
+                    { text: "Enforce a comprehensive domestic carbon tax structure, maximizing ecological standing while risking a near-term industrial slowdown.", change: { env: 30, econ: -25, app: -20, grid: -5 }, defies: "finance" },
+                    { text: "Defer the carbon tax plan indefinitely to protect factory profits, safeguard employment metrics, and lock in corporate support.", change: { env: -25, econ: 25, app: 15, grid: 5 }, defies: "climate" },
+                    { text: "Pass a watered-down tax layout filled with industrial exemptions, creating administrative confusion while satisfying no one.", change: { env: -5, econ: -5, app: -10, grid: 0 }, defies: "none" },
+                    { text: "Implement the carbon tax exclusively on foreign-owned entities operating inside special economic zones, risking geopolitical friction.", change: { env: 10, econ: -15, app: 5, grid: -5 }, defies: "ib" }
                 ]
             },
-            10: {
-                title: "Year 10: EV Charging Spikes vs. Local Distribution Transformers",
-                desc: "A massive surge in electric vehicle sales across metro centers strains residential grids. Localized transformers are blowing up during evening hours when thousands of vehicles plug in simultaneously.",
+            {
+                title: "The EV Hyper-Charging Localized Grid Strain",
+                desc: "An aggressive surge in electric vehicle adoption clogs urban networks. Local distribution transformers are physically exploding during evening hours when thousands of vehicles plug in simultaneously to fast chargers.",
                 advices: {
-                    finance: "Funding a complete multi-city transformer overhaul will expand state debt lines to unsafe territory.",
-                    climate: "Do not put caps on EV fast-charging. The transition away from volatile oil imports is paramount.",
-                    ib: "Repeated transformer explosions in dense middle-class hubs are fueling intense anti-governance voter backlashes."
+                    finance: "Financing a sweeping nationwide multi-city transformer replacement project will stretch the treasury thin.",
+                    climate: "Do not restrict EV fast-charging. Moving away from volatile imported crude oil is our top priority.",
+                    ib: "Frequent evening transformer fires in high-density middle-class residential hubs are fueling anti-governance anger."
                 },
-                ticker: "METRO GRID PRESSURE: Residential transformer failures scale up as EV fast-charging demand peaks at dusk...",
+                ticker: "INFRASTRUCTURE CRISIS: Transformer burnouts reported across major urban residential substations...",
                 options: [
-                    { text: "Enact a strict ban on domestic EV fast-charging between 6 PM and 11 PM, enraging urban middle-class EV buyers.", change: { env: -10, econ: -15, app: -30, grid: 25 } },
-                    { text: "Fund a massive, multi-billion-dollar urban transformer overhaul project, adding intense stress to public budgets.", change: { env: 15, econ: -30, app: 10, grid: 15 } },
-                    { text: "Introduce aggressive surge pricing for peak hours, making evening charging incredibly expensive for consumers.", change: { env: 5, econ: 15, app: -25, grid: 10 } }
+                    { text: "Enact a strict ban on residential EV fast-charging during evening peak hours, angering the urban middle class.", change: { env: -10, econ: -15, app: -30, grid: 25 }, defies: "climate" },
+                    { text: "Deploy multi-billion-dollar central funding to execute a complete upgrade of neighborhood grid distribution infrastructure.", change: { env: 15, econ: -30, app: 10, grid: 15 }, defies: "finance" },
+                    { text: "Introduce aggressive, punitive surge-pricing models for peak-hour charging, passing the burden to premium EV owners.", change: { env: 5, econ: 15, app: -20, grid: 10 }, defies: "none" },
+                    { text: "Nationalize all private EV charging networks, imposing direct state control over charging schedules and speeds.", change: { env: -5, econ: -25, app: -15, grid: 5 }, defies: "ib" }
                 ]
             },
-            11: {
-                title: "Year 11: The Nuclear Renaissance Public Panic",
-                desc: "To expand non-fossil base-load power, you plan a major 6,000 MW coastal nuclear power facility using imported technology. Activists and local fishermen launch volatile protests over potential radiation and disruption to marine life.",
+            {
+                title: "The Coastal Nuclear Renaissance Panic",
+                desc: "To fortify non-fossil base-load power, you clear a massive 6,000 MW coastal atomic plant using foreign technology. Activists and local maritime unions launch major protests over potential thermal runoff and safety risks.",
                 advices: {
-                    finance: "Nuclear capacity offers absolute carbon-free grid protection for the next 60 years. Do not buckle here.",
-                    climate: "Zero greenhouse footprint, but the localized warm-water thermal discharges will completely alter coastal marine life.",
-                    ib: "Agitators are organizing regional coastal fishing unions to block deep-water commercial shipping lanes completely."
+                    finance: "Nuclear technology offers clean, weather-independent base-load security for the next 60 years. Hold the line.",
+                    climate: "The carbon footprint is zero, but thermal water discharges will alter local marine biomes and fishing catches.",
+                    ib: "Agitators are organizing regional fishing vessels to block core commercial deep-water shipping channels."
                 },
-                ticker: "NUCLEAR ECO STANDOFF: Fishermen fleets announce infinite harbor blockade over proposed atomic energy installation...",
+                ticker: "ATOMIC ENERGY RESISTANCE: Maritime unions threaten complete harbor shutdown over coastal reactor site...",
                 options: [
-                    { text: "Overrule all local objections and deploy state machinery to construct the plant, ensuring long-term emissions-free base-load supply.", change: { env: 25, econ: -20, app: -30, grid: 25 } },
-                    { text: "Shelve the nuclear project permanently to appease voters, turning back to expanding thermal power options to keep up with industrial growth.", change: { env: -30, econ: 15, app: 25, grid: -5 } },
-                    { text: "Delay the project to conduct endless rounds of public safety reviews, inflating engineering debts while leaving supply unresolved.", change: { env: -5, econ: -20, app: -5, grid: -15 } }
+                    { text: "Overrule local resistance and utilize security frameworks to construct the nuclear facility, ensuring long-term clean base-load.", change: { env: 25, econ: -20, app: -30, grid: 25 }, defies: "climate" },
+                    { text: "Cancel the nuclear blueprint to appease regional electorates, turning back to coal expansions to sustain industrial load curves.", change: { env: -30, econ: 15, app: 25, grid: -5 }, defies: "climate" },
+                    { text: "Delay construction indefinitely to perform endless rounds of ecological safety panels, letting engineering debts accumulate.", change: { env: -5, econ: -20, app: -5, grid: -15 }, defies: "finance" },
+                    { text: "Relocate the reactors to deep inland seismic zones, increasing freshwater cooling costs by 300% and altering inland rivers.", change: { env: 5, econ: -25, app: -15, grid: 5 }, defies: "none" }
                 ]
             },
-            12: {
-                title: "Year 12: Decarbonization vs. Coal Belt Unemployment Riots",
-                desc: "As solar arrays assume a larger grid share, old unprofitable coal mines in Jharkhand and Chhattisgarh face planned closures. Massive labor unions launch severe strikes, warning of total economic ruin for millions of mining families.",
+            {
+                title: "Coal Belt Phase-Out Strike",
+                desc: "As solar arrays take over the grid, old unprofitable state coal mines face planned closures. Massive labor unions launch indefinite strikes, warning of economic ruin for millions of mining families across eastern belts.",
                 advices: {
-                    finance: "Subsidizing dead coal assets simply to appease localized unions is bleeding macro state capital.",
-                    climate: "Unmanaged methane leaks from outmoded open-cast mines are erasing our carbon progression metrics.",
-                    ib: "Total operational mine shutdowns without alternative jobs will prompt widespread regional civic unrest."
+                    finance: "Subsidizing dead coal assets to prevent union friction is draining vital macro capital.",
+                    climate: "Unmanaged methane leaks from outmoded open-cast pits are erasing our national carbon metrics.",
+                    ib: "Total mine closures without alternative livelihoods will spark immediate civil unrest across multiple state borders."
                 },
-                ticker: "MINING LABOUR STRIKE: Eastern industrial belts report massive rail-roko demonstrations; coal supplies stall...",
+                ticker: "MINING BLOCKADE: Eastern freight corridors face disruptions as mining unions halt rail operations...",
                 options: [
-                    { text: "Force the mine closures to proceed, offering minimal state rehabilitation support to protect environmental performance metrics.", change: { env: 30, econ: -15, app: -35, grid: -15 } },
-                    { text: "Keep unviable mines open via heavy state subsidies to avoid labor unrest, damaging the transition and worsening fiscal deficits.", change: { env: -30, econ: -20, app: 30, grid: 10 } },
-                    { text: "Mandate private manufacturing companies to build factories in the coal belts to absorb workers, triggering corporate pushback.", change: { env: 10, econ: -25, app: -10, grid: 5 } }
+                    { text: "Force the mine closures through, offering minimal state retraining packages to prioritize environmental metrics.", change: { env: 30, econ: -15, app: -35, grid: -15 }, defies: "ib" },
+                    { text: "Keep unviable mines open via major fiscal subsidies to maintain labor peace, stalling the green transition.", change: { env: -30, econ: -25, app: 30, grid: 10 }, defies: "finance" },
+                    { text: "Impose a mandatory quota forcing private green energy companies to build solar component factories in the coal belts.", change: { env: 10, econ: -20, app: -10, grid: 5 }, defies: "finance" },
+                    { text: "Nationalize the striking unions and put the mines under direct military logistical control to secure fuel transportation.", change: { env: -15, econ: -20, app: -30, grid: 20 }, defies: "ib" }
                 ]
             },
-            13: {
-                title: "Year 13: The Grand Multi-State Grid Collapse Risk",
-                desc: "A massive cyclone hits western generation facilities while Northern India faces intense heat. Frequencies across the National Grid are fluctuating wildly near safe limits, raising the risk of a catastrophic multi-state blackout.",
+            {
+                title: "Rooftop Solar Subsidy Treasury Overdraw",
+                desc: "A populist rooftop solar push succeeds too well. Millions of middle-class households take up the massive 60% state subsidy, leaving state distribution utilities starved of premium paying customers.",
                 advices: {
-                    finance: "A complete national blackout will erase over a billion dollars of economic output every single day.",
-                    climate: "Running compromised thermal infrastructure over safety margins risks explosive physical system blowouts.",
-                    ib: "If the national capital falls into a complete black-start phase, essential emergency security units will fail."
+                    finance: "The solar subsidy fund is running completely dry. Continuing this pace will require raiding health budgets.",
+                    climate: "This is the fastest decentralization of green energy in our history. Do not kill the momentum.",
+                    ib: "State DISCOMs are on the verge of missing salary payments, risking wildcat utility employee strikes."
                 },
-                ticker: "GRID CRITICAL ALARM: Frequency indicators plunge to record lows; high-command holds emergency session...",
+                ticker: "SOLAR BOOM: Residential rooftop adoptions reach record highs as utility companies face revenue shortfalls...",
                 options: [
-                    { text: "Order immediate massive load-shedding across half the country, intentionally cutting power to millions to protect the grid infrastructure.", change: { env: 5, econ: -25, app: -30, grid: 35 } },
-                    { text: "Run all thermal units past safe technical limits, bypassing safety features to keep power flowing, risking a complete grid meltdown.", change: { env: -35, econ: 10, app: 20, grid: -30 } },
-                    { text: "Force heavy industries to shut down operations for two full weeks, protecting residential supply but severely impacting manufacturing GDP.", change: { env: 15, econ: -35, app: -10, grid: 20 } }
+                    { text: "Slash the rooftop subsidy immediately to preserve fiscal capital, halting the clean household solar boom.", change: { env: -25, econ: 25, app: -20, grid: -5 }, defies: "climate" },
+                    { text: "Maintain the subsidies by diverting development capital from national grid transmission expansions, risking grid capacity.", change: { env: 25, econ: -25, app: 15, grid: -20 }, defies: "finance" },
+                    { text: "Levy a special 'Grid Gridlock Tax' on all homes with solar installations to recover utility losses, angering green adopters.", change: { env: 5, econ: 15, app: -30, grid: 10 }, defies: "none" },
+                    { text: "Force state utilities to cut power access to low-income regions to balance the commercial revenue losses.", change: { env: -15, econ: -10, app: -35, grid: 15 }, defies: "ib" }
+                ]
+            },
+            {
+                title: "The Rare Earth Mineral Protected Reserve Standoff",
+                desc: "Geologists discover major lithium and rare earth mineral deposits needed for EV battery independence. However, the deposits sit entirely inside a protected tribal forest reserve, setting up a severe internal rights clash.",
+                advices: {
+                    finance: "Mining this locally secures complete supply chain decoupling from global monopolies and saves billions in import fees.",
+                    climate: "Open-pit mineral mining here will destroy ancient forest ecosystems and pollute critical river systems.",
+                    ib: "Forcible tribal displacement will trigger armed resistance movements across neighboring forest tracts."
+                },
+                ticker: "MINERAL DISCOVERY: Massive lithium finds set off intense environmental and native land debates...",
+                options: [
+                    { text: "Clear the forest reserve and authorize state mining operations to secure battery manufacturing independence.", change: { env: -35, econ: 30, app: -15, grid: 10 }, defies: "climate" },
+                    { text: "Lock the reserve from development to protect tribal sovereignty and the ecosystem, remaining reliant on volatile imports.", change: { env: 25, econ: -25, app: 20, grid: -10 }, defies: "finance" },
+                    { text: "[CORRUPT DEAL / BRIBE] Accept an off-shore banking credit allocation worth ₹50 Crore from a foreign shell corporation to grant them unauthorized exclusive mining leases under the table.", change: { env: -40, econ: 15, app: -20, grid: 5 }, bribe: true },
+                    { text: "Lease the mining rights to a foreign multinational corporation, passing the localized political and environmental blowback onto them.", change: { env: -25, econ: 15, app: -25, grid: 5 }, defies: "ib" },
+                    { text: "Enact an expensive, slow underground tunnel-mining framework that minimizes surface clearance but delays production by 8 years.", change: { env: 5, econ: -20, app: -5, grid: -5 }, defies: "finance" }
+                ]
+            }
+        ];
+
+        const flashCrisesPool = {
+            env: {
+                title: "⚠️ DIRECTIVE RED: Metros Air Toxicity Emergency",
+                desc: "Environment parameter has dropped beneath absolute critical levels. Air Quality Index maps cross 999. The supreme medical authority declares an absolute health lockdown. International entities threaten ambient climate sanctions.",
+                options: [
+                    { text: "[EMERGENCY ACTION] Instantly freeze all coal transport rail paths and mandate absolute work-from-home cycles across states.", change: { env: 35, econ: -20, app: -10, grid: -20 } },
+                    { text: "[BLUNT DEFIANCE] Reject environmental monitoring numbers entirely and issue state-owned respiratory masks to the population.", change: { env: -10, econ: 10, app: -15, grid: 10 } }
+                ]
+            },
+            econ: {
+                title: "⚠️ DIRECTIVE RED: Sovereign Power Debt Liquidation",
+                desc: "Economy parameters have entered structural default territory. International bond metrics rating agencies downgrade state credits to junk status. Central banking reserves can no longer clear external equipment acquisitions.",
+                options: [
+                    { text: "[EMERGENCY ACTION] Liquidate state shares across renewable infrastructure arrays to raise fast treasury assets.", change: { env: -20, econ: 35, app: -15, grid: -10 } },
+                    { text: "[BLUNT DEFIANCE] Enforce a mandatory freeze on all public power employee pay scales for the next 12 months.", change: { env: 0, econ: 20, app: -40, grid: 5 } }
+                ]
+            },
+            app: {
+                title: "⚠️ DIRECTIVE RED: Shashtri Bhawan Institutional Siege",
+                desc: "Approval indexes have shattered completely. Furious consumer confederations and combined labor unions break security barriers, laying physical siege to ministerial gates to demand immediate tariff reductions.",
+                options: [
+                    { text: "[EMERGENCY ACTION] Pass an instant 40% reduction on all residential electricity tiers by transferring operational losses onto big corporations.", change: { env: -10, econ: -25, app: 45, grid: -10 } },
+                    { text: "[BLUNT DEFIANCE] Order defensive security units to disperse blockades, prioritizing infrastructure continuity at any political cost.", change: { env: 0, econ: 10, app: -35, grid: 20 } }
+                ]
+            },
+            grid: {
+                title: "⚠️ DIRECTIVE RED: Cascading Substation Tripping",
+                desc: "Power Supply margin drops below functional baselines. High frequency load oscillations break three major transformer paths simultaneously, leaving half of India sitting inside total blackout conditions.",
+                options: [
+                    { text: "[EMERGENCY ACTION] Authorize a complete bypass of all industrial fuel limits, forcing auxiliary defense reserve engines to fire using dirty petroleum variants.", change: { env: -30, econ: -15, app: 15, grid: 45 } },
+                    { text: "[BLUNT DEFIANCE] Keep primary industrial generators isolated, prolonging metropolitan blackouts while executing gradual manual restarts.", change: { env: 15, econ: -30, app: -30, grid: 20 } }
                 ]
             }
         };
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function startGame(mode) {
+            selectedDifficulty = mode;
+            currentYear = 1;
+            friction = { finance: 0, climate: 0, ib: 0 };
+            flashCrisesTriggered = { env: false, econ: false, app: false, grid: false };
+            insideFlashCrisisMode = false;
+            document.getElementById("crisis-box-element").classList.remove("flash-alert-active");
+
+            if (mode === 'easy') {
+                stats = { env: 60, econ: 60, app: 60, grid: 60 };
+                frictionWeight = 1.5;
+                tokensCount = 3;
+                document.getElementById("game-difficulty-badge").innerText = "MODE: Easy (Absolute Majority)";
+            } else if (mode === 'medium') {
+                stats = { env: 50, econ: 55, app: 50, grid: 55 };
+                frictionWeight = 3.0;
+                tokensCount = 2;
+                document.getElementById("game-difficulty-badge").innerText = "MODE: Medium (Stable Coalition)";
+            } else if (mode === 'hard') {
+                stats = { env: 40, econ: 40, app: 40, grid: 40 };
+                frictionWeight = 5.0;
+                tokensCount = 1;
+                document.getElementById("game-difficulty-badge").innerText = "MODE: Hard (Hung Parliament)";
+            }
+
+            let poolCopy = [...scenariosMasterPool];
+            shuffleArray(poolCopy);
+            activeScenarios = poolCopy.slice(0, 12);
+
+            document.getElementById("start-screen").classList.remove("active");
+            document.getElementById("game-screen").classList.add("active");
+            
+            updateUI();
+            loadScenario();
+        }
 
         function updateUI() {
             document.getElementById("stat-env").innerText = stats.env;
@@ -637,25 +726,48 @@
             document.getElementById("bar-app").style.width = `${stats.app}%`;
             document.getElementById("bar-grid").style.width = `${stats.grid}%`;
 
-            document.getElementById("game-year").innerText = `Year: ${currentYear} of 13`;
-            
-            if (currentYear <= 4) document.getElementById("game-phase").innerText = "First Parliamentary Term";
-            else if (currentYear <= 9) document.getElementById("game-phase").innerText = "Second Parliamentary Term";
-            else document.getElementById("game-phase").innerText = "Legacy Phase";
+            document.getElementById("game-year").innerText = `Year: ${currentYear} of 12`;
+            document.getElementById("favor-token-count").innerText = tokensCount;
 
-            // Advanced UI Feature: Dynamic Warning system if metric falls beneath critical bounds
+            // Enable/Disable pacification buttons based on token availability and active friction
+            document.getElementById("btn-favor-finance").disabled = (tokensCount <= 0 || friction.finance === 0 || insideFlashCrisisMode);
+            document.getElementById("btn-favor-climate").disabled = (tokensCount <= 0 || friction.climate === 0 || insideFlashCrisisMode);
+            document.getElementById("btn-favor-ib").disabled = (tokensCount <= 0 || friction.ib === 0 || insideFlashCrisisMode);
+
+            // Update friction telemetry readouts
+            updateFrictionBadge("fric-finance", "Finance Friction", friction.finance);
+            updateFrictionBadge("fric-climate", "Climate Friction", friction.climate);
+            updateFrictionBadge("fric-ib", "Intelligence Friction", friction.ib);
+
             handleCardAlerts("card-env", stats.env);
             handleCardAlerts("card-econ", stats.econ);
             handleCardAlerts("card-app", stats.app);
             handleCardAlerts("card-grid", stats.grid);
         }
 
-        function handleCardAlerts(cardId, statValue) {
-            let el = document.getElementById(cardId);
-            if (statValue <= 25) {
-                el.classList.add("danger-alert");
+        function updateFrictionBadge(id, label, value) {
+            let el = document.getElementById(id);
+            if (value > 0) {
+                el.innerText = `⚠️ ${label}: ${value} (-${(value * frictionWeight).toFixed(1)}/yr)`;
+                el.classList.add("active-warning");
             } else {
-                el.classList.remove("danger-alert");
+                el.innerText = `${label}: 0 (Stable)`;
+                el.classList.remove("active-warning");
+            }
+        }
+
+        function handleCardAlerts(cardId, val) {
+            let el = document.getElementById(cardId);
+            if (val <= 25) el.classList.add("danger-alert");
+            else el.classList.remove("danger-alert");
+        }
+
+        function expendPoliticalCapital(dept) {
+            if (tokensCount > 0 && friction[dept] > 0) {
+                tokensCount--;
+                friction[dept] = 0;
+                alert(`🛡️ CAPITAL DEPLOYED: You spent a Political Favor token. Your friction with the ${dept.toUpperCase()} cluster has been cleared back to zero.`);
+                updateUI();
             }
         }
 
@@ -663,28 +775,104 @@
             if (value === 0) return "";
             const sign = value > 0 ? "+" : "";
             const displayColor = value > 0 ? colorVar : "var(--color-danger)";
-            return `<span style="color: ${displayColor}; margin-right: 12px;">${label} ${sign}${value}</span>`;
+            return `<span style="color: ${displayColor}; margin-right: 14px;">${label} ${sign}${value}</span>`;
+        }
+
+        function checkFlashCrises() {
+            if (insideFlashCrisisMode) return false;
+
+            if (stats.env <= 25 && !flashCrisesTriggered.env) { triggerFlashCrisis('env'); return true; }
+            if (stats.econ <= 25 && !flashCrisesTriggered.econ) { triggerFlashCrisis('econ'); return true; }
+            if (stats.app <= 25 && !flashCrisesTriggered.app) { triggerFlashCrisis('app'); return true; }
+            if (stats.grid <= 25 && !flashCrisesTriggered.grid) { triggerFlashCrisis('grid'); return true; }
+
+            return false;
+        }
+
+        function triggerFlashCrisis(statKey) {
+            insideFlashCrisisMode = true;
+            flashCrisesTriggered[statKey] = true;
+
+            document.getElementById("crisis-box-element").classList.add("flash-alert-active");
+            document.getElementById("advisories-header").style.display = "none";
+            document.getElementById("advisories-grid").style.display = "none";
+
+            let fCrisis = flashCrisesPool[statKey];
+            document.getElementById("crisis-title").innerText = fCrisis.title;
+            document.getElementById("crisis-desc").innerText = fCrisis.desc;
+            document.getElementById("ticker-scroll").innerText = `CRITICAL LIVE FLASH: ${fCrisis.title} - NATIONAL LEVEL SYSTEMIC EMERGENCY ACTIVATED...`;
+
+            let container = document.getElementById("options-container");
+            container.innerHTML = "";
+
+            fCrisis.options.forEach((opt) => {
+                let btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.style.borderColor = "var(--color-danger)";
+
+                let impactHtml = "";
+                impactHtml += formatImpactToken("🌿 Env", opt.change.env, "var(--color-env)");
+                impactHtml += formatImpactToken("💰 Econ", opt.change.econ, "var(--color-econ)");
+                impactHtml += formatImpactToken("👥 App", opt.change.app, "var(--color-app)");
+                impactHtml += formatImpactToken("🔌 Power", opt.change.grid, "var(--color-grid)");
+
+                btn.innerHTML = `
+                    <div style="font-size: 1rem; font-weight: 800; color: #b91c1c; margin-bottom: 6px; line-height:1.4;">${opt.text}</div>
+                    <div class="impact-tray">${impactHtml}</div>
+                `;
+                btn.onclick = () => resolveFlashCrisis(opt.change);
+                container.appendChild(btn);
+            });
+
+            updateUI();
+        }
+
+        function resolveFlashCrisis(changeValues) {
+            stats.env = Math.min(100, Math.max(0, stats.env + changeValues.env));
+            stats.econ = Math.min(100, Math.max(0, stats.econ + changeValues.econ));
+            stats.app = Math.min(100, Math.max(0, stats.app + changeValues.app));
+            stats.grid = Math.min(100, Math.max(0, stats.grid + changeValues.grid));
+
+            insideFlashCrisisMode = false;
+            document.getElementById("crisis-box-element").classList.remove("flash-alert-active");
+            document.getElementById("advisories-header").style.display = "block";
+            document.getElementById("advisories-grid").style.display = "flex";
+
+            alert("🚨 EXIGENCY DIRECTIVE RESOLVED: Emergency field protocols handled. Normal cabinet schedule resuming.");
+            
+            checkStructuralCollapses();
+            if (currentYear <= 12) {
+                loadScenario();
+            }
         }
 
         function loadScenario() {
+            // Apply annual compounding advisor friction cuts
+            if (currentYear > 1 && !insideFlashCrisisMode) {
+                stats.econ = Math.max(0, stats.econ - Math.round(friction.finance * frictionWeight));
+                stats.env = Math.max(0, stats.env - Math.round(friction.climate * frictionWeight));
+                stats.app = Math.max(0, stats.app - Math.round(friction.ib * frictionWeight));
+            }
+
+            // Intercept with an emergency flash crisis if stats drop under 25
+            if (checkFlashCrises()) return;
+
             checkStructuralCollapses();
             
-            if (currentYear > 13) {
-                endGame("Statesman Victory", "Outstanding. You completed a comprehensive 13-year dual-term as India's Energy Minister. You preserved infrastructure discipline, balanced structural compromises, and achieved legacy transition status.");
+            if (currentYear > 12) {
+                evaluateEndingMedal();
                 return;
             }
 
-            let data = scenarios[currentYear];
-            document.getElementById("crisis-title").innerText = data.title;
+            let data = activeScenarios[currentYear - 1];
+            document.getElementById("crisis-title").innerText = `Year ${currentYear}: ${data.title}`;
             document.getElementById("crisis-desc").innerText = data.desc;
             
-            // Populate Secret Briefs dynamically
             document.getElementById("adv-finance").innerText = data.advices.finance;
             document.getElementById("adv-climate").innerText = data.advices.climate;
             document.getElementById("adv-ib").innerText = data.advices.ib;
 
-            // Trigger News Ticker Marquee Update
-            document.getElementById("ticker-scroll").innerText = data.ticker;
+            document.getElementById("ticker-scroll").innerText = `SISI TIMES UPDATE: ${data.ticker}`;
 
             let optionsContainer = document.getElementById("options-container");
             optionsContainer.innerHTML = "";
@@ -694,45 +882,65 @@
                 btn.className = "option-btn";
                 
                 let impactHtml = "";
-                impactHtml += formatImpactToken("🌿 Env", opt.change.env, "var(--color-env)");
-                impactHtml += formatImpactToken("💰 Econ", opt.change.econ, "var(--color-econ)");
-                impactHtml += formatImpactToken("👥 App", opt.change.app, "var(--color-app)");
-                impactHtml += formatImpactToken("🔌 Power", opt.change.grid, "var(--color-grid)");
+                if (opt.bribe) {
+                    btn.style.borderColor = "var(--color-purple)";
+                    impactHtml += `<span style="color: var(--color-purple); font-weight:900;">⚠️ ILLEGAL CORRUPT TRANSACTION (HIGH RISK)</span>`;
+                } else {
+                    impactHtml += formatImpactToken("🌿 Env", opt.change.env, "var(--color-env)");
+                    impactHtml += formatImpactToken("💰 Econ", opt.change.econ, "var(--color-econ)");
+                    impactHtml += formatImpactToken("👥 App", opt.change.app, "var(--color-app)");
+                    impactHtml += formatImpactToken("🔌 Power", opt.change.grid, "var(--color-grid)");
+
+                    if (opt.defies && opt.defies !== "none") {
+                        impactHtml += `<span style="color: var(--color-danger); font-weight:900; margin-left:auto;">⚠️ Defies ${opt.defies.toUpperCase()}</span>`;
+                    }
+                }
 
                 btn.innerHTML = `
-                    <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-body); margin-bottom: 6px; line-height:1.4;">${opt.text}</div>
+                    <div style="font-size: 1rem; font-weight: 700; color: var(--text-title); margin-bottom: 6px; line-height:1.4;">${opt.text}</div>
                     <div class="impact-tray">${impactHtml}</div>
                 `;
                 
-                btn.onclick = () => handleChoice(opt.change);
+                btn.onclick = () => handleChoice(opt.change, opt.defies, opt.bribe);
                 optionsContainer.appendChild(btn);
             });
+            
+            updateUI();
         }
 
-        function handleChoice(changeValues) {
+        function handleChoice(changeValues, defiedAdvisor, isBribe) {
+            // BRIBE TRACKER CATCHER MECHANIC
+            if (isBribe) {
+                triggerBribeArrest();
+                return;
+            }
+
             stats.env = Math.min(100, Math.max(0, stats.env + changeValues.env));
             stats.econ = Math.min(100, Math.max(0, stats.econ + changeValues.econ));
             stats.app = Math.min(100, Math.max(0, stats.app + changeValues.app));
             stats.grid = Math.min(100, Math.max(0, stats.grid + changeValues.grid));
 
-            updateUI();
+            if (defiedAdvisor && defiedAdvisor !== "none") {
+                friction[defiedAdvisor]++;
+                alert(`⚠️ SYSTEMIC COMPONENT FRICTION: You bypassed explicit warnings from your ${defiedAdvisor.toUpperCase()} department. Long-term annual compounding drain increased.`);
+            }
 
-            // Strict Parliamentary Ballot Checkers
+            // Fixed Election Mandate Checkpoints
             if (currentYear === 4) {
                 if (stats.app < 50) {
-                    endGame("Defeated at the Polls", `General Election Defeat. Public approval sat at ${stats.app}%. Your ruling alliance was voted out by the agrarian base.`);
+                    endGame("Defeated at General Ballot", "🏅 DEMOCRATIC EXIT MEDAL", `Popular opinion crashed to ${stats.app}%. Your ruling framework lost majority standing across crucial agricultural states.`, false);
                     return;
                 } else {
-                    alert(`🗳️ BALLOT REPORT: With approval at ${stats.app}%, your coalition secures a thin working majority. Welcome to your Second Term, Minister.`);
+                    alert(`🗳️ SISI TIMES ELECTORAL ANALYSIS: Approval tracking at ${stats.app}%. Your portfolio safely clears the general mid-term threshold.`);
                 }
             }
 
-            if (currentYear === 9) {
+            if (currentYear === 8) {
                 if (stats.app < 55) {
-                    endGame("Coalition Collapse", `Mid-Term Crisis. Structural regulations brought approval down to ${stats.app}%. Key regional coalition partners pulled out support.`);
+                    endGame("Coalition Partition Failure", "🏅 PARTISAN CRACKUP BADGE", `Strategic industrial grid frictions pulled approval metrics down to ${stats.app}%. Key alliance blocks split from the coalition desk.`, false);
                     return;
                 } else {
-                    alert(`🗳️ ALLIANCE UPDATE: Macro financial stability helps you bypass the mid-term challenge. You enter the final Legacy Phase.`);
+                    alert(`🗳️ ALLIANCE RE-VERIFICATION PATHWAY: Strong core governance patterns preserve structural majority. Passing safely to the historic Legacy Phase.`);
                 }
             }
 
@@ -740,37 +948,74 @@
             loadScenario();
         }
 
+        function triggerBribeArrest() {
+            document.getElementById("game-screen").classList.remove("active");
+            document.getElementById("end-screen").classList.add("active");
+            
+            let badge = document.getElementById("end-medal");
+            badge.innerText = "🚨 CORRUPTION & DISGRACE AUDIT";
+            badge.className = "medal-badge arrest-badge";
+            
+            document.getElementById("end-title").innerText = "Caught By Government Agencies";
+            document.getElementById("end-desc").innerText = "The Enforcement Directorate (ED) and CBI successfully intercepted encrypted offshore communications and wire traces regarding your illegal financial kickbacks. Armed tactical units executed an immediate arrest warrant at your residence. Your assets are seized, your family is disgraced, and your ministerial term ends permanently in Tihar Jail.";
+            
+            document.getElementById("ticker-scroll").innerText = `🚨 BREAKING SISI TIMES BULLETIN: ENERGY MINISTER ARRESTED BY CBI IN SWEEPING EXTRA-JUDICIAL CORRUPTION RAID! PORTFOLIO TERMINATED...`;
+        }
+
         function checkStructuralCollapses() {
             if (stats.grid <= 15) {
-                endGame("Cascading Grid Collapse", "The national extra-high-voltage transmission network suffered an unscheduled cascading frequency trip. Critical systemic brownouts forced an emergency portfolio allocation change.");
+                endGame("Total Transmission System Blackout", "💥 INFRASTRUCTURE COLLAPSE DISASTER", "The extra-high-voltage central grid faced terminal load cascading trips. Extended metropolitan power failures forced immediate emergency intervention.", false);
             } else if (stats.econ <= 15) {
-                endGame("Sovereign Credit Defaults", "Massive state power distribution bailouts completely bankrupt the fiscal desk. The Finance Ministry intervened directly, stripping your portfolio execution.");
+                endGame("Sovereign Portfolio Bankruptcy", "📉 SOVEREIGN TREASURY LIQUIDATION", "Runaway resource input pricing and structural subventions fully depleted the central treasury account reserves, triggering macro policy reorganization.", false);
             } else if (stats.env <= 15) {
-                endGame("Ecological Breakdown", "Extreme air quality and habitat degradation triggered severe international trade restrictions and persistent public healthcare emergencies, cutting your term short.");
+                endGame("Irreversible Environmental Emergency", "☣️ BIOSPHERIC COLLAPSE AUDIT", "Severe urban toxicity trends and dry unmitigated underground depletion lines forced full judicial intervention, closing your portfolio files.", false);
             } else if (stats.app <= 15) {
-                endGame("Forced Resignation", "Your public approval collapsed completely. Facing massive civil protests across multiple states, the high command demanded your instant resignation to protect the central mandate.");
+                endGame("Forced Portfolio Resignation", "❌ POPULIST REJECTION EVACUATION", "Public popularity metrics dropped beneath survival thresholds. Widespread economic non-cooperation strikes forced immediate portfolio assignment changes.", false);
             }
         }
 
-        function endGame(title, description) {
+        function evaluateEndingMedal() {
+            let title = "The Balanced Technocrat Medal ⚖️";
+            let desc = "You successfully managed all 12 years of structural crisis vectors while holding off compounding departmental friction. The national energy matrix remains perfectly viable.";
+
+            if (stats.env >= 80) {
+                title = "The Green Messiah Grand Ribbon 🌿";
+                desc = "Magnificent ecological trajectory! You transformed India's power mix into a low-carbon global archetype, keeping industrial parameters safe.";
+            } else if (stats.grid >= 80 && stats.env <= 35) {
+                title = "The Industrial Iron Fist Diamond 🏭";
+                desc = "Unrivaled energy output metrics. You guaranteed massive baseload speeds for deep industrial manufacturing, despite heavy emission tradeoffs.";
+            } else if (stats.econ >= 80 && friction.finance === 0) {
+                title = "The Sovereign Fiscal Wizard Laurels 💰";
+                desc = "Exceptional fiscal design. You modernized infrastructure arrays and protected macroeconomic buffers while retaining flawless alignment with finance tracking assets.";
+            } else if (stats.app >= 85 && stats.econ <= 35) {
+                title = "The Populist Puppet Citation 👥";
+                desc = "Maximum popularity achieved! Your voter approval remains unmatched, though structural treasury accounts require emergency bailout injections.";
+            }
+
+            endGame("Full Term Mastered Successfully", title, desc, true);
+        }
+
+        function endGame(title, medal, description, cleanVictory) {
             document.getElementById("game-screen").classList.remove("active");
             document.getElementById("end-screen").classList.add("active");
             document.getElementById("end-title").innerText = title;
+            
+            let badge = document.getElementById("end-medal");
+            badge.innerText = medal;
+            if (!cleanVictory && medal.includes("DISASTER")) {
+                badge.className = "medal-badge arrest-badge";
+            } else {
+                badge.className = "medal-badge";
+            }
+            
             document.getElementById("end-desc").innerText = description;
-            document.getElementById("ticker-scroll").innerText = `CRITICAL ASSIGNMENT CONCLUDED: ${title}. Portfolio reassigned.`;
+            document.getElementById("ticker-scroll").innerText = `SISI TIMES BULLETIN: Strategy terminal tracking finished. Status: ${title} [${medal}]. Command desk closed.`;
         }
 
-        function resetGame() {
-            currentYear = 1;
-            stats = { env: 50, econ: 55, app: 50, grid: 55 };
+        function returnToMenu() {
             document.getElementById("end-screen").classList.remove("active");
-            document.getElementById("game-screen").classList.add("active");
-            updateUI();
-            loadScenario();
+            document.getElementById("start-screen").classList.add("active");
         }
-
-        updateUI();
-        loadScenario();
     </script>
 </body>
 </html>
