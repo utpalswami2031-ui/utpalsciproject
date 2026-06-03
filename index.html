@@ -314,7 +314,7 @@
         }
         .advisor-node-title {
             font-weight: 900;
-            font-size: 0.7rem;
+            font-size: 0.7 her;
             text-transform: uppercase;
             margin-bottom: 4px;
         }
@@ -786,7 +786,7 @@
         };
 
         // ==================================================================================
-        // MASTER CENTRAL CORE GAME ENGINE ARCHITECTURE
+        // MASTER CENTRAL CORE GAME ENGINE ARCHITECTURE (STRICT 4-OPTIONS MATRICES)
         // ==================================================================================
         const SovereignEngine = {
             currentTurnYear: 1,
@@ -810,23 +810,24 @@
             scenariosMasterRepository: [
                 {
                     title: "The 260 GW Heatwave Peak Emergency",
-                    desc: "An intense, multi-state climate thermal anomaly drives matching power draws to historical 260 GW highs. Critical grid components face physical tripping risks as localized transformers operate outside nominal thermodynamic thresholds.",
+                    desc: "An intense, multi-state climate thermal anomaly drives matching power draws to historical 260 GW highs. Critical grid components face physical tripping risks as localized transformers operate outside nominal thresholds.",
                     isPeakUrgency: true,
                     briefs: {
-                        finance: "Acquiring international emergency spot gas cargoes commands an astronomical $30/MMBtu price trajectory, threatening ministerial budget stability.",
-                        climate: "Do not issue structural emergency baseline waivers to coal operations; global transparency metrics trace high carbon outputs.",
-                        ib: "Extended industrial brownouts will trigger localized public demonstrations across high-density metro zones."
+                        finance: "Acquiring international emergency spot gas cargoes commands an astronomical $30/MMBtu price trajectory.",
+                        climate: "Do not issue structural emergency baseline waivers to coal operations; transparency metrics track extreme emissions.",
+                        ib: "Extended industrial brownouts will trigger volatile public demonstrations across high-density metro zones."
                     },
-                    wireText: "ALERT LINE: Grid system operating frequencies hover near safety margins as high thermal anomalies trigger peak strains...",
+                    wireText: "ALERT LINE: Grid system operating frequencies hover near critical safety margins as high thermal anomalies trigger peak strains...",
                     options: [
                         { text: "Authorize local baseline overrides to lift coal production ceilings across state parameters.", metrics: { env: -14, econ: 8, app: 5, grid: 12 }, regional: { east: -15, west: 0, north: 5 }, defy: "climate" },
-                        { text: "Initiate strategic rotational shedding loops across rural agricultural sub-grids to shelter primary industrial sectors.", metrics: { env: 2, econ: -5, app: -15, grid: 8 }, regional: { east: 5, west: 5, north: 25 }, defy: "ib" },
-                        { text: "Deploy reserve sovereign emergency lines to clear spot gas shipping arrays, absorbing structural capital shocks.", metrics: { env: -4, econ: -15, app: 6, grid: 14 }, regional: { east: 0, west: -5, north: -5 }, defy: "finance" }
+                        { text: "Initiate strategic rotational shedding loops across rural agricultural sub-grids to shelter primary industrial lines.", metrics: { env: 2, econ: -5, app: -15, grid: 8 }, regional: { east: 5, west: 5, north: 25 }, defy: "ib" },
+                        { text: "Deploy reserve sovereign emergency lines to clear spot gas shipping arrays, absorbing structural capital shocks.", metrics: { env: -4, econ: -15, app: 6, grid: 14 }, regional: { east: 0, west: -5, north: -5 }, defy: "finance" },
+                        { text: "Mandate temporary suspension of all non-essential high-voltage heavy industrial factory operation loops during twilight.", metrics: { env: 4, econ: -12, app: -6, grid: 6 }, regional: { east: 5, west: -5, north: 5 }, defy: "finance" }
                     ]
                 },
                 {
                     title: "Apex Judicial Transmission Corridor Mandate",
-                    desc: "The Supreme Court rules that all overhead cross-state high-voltage clean energy conduits traversing western deserts must be converted underground to protect endangered wildlife paths. Developers freeze operations citing unfeasible costs.",
+                    desc: "The Supreme Court rules that all overhead cross-state high-voltage clean energy conduits traversing western deserts must be converted underground to protect endangered wildlife paths. Developers freeze operations citing cost collapse.",
                     isPeakUrgency: false,
                     briefs: {
                         finance: "Providing capital guarantees to cover underground utility routing will deplete central structural development funds.",
@@ -835,14 +836,15 @@
                     },
                     wireText: "LEGAL INJUNCTION: High court enforces absolute statutory compliance lines across clean energy routing structures...",
                     options: [
-                        { text: "Lodge a comprehensive sovereign defense motion asserting energy infrastructure takes absolute statutory priority over wildlife vectors.", metrics: { env: -15, econ: 10, app: -2, grid: 12 }, regional: { east: -5, west: 15, north: 0 }, defy: "climate" },
+                        { text: "Lodge a comprehensive sovereign defense motion asserting energy infrastructure takes absolute statutory priority over wildlife.", metrics: { env: -15, econ: 10, app: -2, grid: 12 }, regional: { east: -5, west: 15, north: 0 }, defy: "climate" },
                         { text: "Commit direct central state financial subventions to cover developers' underground hardware transition metrics.", metrics: { env: 10, econ: -15, app: -2, grid: -2 }, regional: { east: 0, west: -15, north: 0 }, defy: "finance" },
-                        { text: "Revoke developers' operational access permissions and re-allocate core baseload development to eastern thermal corridors.", metrics: { env: -12, econ: -4, app: 4, grid: 8 }, regional: { east: -15, west: 20, north: 5 }, defy: "climate" }
+                        { text: "Revoke developers' operational access permissions and re-allocate core baseload development to eastern thermal corridors.", metrics: { env: -12, econ: -4, app: 4, grid: 8 }, regional: { east: -15, west: 20, north: 5 }, defy: "climate" },
+                        { text: "Enforce aggressive, immediate cross-state regional network power rationing while a lower-cost surface corridor is mapped out.", metrics: { env: 2, econ: -6, app: -14, grid: -10 }, regional: { east: 5, west: 10, north: 10 }, defy: "ib" }
                     ]
                 },
                 {
                     title: "Protective Trade Tariff Enforcement Matrix",
-                    desc: "Domestic component fabricators lobby for an increase in protective manufacturing import fees to suppress foreign hardware. However, domestic assembly lines encounter severe supply delays, bottlenecking deployment paths.",
+                    desc: "Domestic component fabricators lobby for an increase in protective manufacturing import fees to suppress foreign hardware. However, domestic assembly lines encounter severe supply delays, bottlenecking grid deployment speeds.",
                     isPeakUrgency: false,
                     briefs: {
                         finance: "Abolishing these structures completely alienates primary industrial manufacturing conglomerates backing core policies.",
@@ -851,8 +853,10 @@
                     },
                     wireText: "TRADE DISPUTE: Manufacturing boards demand enhanced regulatory isolation measures amidst global supply crunch dynamics...",
                     options: [
-                        { text: "Abolish protective tariff schedules to ingest cheap international module volumes, accelerating clean plant commissioning rates.", metrics: { env: 12, econ: -10, app: -4, grid: 12 }, regional: { east: 0, west: -12, north: 0 }, defy: "finance" },
-                        { text: "Enforce aggressive, comprehensive custom penalty matrices to lock out foreign parts, prioritizing domestic production tracking.", metrics: { env: -14, econ: 12, app: -2, grid: -12 }, regional: { east: -5, west: 15, north: 5 }, defy: "climate" }
+                        { text: "Abolish protective tariff schedules to ingest cheap international module volumes, accelerating plant commissioning.", metrics: { env: 12, econ: -10, app: -4, grid: 12 }, regional: { east: 0, west: -12, north: 0 }, defy: "finance" },
+                        { text: "Enforce aggressive, comprehensive custom penalty matrices to lock out foreign parts, prioritizing domestic production.", metrics: { env: -14, econ: 12, app: -2, grid: -12 }, regional: { east: -5, west: 15, north: 5 }, defy: "climate" },
+                        { text: "Implement a split-subsidy package that finances domestic solar fabs while granting short-term zero-tariff waivers to key items.", metrics: { env: 4, econ: -14, app: 4, grid: 4 }, regional: { east: -5, west: -5, north: 0 }, defy: "finance" },
+                        { text: "Freeze all new solar development approvals entirely until domestic manufacturing meets target production volumes.", metrics: { env: -10, econ: -2, app: -8, grid: -14 }, regional: { east: 15, west: 25, north: 5 }, defy: "climate" }
                     ]
                 },
                 {
@@ -868,7 +872,8 @@
                     options: [
                         { text: "Approve unmetered agricultural electricity routing protocols, securing political baselines at the expense of fiscal metrics.", metrics: { env: -15, econ: -16, app: 15, grid: -8 }, regional: { east: 0, west: 0, north: -25 }, defy: "finance" },
                         { text: "Enforce a highly capped Direct Benefit Transfer (DBT) structure to log and control usage volumes, incurring moderate public friction.", metrics: { env: -5, econ: -6, app: 5, grid: -2 }, regional: { east: 0, west: 5, north: -5 }, defy: "ib" },
-                        { text: "Deny the unmetered request to protect grid asset performance and financial integrity, sparking intense internal coalition splits.", metrics: { env: 10, econ: 12, app: -18, grid: 10 }, regional: { east: 5, west: 0, north: 32 }, defy: "ib" }
+                        { text: "Deny the unmetered request to protect grid asset performance and financial integrity, sparking intense internal coalition splits.", metrics: { env: 10, econ: 12, app: -18, grid: 10 }, regional: { east: 5, west: 0, north: 32 }, defy: "ib" },
+                        { text: "Nationalize the state-owned distribution boards and force commercial office complexes to heavily subsidize farming connections.", metrics: { env: -4, econ: -12, app: -6, grid: -4 }, regional: { east: -5, west: -5, north: -12 }, defy: "finance" }
                     ]
                 },
                 {
@@ -883,7 +888,9 @@
                     wireText: "CIVIL FRICTION: Non-governmental environmental cells establish direct site barriers inside forestry zones...",
                     options: [
                         { text: "Deploy regional police details to disperse environmental blocks, ensuring critical stability infrastructure goes online.", metrics: { env: -16, econ: 8, app: -12, grid: 15 }, regional: { east: -5, west: -5, north: 5 }, defy: "climate" },
-                        { text: "Shelve the hydro project model entirely, maintaining structural reliance on existing thermal peaking systems.", metrics: { env: 10, econ: -8, app: 12, grid: -14 }, regional: { east: -10, west: 14, north: -5 }, defy: "finance" }
+                        { text: "Shelve the hydro project model entirely, maintaining structural reliance on existing thermal peaking systems.", metrics: { env: 10, econ: -8, app: 12, grid: -14 }, regional: { east: -10, west: 14, north: -5 }, defy: "finance" },
+                        { text: "Halt operations to perform a multi-year ecological reallocation study, delaying grid stabilizing actions indefinitely.", metrics: { env: 4, econ: -6, app: 4, grid: -10 }, regional: { east: 0, west: 8, north: 0 }, defy: "finance" },
+                        { text: "Double the scale of the facility but commit a massive portion of the national budget to plant an equivalent forest corridor elsewhere.", metrics: { env: -6, econ: -18, app: -4, grid: 18 }, regional: { east: -5, west: -15, north: 5 }, defy: "finance" }
                     ]
                 },
                 {
@@ -898,7 +905,9 @@
                     wireText: "METRO CONFLICT: Field teams request additional security parameters as smart meter installations trigger civic standoffs...",
                     options: [
                         { text: "Maintain absolute enforcement metrics. Deploy security forces to guard tracking endpoints and maintain collections.", metrics: { env: 0, econ: 15, app: -16, grid: 8 }, regional: { east: 5, west: -5, north: 26 }, defy: "ib" },
-                        { text: "Suspend the meter rollouts entirely, allowing historical unmetered losses to resume to maintain civic peace.", metrics: { env: -5, econ: -16, app: 14, grid: -8 }, regional: { east: -5, west: 5, north: -22 }, defy: "finance" }
+                        { text: "Suspend the meter rollouts entirely, allowing historical unmetered losses to resume to maintain civic peace.", metrics: { env: -5, econ: -16, app: 14, grid: -8 }, regional: { east: -5, west: 5, north: -22 }, defy: "finance" },
+                        { text: "Offer a sweeping debt amnesty that erases past power theft fines in exchange for immediate smart meter compliance updates.", metrics: { env: 2, econ: -10, app: 6, grid: 4 }, regional: { east: 0, west: 0, north: -8 }, defy: "finance" },
+                        { text: "Slow the deployment cycle to target high-income corporate zones exclusively, leaving low-income illegal grid hookups unmonitored.", metrics: { env: -6, econ: 4, app: -4, grid: -4 }, regional: { east: 10, west: 0, north: 12 }, defy: "climate" }
                     ]
                 },
                 {
@@ -913,7 +922,9 @@
                     wireText: "POLLUTION DIRECTIVE: Air quality indices breach emergency thresholds near northern metropolitan coordinates...",
                     options: [
                         { text: "Comply with judicial commands and shut down non-compliant stations, prioritizing ambient environmental indices over output.", metrics: { env: 16, econ: -10, app: 8, grid: -16 }, regional: { east: 22, west: 5, north: -12 }, defy: "finance" },
-                        { text: "File an emergency executive declaration to override the closure, citing high national grid vulnerability constraints.", metrics: { env: -16, econ: 12, app: -10, grid: 14 }, regional: { east: -22, west: -5, north: 22 }, defy: "climate" }
+                        { text: "File an emergency executive declaration to override the closure, citing high national grid vulnerability constraints.", metrics: { env: -16, econ: 12, app: -10, grid: 14 }, regional: { east: -22, west: -5, north: 22 }, defy: "climate" },
+                        { text: "Enact a partial generation schedule paired with extreme power pricing spikes to aggressively suppress industrial demand.", metrics: { env: 4, econ: 4, app: -16, grid: -4 }, regional: { east: 10, west: 5, north: 12 }, defy: "ib" },
+                        { text: "Re-route immense backup electricity volumes from the Western solar arrays, operating line transmission vectors far past thermal limits.", metrics: { env: -2, econ: -8, app: 2, grid: 4 }, regional: { east: -5, west: 24, north: -5 }, defy: "finance" }
                     ]
                 },
                 {
@@ -928,16 +939,54 @@
                     wireText: "CAPITAL MONITOR: Multi-national infrastructure groups pitch long-term resource financing integrations with state desks...",
                     options: [
                         { text: "Endorse the international financing package, approving asset runtime timeline extensions to lock in massive fiscal inputs.", metrics: { env: -16, econ: 14, app: 8, grid: 4 }, regional: { east: -15, west: 0, north: -5 }, defy: "climate" },
-                        { text: "Reject the corporate compromise, maintaining strict statutory environmental decommissioning schedules.", metrics: { env: 12, econ: -12, app: -12, grid: -6 }, regional: { east: 16, west: 5, north: 10 }, defy: "finance" }
+                        { text: "Reject the corporate compromise, maintaining strict statutory environmental decommissioning schedules.", metrics: { env: 12, econ: -12, app: -12, grid: -6 }, regional: { east: 16, west: 5, north: 10 }, defy: "finance" },
+                        { text: "Counter-propose a layout with slightly shorter coal runtimes paired with zero-liability corporate tax waivers for their solar builds.", metrics: { env: -4, econ: 6, app: -4, grid: 6 }, regional: { east: -5, west: -10, north: 0 }, defy: "climate" },
+                        { text: "Break off talks entirely and authorize an emergency domestic currency print to cover infrastructure investments internally.", metrics: { env: 2, econ: -20, app: -6, grid: 8 }, regional: { east: 5, west: 5, north: 5 }, defy: "finance" }
                     ]
                 }
             ],
 
             emergencyDirectivesPool: {
-                env: { title: "⚠️ DIRECTIVE RED: Atmospheric Air Quality Collapse", desc: "Ambient environmental indicators have slipped past critical survival thresholds. Dense toxic smog chokes urban sectors, forcing emergency action.", options: [{ text: "[EMERGENCY ENFORCEMENT] Order an absolute freeze on thermal fuel transit and halt heavy industrial loops.", metrics: { env: 16, econ: -8, app: -4, grid: -8 } }, { text: "[BYPASS REGULATORY MANDATES] Maintain absolute base generation parameters to prevent load drops.", metrics: { env: -4, econ: 6, app: -8, grid: 4 } }] },
-                econ: { title: "⚠️ DIRECTIVE RED: Public Utility Credit Default", desc: "Sovereign energy financial indicators have touched system limits. International financial networks halt import credit processing.", options: [{ text: "[EMERGENCY ENFORCEMENT] Liquidate state transmission line equity slices to secure rapid liquid reserves.", metrics: { env: -10, econ: 16, app: -6, grid: -4 } }, { text: "[BYPASS REGULATORY MANDATES] Impose an instant, total freeze on all state grid expansion allocations.", metrics: { env: 0, econ: 10, app: -15, grid: 2 } }] },
-                app: { title: "⚠️ DIRECTIVE RED: Central Administrative Desk Siege", desc: "Portfolio public approval ratings have collapsed below survivable governance lines. Hostile crowds target grid facilities.", options: [{ text: "[EMERGENCY ENFORCEMENT] Enforce an immediate 20% cut in residential consumer power tariffs, forcing industrial conglomerates to absorb the cost.", metrics: { env: -4, econ: -12, app: 18, grid: -4 } }, { text: "[BYPASS REGULATORY MANDATES] Maintain fixed tariff structures and deploy internal security units to guard nodes.", metrics: { env: 0, econ: 6, app: -15, grid: 10 } }] },
-                grid: { title: "⚠️ DIRECTIVE RED: Cascading Grid Frequency Trip", desc: "System power stability balances hit physical breakdown thresholds. Automated distribution breakers disconnect regions.", options: [{ text: "[EMERGENCY ENFORCEMENT] Fire up all legacy diesel and high-emission reserve peaking plants nationwide.", metrics: { env: -15, econ: -5, app: 6, grid: 18 } }, { text: "[BYPASS REGULATORY MANDATES] Enforce rigid rolling blackouts across metropolitan lines to preserve core frequency.", metrics: { env: 6, econ: -12, app: -12, grid: 10 } }] }
+                env: { 
+                    title: "⚠️ DIRECTIVE RED: Atmospheric Air Quality Collapse", 
+                    desc: "Ambient environmental indicators have slipped past critical survival thresholds. Dense toxic smog chokes urban sectors, forcing emergency action.", 
+                    options: [
+                        { text: "[EMERGENCY ACTION] Order an absolute freeze on thermal fuel transit and halt heavy industrial loops.", metrics: { env: 16, econ: -8, app: -4, grid: -8 } }, 
+                        { text: "[BYPASS COMPLIANCE] Maintain absolute base generation parameters to prevent load drops.", metrics: { env: -4, econ: 6, app: -8, grid: 4 } },
+                        { text: "[URBAN TAX MANDATE] Implement an immediate vehicle ban in capital centers and penalize regional power generation.", metrics: { env: 12, econ: -6, app: -12, grid: -2 } },
+                        { text: "[CLIMATE CLASSIFICATION] Re-classify emergency tracking parameters to mask air readings, dodging immediate grid cuts.", metrics: { env: -8, econ: 4, app: 8, grid: 2 } }
+                    ] 
+                },
+                econ: { 
+                    title: "⚠️ DIRECTIVE RED: Public Utility Credit Default", 
+                    desc: "Sovereign energy financial indicators have touched system limits. International financial networks halt import credit processing.", 
+                    options: [
+                        { text: "[EMERGENCY ACTION] Liquidate state transmission line equity slices to secure rapid liquid reserves.", metrics: { env: -10, econ: 16, app: -6, grid: -4 } }, 
+                        { text: "[BYPASS COMPLIANCE] Impose an instant, total freeze on all state grid expansion allocations.", metrics: { env: 0, econ: 10, app: -15, grid: 2 } },
+                        { text: "[EMERGENCY TARIFF ELEVATION] Issue a retroactive 30% surge fee across all commercial manufacturing connection hubs.", metrics: { env: 2, econ: 12, app: -14, grid: -4 } },
+                        { text: "[SOVEREIGN BAILOUT] Divert funding directly out of national safety networks, taking severe political heat.", metrics: { env: -2, econ: 14, app: -18, grid: 0 } }
+                    ] 
+                },
+                app: { 
+                    title: "⚠️ DIRECTIVE RED: Central Administrative Desk Siege", 
+                    desc: "Portfolio public approval ratings have collapsed below survivable governance lines. Hostile crowds target grid facilities.", 
+                    options: [
+                        { text: "[EMERGENCY ACTION] Enforce an immediate 20% cut in residential consumer power tariffs, forcing firms to absorb costs.", metrics: { env: -4, econ: -12, app: 18, grid: -4 } }, 
+                        { text: "[BYPASS COMPLIANCE] Maintain fixed tariff structures and deploy internal security units to guard nodes.", metrics: { env: 0, econ: 6, app: -15, grid: 10 } },
+                        { text: "[POPULIST CONCESSION] Sack the primary industrial oversight board and issue broad usage subsidies across rural states.", metrics: { env: -6, econ: -10, app: 14, grid: -6 } },
+                        { text: "[MEDIA BLITZ NETWORK] Roll out an aggressive propaganda matrix and execute high-profile arrests of independent energy cartels.", metrics: { env: 2, econ: -4, app: 10, grid: -2 } }
+                    ] 
+                },
+                grid: { 
+                    title: "⚠️ DIRECTIVE RED: Cascading Grid Frequency Trip", 
+                    desc: "System power stability balances hit physical breakdown thresholds. Automated distribution breakers disconnect regions.", 
+                    options: [
+                        { text: "[EMERGENCY ACTION] Fire up all legacy diesel and high-emission reserve peaking plants nationwide.", metrics: { env: -15, econ: -5, app: 6, grid: 18 } }, 
+                        { text: "[BYPASS COMPLIANCE] Enforce rigid rolling blackouts across metropolitan lines to preserve core frequency.", metrics: { env: 6, econ: -12, app: -12, grid: 10 } },
+                        { text: "[INDUSTRIAL ACCELERATION] Disconnect all automated grid protection parameters, forcing plants to run past melting points.", metrics: { env: -10, econ: -8, app: -2, grid: 16 } },
+                        { text: "[CROSS-BORDER POWER POACH] Violate regional inter-tie import treaties to poach load allocations from neighboring grids.", metrics: { env: -2, econ: -14, app: 4, grid: 14 } }
+                    ] 
+                }
             },
 
             // INITIALIZE ENVIRONMENT VALUES BASED ON USER MANDATE SELECTION
@@ -1133,7 +1182,7 @@
                 const data = this.emergencyDirectivesPool[statKey];
                 document.getElementById("scenario-core-title").innerText = data.title;
                 document.getElementById("scenario-core-desc").innerText = data.desc;
-                document.getElementById("ticker-live-text").innerText = `CRITICAL DIRECTIVE: ${data.title.toUpperCase()} - COMMAND DESK PORTFOLIO CONSTRAINED TO EMERGENCY PROTOCOLS.`;
+                document.getElementById("ticker-live-text").innerText = `CRITICAL DIRECTIVE: ${data.title.toUpperCase()} - COMMAND DESK CONFIGURATION MATRIX BOUND TO FORCE INTERVENE.`;
 
                 const optionsContainer = document.getElementById("decision-options-tray");
                 optionsContainer.innerHTML = "";
@@ -1260,7 +1309,7 @@
                     impactView += this.formatImpactToken("👥 App", operationalAppDelta, "var(--neon-app)");
                     impactView += this.formatImpactToken("🔌 Power", operationalGridDelta, "var(--neon-grid)");
                     
-                    if (isCushioned) impactView += `<span style="color:var(--neon-grid); font-weight:800;">[🛡️ STORAGE BANK SHIELDED]</span>`;
+                    if (isCushioned) impactView += `<span style="color:var(--neon-grid); font-weight:800;">[🛡️ STORAGE SHIELD]</span>`;
                     if (opt.defy) impactView += `<span style="color:var(--neon-danger); font-weight:800; margin-left:auto;">⚠️ Defies ${opt.defy.toUpperCase()}</span>`;
 
                     btn.innerHTML = `
