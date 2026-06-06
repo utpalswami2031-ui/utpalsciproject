@@ -3,843 +3,874 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>National Grid Command - Advanced Simulation Console</title>
+    <title>National Grid Systems: Absolute Command Terminal</title>
     <style>
         :root {
-            --bg-deep: #09090e;
-            --bg-panel: #131322;
-            --bg-card: #1a1a2e;
-            --border-glow: #2d2d4d;
-            --text-main: #e2e2ec;
-            --text-muted: #84849a;
-            --color-env: #00e676;
-            --color-econ: #ffd600;
-            --color-app: #af52de;
-            --color-power: #00e5ff;
-            --color-danger: #ff1744;
+            --bg-deep: #050508;
+            --bg-panel: #0b0b14;
+            --bg-card: #121222;
+            --border-glow: #1e1e38;
+            --border-active: #32325d;
+            --text-main: #e5e5f0;
+            --text-muted: #6e6e8c;
+            --color-env: #00ff66;
+            --color-econ: #ffcc00;
+            --color-app: #d43f8d;
+            --color-power: #00ebff;
+            --color-danger: #ff1144;
+            --color-police: #0033ff;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
             background-color: var(--bg-deep);
             color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 12px;
             overflow-x: hidden;
+            user-select: none;
+            transition: background 0.15s ease-in-out;
         }
 
-        /* SCREEN MANAGEMENT */
-        .screen {
-            display: none;
-        }
-        .screen.active {
-            display: block;
+        /* SIREN WARNING SYSTEM OVERLAY KEYFRAMES */
+        @keyframes police-siren-flash-red {
+            0% { background-color: rgba(255, 17, 68, 0.22); box-shadow: inset 0 0 40px rgba(255, 17, 68, 0.4); }
+            50% { background-color: rgba(0, 51, 255, 0.22); box-shadow: inset 0 0 40px rgba(0, 51, 255, 0.4); }
+            100% { background-color: rgba(255, 17, 68, 0.22); box-shadow: inset 0 0 40px rgba(255, 17, 68, 0.4); }
         }
 
-        /* SETUP SCREEN */
-        .setup-container {
-            max-width: 700px;
-            margin: 60px auto;
+        .siren-system-triggered {
+            animation: police-siren-flash-red 0.35s infinite !important;
+        }
+
+        /* SCREEN SWITCHER ARCHITECTURE */
+        .app-screen-container { display: none; }
+        .app-screen-container.screen-active { display: block; }
+
+        /* PARAMETER SELECTION CONFIGURATOR SCREEN */
+        .configurator-wrapper {
+            max-width: 900px;
+            margin: 35px auto;
             background: var(--bg-panel);
             padding: 40px;
-            border-radius: 16px;
-            border: 1px solid var(--border-glow);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-        }
-
-        h1.title {
-            color: var(--color-power);
-            font-size: 32px;
-            margin-top: 0;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-bottom: 2px solid var(--border-glow);
-            padding-bottom: 15px;
-        }
-
-        .setup-section {
-            margin-bottom: 25px;
-            text-align: left;
-        }
-
-        .setup-section h3 {
-            color: var(--text-main);
-            margin-bottom: 10px;
-        }
-
-        .mode-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
-        }
-
-        .mode-card {
-            background: var(--bg-card);
             border: 2px solid var(--border-glow);
-            padding: 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            border-radius: 4px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.85);
         }
 
-        .mode-card:hover {
-            border-color: var(--color-power);
+        .configurator-header {
+            text-align: center;
+            color: var(--color-power);
+            font-size: 26px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+            border-bottom: 2px dashed var(--border-glow);
+            padding-bottom: 20px;
         }
 
-        .mode-card.selected {
-            border-color: var(--color-power);
-            background: #1e293b;
-            box-shadow: 0 0 15px rgba(0,229,255,0.2);
-        }
-
-        .mode-card h4 {
-            margin: 0 0 5px 0;
-            color: #fff;
-        }
-
-        .mode-card p {
-            margin: 0;
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .manual-control-group {
+        .configurator-block {
             background: var(--bg-card);
-            padding: 20px;
-            border-radius: 10px;
             border: 1px solid var(--border-glow);
+            padding: 24px;
+            border-radius: 4px;
+            margin-bottom: 25px;
         }
 
-        .slider-row {
+        .configurator-block h3 {
+            margin-top: 0;
+            color: #ffffff;
+            text-transform: uppercase;
+            font-size: 15px;
+            letter-spacing: 1px;
+            border-left: 4px solid var(--color-power);
+            padding-left: 10px;
+        }
+
+        .protocol-flex-layout {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
+            gap: 16px;
+            margin-top: 15px;
         }
 
-        .slider-row:last-child {
-            margin-bottom: 0;
+        .protocol-selection-box {
+            flex: 1;
+            background: var(--bg-deep);
+            border: 2px solid var(--border-glow);
+            padding: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.1, 0.8, 0.3, 1);
         }
 
-        .slider-label {
-            width: 150px;
+        .protocol-selection-box:hover {
+            border-color: var(--border-active);
+        }
+
+        .protocol-selection-box.protocol-selected {
+            border-color: var(--color-power);
+            background: #0d1b2a;
+            box-shadow: 0 0 20px rgba(0,235,255,0.15);
+        }
+
+        .protocol-selection-box h4 {
+            margin: 0 0 6px 0;
+            color: #ffffff;
+            text-transform: uppercase;
             font-size: 14px;
         }
 
-        .slider-row input[type="range"] {
-            flex-grow: 1;
-            margin: 0 15px;
-            accent-color: var(--color-power);
+        .protocol-selection-box p {
+            margin: 0;
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.5;
         }
 
-        .slider-val {
-            width: 50px;
+        .level-tuning-matrix {
+            margin-top: 15px;
+        }
+
+        .tuning-slider-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .tuning-slider-row:last-child { margin-bottom: 0; }
+
+        .tuning-slider-row label {
+            width: 200px;
+            font-size: 12px;
+            color: #d1d1e0;
+            text-transform: uppercase;
+        }
+
+        .tuning-slider-row input[type="range"] {
+            flex-grow: 1;
+            margin: 0 25px;
+            accent-color: var(--color-power);
+            cursor: pointer;
+            height: 6px;
+        }
+
+        .tuning-numeric-output {
+            width: 70px;
             text-align: right;
             font-weight: bold;
             color: var(--color-power);
+            font-size: 13px;
         }
 
-        .start-btn {
+        .console-ignition-trigger {
             background: var(--color-power);
-            color: #000;
-            border: none;
-            padding: 15px 40px;
-            font-size: 18px;
+            color: #000000;
+            font-family: inherit;
+            font-size: 15px;
             font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
             text-transform: uppercase;
+            letter-spacing: 3px;
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,235,255,0.25);
+            transition: background 0.15s ease;
+        }
+
+        .console-ignition-trigger:hover { background: #00c2d6; }
+
+        /* REAL-TIME SIMULATION CORE WIRE BANNER */
+        .ticker-wire-banner {
+            background: #030306;
+            border: 1px solid var(--border-glow);
+            padding: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            white-space: nowrap;
+            border-radius: 2px;
+        }
+
+        .ticker-wire-text-node {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker-scrolling-loop 30s linear infinite;
+            color: var(--color-econ);
+            font-size: 12px;
+            font-weight: bold;
             letter-spacing: 1px;
-            margin-top: 20px;
-            transition: background 0.2s;
         }
 
-        .start-btn:hover {
-            background: #00b0ff;
+        @keyframes ticker-scrolling-loop {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
         }
 
-        /* MAIN DASHBOARD LAYOUT */
-        .dashboard {
-            max-width: 1400px;
+        /* MONOLITHIC DASHBOARD SPATIAL GRID */
+        .dashboard-spatial-grid {
+            max-width: 1580px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 1fr 450px;
-            gap: 20px;
+            grid-template-columns: 1fr 490px;
+            gap: 18px;
         }
 
-        .main-panel {
+        .spatial-panel-left, .spatial-panel-right {
             background: var(--bg-panel);
-            border-radius: 12px;
             border: 1px solid var(--border-glow);
-            padding: 25px;
+            border-radius: 4px;
+            padding: 22px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
         }
 
-        .side-panel {
-            background: var(--bg-panel);
-            border-radius: 12px;
-            border: 1px solid var(--border-glow);
-            padding: 25px;
+        .spatial-panel-right {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
-        /* HEADER & CORE STATS */
-        .dash-header {
+        .deck-header-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-glow);
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+            border-bottom: 1px dashed var(--border-glow);
+            padding-bottom: 14px;
+            margin-bottom: 22px;
         }
 
-        .game-title-text {
+        .deck-headline-txt {
             margin: 0;
-            font-size: 22px;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        .global-score-container {
-            background: #112211;
+        .score-counter-frame {
+            background: #06160d;
             border: 1px solid var(--color-env);
-            padding: 8px 20px;
-            border-radius: 6px;
-            font-size: 20px;
+            padding: 8px 18px;
+            font-size: 17px;
             font-weight: bold;
             color: var(--color-env);
+            border-radius: 2px;
+            letter-spacing: 1.5px;
         }
 
-        .stat-bar-grid {
+        /* 5 PILLAR SIMULATION PILLARS */
+        .simulation-pillars-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
         }
 
-        .stat-bar-card {
+        .pillar-card-wrapper {
             background: var(--bg-card);
             border: 1px solid var(--border-glow);
             padding: 12px;
-            border-radius: 8px;
-            text-align: left;
+            border-radius: 4px;
         }
 
-        .stat-bar-header {
+        .pillar-text-header {
             display: flex;
             justify-content: space-between;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
             margin-bottom: 6px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .bar-outer {
-            background: #0f0f1a;
-            height: 10px;
-            border-radius: 5px;
+        .pillar-bar-track-outer {
+            background: #040408;
+            height: 12px;
+            border-radius: 2px;
             overflow: hidden;
-            border: 1px solid #252538;
+            border: 1px solid #1a1a2e;
         }
 
-        .bar-inner {
+        .pillar-bar-fill-inner {
             height: 100%;
             width: 50%;
-            transition: width 0.4s ease;
+            transition: width 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
         }
 
-        /* BRIEFING DOSSIER MODULE */
-        .dossier-container {
+        /* DESK COMMUNICATIONS SHELF */
+        .desk-comms-shelf {
             background: var(--bg-card);
             border: 1px solid var(--border-glow);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 25px;
-            text-align: left;
+            border-radius: 4px;
+            padding: 18px;
+            margin-bottom: 24px;
         }
 
-        .dossier-tag {
+        .comms-title-banner {
             font-size: 11px;
-            letter-spacing: 1px;
             color: var(--color-danger);
             font-weight: bold;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            margin-bottom: 14px;
+            letter-spacing: 1.5px;
+            border-bottom: 1px solid #291a29;
+            padding-bottom: 6px;
+            text-transform: uppercase;
         }
 
-        .dossier-grid {
+        .comms-grid-alignment {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
+            gap: 14px;
         }
 
-        .dossier-card {
-            background: #141424;
-            border: 1px solid #282842;
-            border-top: 3px solid var(--border-glow);
-            padding: 15px;
-            border-radius: 6px;
+        .comms-node-card {
+            background: #07070f;
+            border: 1px solid #18182b;
+            padding: 14px;
+            border-radius: 2px;
         }
 
-        .dossier-card.finance { border-top-color: var(--color-econ); }
-        .dossier-card.climate { border-top-color: var(--color-env); }
-        .dossier-card.intel { border-top-color: var(--color-app); }
-
-        .dossier-card h5 {
-            margin: 0 0 8px 0;
-            font-size: 12px;
+        .comms-node-card h5 {
+            margin: 0 0 6px 0;
+            font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        .dossier-card.finance h5 { color: var(--color-econ); }
-        .dossier-card.climate h5 { color: var(--color-env); }
-        .dossier-card.intel h5 { color: var(--color-app); }
 
-        .dossier-card p {
+        .comms-node-card p {
             margin: 0;
-            font-size: 12px;
-            line-height: 1.5;
-            color: #b2b2c5;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #9da2b5;
         }
 
-        /* DECISION BUTTONS */
-        .decision-stack {
+        /* 4 MATRIX DECISION STRIPS */
+        .decision-matrix-vertical-stack {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 14px;
         }
 
-        .action-block {
-            background: var(--bg-card);
-            border: 1px solid var(--color-danger);
-            border-radius: 8px;
-            padding: 20px;
-            text-align: left;
-            cursor: pointer;
-            transition: transform 0.1s, background 0.2s;
-        }
-
-        .action-block:hover {
-            transform: translateY(-2px);
-            background: #22223b;
-        }
-
-        .action-block.secondary {
-            border-color: var(--color-power);
-        }
-
-        .action-title {
-            font-size: 15px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .action-block:not(.secondary) .action-title { color: #ff6b6b; }
-        .action-block.secondary .action-title { color: #66e0ff; }
-
-        .impact-row {
-            display: flex;
-            gap: 15px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        /* RADAR GRAPH / VECTOR SCHEMATIC */
-        .radar-box {
+        .decision-matrix-strip {
             background: var(--bg-card);
             border: 1px solid var(--border-glow);
-            border-radius: 8px;
-            padding: 20px;
+            border-radius: 4px;
+            padding: 16px 22px;
+            text-align: left;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.18s cubic-bezier(0.215, 0.610, 0.355, 1);
         }
 
-        .panel-label {
-            font-size: 12px;
+        .decision-matrix-strip:hover {
+            background: #171730;
+            border-color: #333366;
+            transform: translateX(2px);
+        }
+
+        .strip-title-line {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .strip-impact-metrics-line {
+            display: flex;
+            gap: 18px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        /* RIGHT INTELLIGENCE COLUMNS */
+        .intelligence-section-label {
+            font-size: 11px;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            margin-bottom: 6px;
             text-align: left;
-            margin-bottom: 15px;
-            color: #a0a0ba;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
-        .vector-canvas-wrapper {
-            background: #0d0d18;
-            border: 1px solid #22223a;
-            border-radius: 6px;
-            height: 280px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .radar-vector-canvas-wrapper {
+            background: #030306;
+            border: 1px solid #141426;
+            border-radius: 4px;
+            height: 200px;
             position: relative;
         }
 
-        /* SLIDERS & CONTROLS INTERFACE */
-        .control-panel-box {
+        .interactive-sliders-box {
             background: var(--bg-card);
             border: 1px solid var(--border-glow);
-            border-radius: 8px;
-            padding: 20px;
+            border-radius: 4px;
+            padding: 16px;
             text-align: left;
         }
 
-        .slider-interface {
-            margin-bottom: 20px;
-        }
-
-        .slider-header-main {
+        .slider-flex-header {
             display: flex;
             justify-content: space-between;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
             margin-bottom: 8px;
         }
 
-        .slider-input-element {
+        .slider-native-input {
             width: 100%;
             accent-color: var(--color-app);
-            margin-bottom: 10px;
-        }
-
-        .slider-status-subtext {
-            background: #11111c;
-            padding: 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            color: #8c8caa;
-            border: 1px solid #1f1f33;
-        }
-
-        /* NEW BRIBE SYSTEM INTERFACE */
-        .bribe-box {
-            background: rgba(255, 214, 0, 0.05);
-            border: 1px dashed var(--color-econ);
-            border-radius: 8px;
-            padding: 15px;
-            text-align: left;
-        }
-
-        .bribe-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .bribe-title {
-            font-weight: bold;
-            color: var(--color-econ);
-            font-size: 13px;
-            text-transform: uppercase;
-        }
-
-        .bribe-btn-action {
-            background: var(--color-econ);
-            color: #000;
-            border: none;
-            padding: 6px 14px;
-            font-size: 12px;
-            font-weight: bold;
-            border-radius: 4px;
             cursor: pointer;
         }
 
-        .bribe-btn-action:hover {
-            background: #ffea00;
-        }
-
-        /* FEED LOG */
-        .log-box {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glow);
-            border-radius: 8px;
-            padding: 15px;
-            flex-grow: 1;
-            text-align: left;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .log-feed {
-            font-family: monospace;
-            font-size: 12px;
-            color: #4af626;
-            height: 120px;
-            overflow-y: auto;
-            background: #07070b;
-            padding: 10px;
+        /* SYSTEM SECURITY PAYOUT SHOP */
+        .security-payout-panel {
+            background: rgba(255, 204, 0, 0.02);
+            border: 1px dashed var(--color-econ);
             border-radius: 4px;
-            border: 1px solid #151522;
+            padding: 16px;
+            text-align: left;
         }
 
-        /* MODAL OVERLAY */
-        .modal-overlay {
+        .payout-header-flex-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .payout-action-trigger-btn {
+            background: var(--color-econ);
+            color: #000000;
+            border: none;
+            padding: 8px 14px;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 2px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .payout-action-trigger-btn:hover { background: #eab800; }
+
+        /* REALTIME CONSOLE LIVE READOUT */
+        .realtime-terminal-readout-feed {
+            font-family: 'Consolas', monospace;
+            font-size: 11px;
+            color: #22ff22;
+            height: 140px;
+            overflow-y: auto;
+            background: #020204;
+            padding: 12px;
+            border-radius: 2px;
+            border: 1px solid #111122;
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        /* MONITOR OVERLAY MODAL BASE */
+        .terminal-blocker-modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 1000;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 99999;
             align-items: center;
             justify-content: center;
         }
-        .modal-overlay.active { display: flex; }
-        .modal-content {
+
+        .terminal-blocker-modal-overlay.overlay-visible { display: flex; }
+
+        .modal-alert-window-frame {
             background: var(--bg-panel);
             border: 2px solid var(--color-danger);
             padding: 40px;
-            border-radius: 12px;
-            max-width: 500px;
+            border-radius: 4px;
+            max-width: 580px;
             text-align: center;
+            box-shadow: 0 0 50px rgba(255, 17, 68, 0.35);
+        }
+
+        .modal-alert-window-frame h2 {
+            margin-top: 0;
+            font-size: 26px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
         }
     </style>
 </head>
-<body>
+<body id="master-simulation-body-canvas">
 
-    <div id="screen-setup" class="screen active">
-        <div class="setup-container">
-            <h1 class="title">Grid Control Strategy Center</h1>
-            <p style="color: var(--text-muted); margin-top: -10px; margin-bottom: 30px;">Select your operation protocols and tune grid parameters before taking command.</p>
+    <div id="screen-setup" class="app-screen-container screen-active">
+        <div class="configurator-wrapper">
+            <div class="configurator-header">Grid Network Operations Core</div>
+            <p style="color: var(--text-muted); text-align: center; margin-top: -18px; margin-bottom: 35px; font-size: 12px;">Calibrate active monitoring matrices and systemic risk tolerances prior to starting operations.</p>
             
-            <div class="setup-section">
-                <h3>1. Select Game Mode</h3>
-                <div class="mode-grid">
-                    <div class="mode-card selected" id="mode-std" onclick="selectMode('std')">
-                        <h4>Standard</h4>
-                        <p>Balanced starting points. Regular emergency events.</p>
+            <div class="configurator-block">
+                <h3>1. System Operation Protocol Mode</h3>
+                <div class="protocol-flex-layout">
+                    <div class="protocol-selection-box protocol-selected" id="mode-std" onclick="selectSimulationProtocol('std')">
+                        <h4>Standard Protocol</h4>
+                        <p>Default operational tracking lines. Police monitoring algorithms move at normal velocity cycles.</p>
                     </div>
-                    <div class="mode-card" id="mode-srv" onclick="selectMode('srv')">
-                        <h4>Survival</h4>
-                        <p>Stats decline faster. Bad choices hit harder.</p>
+                    <div class="protocol-selection-box" id="mode-srv" onclick="selectSimulationProtocol('srv')">
+                        <h4>Friction Protocol</h4>
+                        <p>System degradation variables accelerated. Federal spy routines investigate at 2x baseline speeds.</p>
                     </div>
-                    <div class="mode-card" id="mode-sb" onclick="selectMode('sb')">
-                        <h4>Sandbox</h4>
-                        <p>Infinite safety margins. Tweak anything anytime.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="setup-section">
-                <h3>2. Manual Level Customization</h3>
-                <div class="manual-control-group">
-                    <div class="slider-row">
-                        <span class="slider-label">Starting Green Energy</span>
-                        <input type="range" id="init-env" min="20" max="80" value="50" oninput="updateSetupVal('env')">
-                        <span class="slider-val" id="val-env">50%</span>
-                    </div>
-                    <div class="slider-row">
-                        <span class="slider-label">Starting Cash Flow</span>
-                        <input type="range" id="init-econ" min="20" max="80" value="60" oninput="updateSetupVal('econ')">
-                        <span class="slider-val" id="val-econ">60%</span>
-                    </div>
-                    <div class="slider-row">
-                        <span class="slider-label">Starting Public Trust</span>
-                        <input type="range" id="init-app" min="20" max="80" value="55" oninput="updateSetupVal('app')">
-                        <span class="slider-val" id="val-app">55%</span>
+                    <div class="protocol-selection-box" id="mode-sb" onclick="selectSimulationProtocol('sb')">
+                        <h4>Sandbox Mode</h4>
+                        <p>Infinite stability bypass active. Police verification systems and balance boundaries are disabled.</p>
                     </div>
                 </div>
             </div>
 
-            <button class="start-btn" onclick="initiateGameEngine()">Launch Grid Console</button>
+            <div class="configurator-block">
+                <h3>2. Tuning Baseline Level Parameters Manually</h3>
+                <div class="level-tuning-matrix">
+                    <div class="tuning-slider-row">
+                        <label for="slider-setup-env">Eco Footprint Rating</label>
+                        <input type="range" id="slider-setup-env" min="10" max="90" value="50" oninput="mirrorSetupControlValue('env')">
+                        <span class="tuning-numeric-output" id="out-setup-env">50%</span>
+                    </div>
+                    <div class="tuning-slider-row">
+                        <label for="slider-setup-econ">Treasury Capital Supply</label>
+                        <input type="range" id="slider-setup-econ" min="10" max="90" value="60" oninput="mirrorSetupControlValue('econ')">
+                        <span class="tuning-numeric-output" id="out-setup-econ">60%</span>
+                    </div>
+                    <div class="tuning-slider-row">
+                        <label for="slider-setup-app">Public Approval Level</label>
+                        <input type="range" id="slider-setup-app" min="10" max="90" value="55" oninput="mirrorSetupControlValue('app')">
+                        <span class="tuning-numeric-output" id="out-setup-app">55%</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="console-ignition-trigger" onclick="bootSimulationConsole()">Ignite Operational Grid Console</button>
         </div>
     </div>
 
 
-    <div id="screen-game" class="screen">
-        <div class="dashboard">
+    <div id="screen-game" class="app-screen-container">
+        
+        <div class="ticker-wire-banner">
+            <div class="ticker-wire-text-node" id="live-wire-news-ticker">
+                [SYSTEM]: Grid active. Modify carbon taxation parameters to manipulate macro balance dynamics.
+            </div>
+        </div>
+
+        <div class="dashboard-spatial-grid">
             
-            <div class="main-panel">
-                <div class="dash-header">
-                    <h2 class="game-title-text">🔌 NATIONAL ENERGY COMMAND PORTAL</h2>
-                    <div class="global-score-container">SCORE: <span id="runtime-score">0</span></div>
+            <div class="spatial-panel-left">
+                <div class="deck-header-row">
+                    <h2 class="deck-headline-txt" style="color: var(--color-power);">💻 Command Control Deck</h2>
+                    <div class="score-counter-frame">SCORE VAL: <span id="runtime-score-display-value">0</span></div>
                 </div>
 
-                <div class="stat-bar-grid">
-                    <div class="stat-bar-card">
-                        <div class="stat-bar-header" style="color: var(--color-env);"><span>Environment</span><span id="txt-env">50%</span></div>
-                        <div class="bar-outer"><div class="bar-inner" id="bar-env" style="background: var(--color-env);"></div></div>
+                <div class="simulation-pillars-grid">
+                    <div class="pillar-card-wrapper">
+                        <div class="pillar-text-header" style="color: var(--color-env);"><span>Nature</span><span id="txt-val-env">50%</span></div>
+                        <div class="pillar-bar-track-outer"><div class="pillar-bar-fill-inner" id="fill-val-env" style="background: var(--color-env);"></div></div>
                     </div>
-                    <div class="stat-bar-card">
-                        <div class="stat-bar-header" style="color: var(--color-econ);"><span>Economy</span><span id="txt-econ">50%</span></div>
-                        <div class="bar-outer"><div class="bar-inner" id="bar-econ" style="background: var(--color-econ);"></div></div>
+                    <div class="pillar-card-wrapper">
+                        <div class="pillar-text-header" style="color: var(--color-econ);"><span>Money</span><span id="txt-val-econ">50%</span></div>
+                        <div class="pillar-bar-track-outer"><div class="pillar-bar-fill-inner" id="fill-val-econ" style="background: var(--color-econ);"></div></div>
                     </div>
-                    <div class="stat-bar-card">
-                        <div class="stat-bar-header" style="color: var(--color-app);"><span>Public Trust</span><span id="txt-app">50%</span></div>
-                        <div class="bar-outer"><div class="bar-inner" id="bar-app" style="background: var(--color-app);"></div></div>
+                    <div class="pillar-card-wrapper">
+                        <div class="pillar-text-header" style="color: var(--color-app);"><span>Trust</span><span id="txt-val-app">50%</span></div>
+                        <div class="pillar-bar-track-outer"><div class="pillar-bar-fill-inner" id="fill-val-app" style="background: var(--color-app);"></div></div>
                     </div>
-                    <div class="stat-bar-card">
-                        <div class="stat-bar-header" style="color: var(--color-power);"><span>Grid Power</span><span id="txt-power">50%</span></div>
-                        <div class="bar-outer"><div class="bar-inner" id="bar-power" style="background: var(--color-power);"></div></div>
+                    <div class="pillar-card-wrapper">
+                        <div class="pillar-text-header" style="color: var(--color-power);"><span>Grid Load</span><span id="txt-val-power">50%</span></div>
+                        <div class="pillar-bar-track-outer"><div class="pillar-bar-fill-inner" id="fill-val-power" style="background: var(--color-power);"></div></div>
                     </div>
-                </div>
-
-                <div class="dossier-container">
-                    <div class="dossier-tag">🔒 CONFIDENTIAL INTERNAL CABINET BRIEFINGS</div>
-                    <div class="dossier-grid">
-                        <div class="dossier-card finance">
-                            <h5>Finance Office</h5>
-                            <p id="brief-fin">Free power routes will make local power companies lose money on the global stock market instantly.</p>
-                        </div>
-                        <div class="dossier-card climate">
-                            <h5>Climate Team</h5>
-                            <p id="brief-cli">Uncapped free electricity triggers too much deep-well water pumping, drying up our clean water tables.</p>
-                        </div>
-                        <div class="dossier-card intel">
-                            <h5>Internal Politics</h5>
-                            <p id="brief-int">Rejecting this plan will spark fierce fighting in congress and heavy pushback from regional leaders.</p>
-                        </div>
+                    <div class="pillar-card-wrapper" style="border-color: var(--color-danger);">
+                        <div class="pillar-text-header" style="color: var(--color-danger); font-weight: bold;"><span>Police Spy</span><span id="txt-val-police">0%</span></div>
+                        <div class="pillar-bar-track-outer"><div class="pillar-bar-fill-inner" id="fill-val-police" style="background: var(--color-danger);"></div></div>
                     </div>
                 </div>
 
-                <div class="decision-stack">
-                    <div class="action-block" onclick="executeDecision(1)">
-                        <div class="action-title">[EMERGENCY ORDER] Stop all dirty fuel shipping and close heavy factory loops.</div>
-                        <div class="impact-row">
-                            <span style="color: var(--color-env);">Environment +6</span>
-                            <span style="color: var(--color-econ);">Economy -8</span>
-                            <span style="color: var(--color-app);">Trust -4</span>
-                            <span style="color: var(--color-power);">Power -8</span>
+                <div class="desk-comms-shelf">
+                    <div class="comms-title-banner">📡 INCOMING INTELLIGENCE FEED DOSSIERS</div>
+                    <div class="comms-grid-alignment">
+                        <div class="comms-node-card" style="border-top: 3px solid var(--color-econ);">
+                            <h5 style="color: var(--color-econ);">Treasury Cabinet</h5>
+                            <p id="brief-node-fin">Diverting electrical cash pools forces corporate tracking entities to issue penalty markers.</p>
+                        </div>
+                        <div class="comms-node-card" style="border-top: 3px solid var(--color-env);">
+                            <h5 style="color: var(--color-env);">Wilderness Cabinet</h5>
+                            <p id="brief-node-cli">Running fossil-fuel backup banks creates localized toxic particle layers over industrial corridors.</p>
+                        </div>
+                        <div class="comms-node-card" style="border-top: 3px solid var(--color-app);">
+                            <h5 style="color: var(--color-app);">Civilian Cabinet</h5>
+                            <p id="brief-node-int">Substation operation adjustments trigger sound complaints near residential zones.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="decision-matrix-vertical-stack">
+                    <div class="decision-matrix-strip" onclick="processInteractiveAction(1)" style="border-left: 5px solid var(--color-env);">
+                        <div class="strip-title-line">Channel 1: Clean Alternative Routing (Eco Regulation)</div>
+                        <div class="strip-impact-metrics-line">
+                            <span style="color: var(--color-env);">Nature +5/6 Max</span>
+                            <span style="color: var(--color-power);">Grid Load -10</span>
+                            <span style="color: var(--color-danger);">Police Spy -12%</span>
                         </div>
                     </div>
 
-                    <div class="action-block secondary" onclick="executeDecision(2)">
-                        <div class="action-title">[OVERRIDE REGS] Force maximum generator output to block blackouts.</div>
-                        <div class="impact-row">
-                            <span style="color: var(--color-env);">Environment -4</span>
-                            <span style="color: var(--color-econ);">Economy +5</span>
-                            <span style="color: var(--color-app);">Trust -8</span>
-                            <span style="color: var(--color-power);">Power +6</span>
+                    <div class="decision-matrix-strip" onclick="processInteractiveAction(2)" style="border-left: 5px solid var(--color-power);">
+                        <div class="strip-title-line">Channel 2: Overcharge Core Fuel Generators (Emergency Boost)</div>
+                        <div class="strip-impact-metrics-line">
+                            <span style="color: var(--color-power);">Grid Load +5/6 Max</span>
+                            <span style="color: var(--color-env);">Nature -8</span>
+                            <span style="color: var(--color-danger);">Police Spy +10%</span>
+                        </div>
+                    </div>
+
+                    <div class="decision-matrix-strip" onclick="processInteractiveAction(3)" style="border-left: 5px solid var(--color-econ);">
+                        <div class="strip-title-line">Channel 3: Wire Illegal Backroom Cash Exchange (Secret Deal)</div>
+                        <div class="strip-impact-metrics-line">
+                            <span style="color: var(--color-econ);">Money +5/6 Max</span>
+                            <span style="color: var(--color-app);">Trust -14</span>
+                            <span style="color: var(--color-danger); font-weight: bold;">Police Spy +30%</span>
+                        </div>
+                    </div>
+
+                    <div class="decision-matrix-strip" onclick="processInteractiveAction(4)" style="border-left: 5px solid var(--color-app);">
+                        <div class="strip-title-line">Channel 4: Allocate Free Surplus Power to Public Sectors (PR Campaign)</div>
+                        <div class="strip-impact-metrics-line">
+                            <span style="color: var(--color-app);">Trust +5/6 Max</span>
+                            <span style="color: var(--color-econ);">Money -12</span>
+                            <span style="color: var(--color-danger);">Police Spy -5%</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="side-panel">
+            <div class="spatial-panel-right">
                 
-                <div class="radar-box">
-                    <div class="panel-label">🗺️ Live Vector Grid Network Status</div>
-                    <div class="vector-canvas-wrapper">
-                        <svg width="100%" height="100%" viewBox="0 0 200 200" style="position: absolute;">
-                            <polygon points="100,20 170,70 150,160 50,160 30,70" fill="rgba(126, 87, 194, 0.15)" stroke="#4a4ae2" stroke-width="1.5"/>
-                            <line x1="100" y1="100" x2="100" y2="20" stroke="#252545" stroke-dasharray="3"/>
-                            <line x1="100" y1="100" x2="170" y2="70" stroke="#252545" stroke-dasharray="3"/>
-                            <line x1="100" y1="100" x2="150" y2="160" stroke="#252545" stroke-dasharray="3"/>
-                            <line x1="100" y1="100" x2="50" y2="160" stroke="#252545" stroke-dasharray="3"/>
-                            <line x1="100" y1="100" x2="30" y2="70" stroke="#252545" stroke-dasharray="3"/>
-                            <circle cx="100" cy="45" r="5" fill="#fff" id="node-1"/>
-                            <circle cx="150" cy="80" r="5" fill="#fff" id="node-2"/>
-                            <circle cx="100" cy="115" r="6" fill="orange" id="node-hub"/>
-                        </svg>
-                    </div>
+                <div class="intelligence-section-label">Map Node Framework Vector Grid</div>
+                <div class="radar-vector-canvas-wrapper">
+                    <svg width="100%" height="100%" viewBox="0 0 200 200" style="position: absolute; top:0; left:0;">
+                        <polygon points="100,25 165,75 145,155 55,155 35,75" fill="rgba(0, 235, 255, 0.04)" stroke="#1a1a36" stroke-width="1.5"/>
+                        <line x1="100" y1="100" x2="100" y2="25" stroke="#131326" stroke-dasharray="2"/>
+                        <line x1="100" y1="100" x2="165" y2="75" stroke="#131326" stroke-dasharray="2"/>
+                        <line x1="100" y1="100" x2="145" y2="155" stroke="#131326" stroke-dasharray="2"/>
+                        <line x1="100" y1="100" x2="55" y2="155" stroke="#131326" stroke-dasharray="2"/>
+                        <circle cx="100" cy="50" r="5" fill="var(--color-power)" id="node-vector-a"/>
+                        <circle cx="145" cy="90" r="5" fill="var(--color-env)" id="node-vector-b"/>
+                        <circle cx="100" cy="100" r="8" fill="var(--color-danger)" id="node-vector-core"/>
+                    </svg>
                 </div>
 
-                <div class="control-panel-box">
-                    <div class="panel-label">📊 Command Sliders</div>
-                    <div class="slider-interface">
-                        <div class="slider-header-main">
-                            <span>Carbon Levy Fee</span>
-                            <span id="tax-display-text" style="color: var(--color-app);">18%</span>
-                        </div>
-                        <input type="range" class="slider-input-element" id="slider-carbon-tax" min="0" max="50" value="18" oninput="processSliderShift()">
-                        <div class="slider-status-subtext" id="slider-feedback-msg">Shift Delta: +1 Economy, -1 Public Trust per turn cycle.</div>
-                    </div>
+                <div class="intelligence-section-label">System Speed Governors</div>
+                <div class="interactive-sliders-box">
+                    <div class="slider-flex-header"><span>Carbon Fine Matrix Base</span><span id="txt-val-slider-governor" style="color: var(--color-power);">14%</span></div>
+                    <input type="range" class="slider-native-input" id="control-slider-governor" min="0" max="50" value="14" oninput="executeGovernorUpdateShift()">
                 </div>
 
-                <div class="bribe-box">
-                    <div class="bribe-header">
-                        <div class="bribe-title">💼 Political Safety / Bribes</div>
-                        <div class="bribe-btn-action" onclick="buyPoliticalBribe()">Pay Bribe (12 Points)</div>
+                <div class="intelligence-section-label">Underground Financial Actions</div>
+                <div class="security-payout-panel">
+                    <div class="payout-header-flex-row">
+                        <div style="font-weight: bold; color: var(--color-econ); font-size:12px; text-transform:uppercase;">Deploy Police Bribe</div>
+                        <button class="payout-action-trigger-btn" onclick="buyPoliceBribeDeduction()">Pay Bribe (-15 Score)</button>
                     </div>
-                    <div style="font-size: 11px; color: var(--text-muted);">If public trust or economic cash flow hits dangerous levels, deploy resources to instantly steady critical systems.</div>
+                    <p style="font-size:11px; color: var(--text-muted); margin:0; line-height: 1.4;">Route funds directly to hidden law agents. Instantly cuts overall Police Spy suspicion trackers by 45%.</p>
                 </div>
 
-                <div class="log-box">
-                    <div class="panel-label">📟 Real-Time Log Feed</div>
-                    <div class="log-feed" id="log-terminal">
-                        [SYSTEM]: System ready for supervisor initialization...
-                    </div>
+                <div class="intelligence-section-label">Real-Time Console Monitor Output</div>
+                <div class="realtime-terminal-readout-feed" id="terminal-readout-window">
+                    [SYSTEM INITIALIZATION COMPLETED]: Awaiting console operational commands...
                 </div>
-
             </div>
+
         </div>
     </div>
 
-    <div class="modal-overlay" id="end-game-modal">
-        <div class="modal-content">
-            <h2 id="modal-heading" style="color: var(--color-danger); margin-top:0;">CRITICAL GRID COLLAPSE</h2>
-            <p id="modal-desc">One of your primary infrastructure pillars completely drained, resulting in systemic load failure.</p>
-            <button class="start-btn" onclick="location.reload()" style="margin-top:20px;">Restart System</button>
+    <div class="terminal-blocker-modal-overlay" id="global-alert-modal-blocker">
+        <div class="modal-alert-window-frame" id="modal-theme-border-box">
+            <h2 id="modal-alert-title-header" style="color: var(--color-danger);">CRITICAL FAILURE</h2>
+            <p id="modal-alert-desc-paragraph" style="font-size:13px; line-height:1.6; color:#e0e0ed;">The matrix collapsed due to unbalanced parameters management.</p>
+            <button class="console-ignition-trigger" onclick="location.reload()" style="margin-top:24px;">Re-Ignite System Core</button>
         </div>
     </div>
 
     <script>
-        // CORE STATE ENGINE
-        let activeMode = 'std';
-        let stats = { env: 50, econ: 50, app: 50, power: 50 };
-        let currentScore = 0;
+        // CORE STATE PARAMETERS STRUCT
+        let activeProtocolMode = 'std';
+        let statsStateObject = { env: 50, econ: 50, app: 50, power: 50, police: 0 };
+        let currentAcquiredScore = 0;
 
-        // DICTIONARIES FOR SIMPLIFIED PHRASING VARIATIONS
-        const briefingsTextPool = [
-            { f: "Shutting down old grids causes local power providers to drop in global value.", c: "Too much dirty power creates toxic smog alerts near cities.", i: "Passing this rule causes heavy protests by industrial unions." },
-            { f: "A high carbon tax drops overall factory outputs, shrinking tax revenue.", c: "Running full backup coal lines threatens clean air protections.", i: "Voters are furious about power grid brownouts last weekend." },
-            { f: "Upgrading safety networks will require deep budget cuts somewhere else.", c: "Hot weather patterns spike system demand across farming sectors.", i: "Local state governors demand total control of their energy lines." }
+        // VERBOSE COMPREHENSIVE TEXT ENGINE POOLS
+        const newsTickerReelDatabase = [
+            "[NEWS BANNER]: Regional ecological sectors return to normal limits following cleaner production updates.",
+            "[NEWS BANNER]: Business leaders object to grid pricing models as manufacturing networks reduce budget profiles.",
+            "[NEWS BANNER]: Citizen health groups post concerns regarding dark haze near central combustion sectors.",
+            "[NEWS BANNER]: Private database registers show unusual crypto movements linked to municipal infrastructure grids.",
+            "[NEWS BANNER]: Extreme demand peaks force auxiliary sub-stations to run hot during peak operational intervals.",
+            "[NEWS BANNER]: Federal investigations division notes enhanced verification reviews on domestic infrastructure grids.",
+            "[NEWS BANNER]: Grid frequency adjustments reported across outlying agricultural transmission centers."
         ];
 
-        function selectMode(targetMode) {
-            activeMode = targetMode;
-            document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
-            document.getElementById(`mode-${targetMode}`).classList.add('selected');
-            
-            // Adjust defaults based on chosen mode preset
-            if(targetMode === 'srv') {
-                document.getElementById('init-env').value = 40;
-                document.getElementById('init-econ').value = 40;
-                document.getElementById('init-app').value = 40;
-            } else if(targetMode === 'sb') {
-                document.getElementById('init-env').value = 80;
-                document.getElementById('init-econ').value = 80;
-                document.getElementById('init-app').value = 80;
+        const briefingsDossierTextDatabase = [
+            { f: "Shady money pathways leak capital into local merchant channels.", c: "Heavy power cycles dump heat plumes into nearby preservation lands.", i: "Cities are tracking brownouts and starting local town halls." },
+            { f: "High grid taxes drive smaller manufacturers to switch off lines.", c: "Using emergency coal covers shortfalls but dirties atmospheric zones.", i: "Substation worker unions complain about illegal work conditions." },
+            { f: "Corporate auditing networks note discrepancies inside the auxiliary distribution ledger books.", c: "Exhaust vents release concentrated soot when generator groups operate over 95% threshold.", i: "Social feedback metrics display negative trends regarding power price changes." },
+            { f: "Private holding groups request immediate tariff relief under threat of infrastructure divestment.", c: "Aquatic ecosystem monitors record temperature changes near hydro cooling tubes.", i: "Municipal security teams request backup protection for vital grid junctions." }
+        ];
+
+        // CONFIGURATOR SCREEN CONTROL LOGIC
+        function selectSimulationProtocol(targetModeCode) {
+            activeProtocolMode = targetModeCode;
+            document.querySelectorAll('.protocol-selection-box').forEach(elementNode => {
+                elementNode.classList.remove('protocol-selected');
+            });
+            document.getElementById(`mode-${targetModeCode}`).classList.add('protocol-selected');
+        }
+
+        function mirrorSetupControlValue(metricIdCode) {
+            let directValueString = document.getElementById(`slider-setup-${metricIdCode}`).value;
+            document.getElementById(`out-setup-${metricIdCode}`).innerText = directValueString + "%";
+        }
+
+        function bootSimulationConsole() {
+            statsStateObject.env = parseInt(document.getElementById('slider-setup-env').value);
+            statsStateObject.econ = parseInt(document.getElementById('slider-setup-econ').value);
+            statsStateObject.app = parseInt(document.getElementById('slider-setup-app').value);
+            statsStateObject.power = 50;
+            statsStateObject.police = 0;
+
+            document.getElementById('screen-setup').classList.remove('screen-active');
+            document.getElementById('screen-game').classList.add('screen-active');
+
+            dispatchTerminalLogMessage("[SUCCESS]: Core console processes connected to pipeline array.");
+            dispatchTerminalLogMessage(`[CONFIG]: System monitoring protocol active: ${activeProtocolMode.toUpperCase()}.`);
+            synchronizeAndRefreshUIElements();
+        }
+
+        // MONOLITHIC RENDERING ENGINE
+        function synchronizeAndRefreshUIElements() {
+            // Constrain variables inside standardized boundary thresholds
+            if(statsStateObject.env > 100) statsStateObject.env = 100; if(statsStateObject.env < 0) statsStateObject.env = 0;
+            if(statsStateObject.econ > 100) statsStateObject.econ = 100; if(statsStateObject.econ < 0) statsStateObject.econ = 0;
+            if(statsStateObject.app > 100) statsStateObject.app = 100; if(statsStateObject.app < 0) statsStateObject.app = 0;
+            if(statsStateObject.power > 100) statsStateObject.power = 100; if(statsStateObject.power < 0) statsStateObject.power = 0;
+            if(statsStateObject.police > 100) statsStateObject.police = 100; if(statsStateObject.police < 0) statsStateObject.police = 0;
+
+            document.getElementById('txt-val-env').innerText = statsStateObject.env + "%";
+            document.getElementById('fill-val-env').style.width = statsStateObject.env + "%";
+            document.getElementById('txt-val-econ').innerText = statsStateObject.econ + "%";
+            document.getElementById('fill-val-econ').style.width = statsStateObject.econ + "%";
+            document.getElementById('txt-val-app').innerText = statsStateObject.app + "%";
+            document.getElementById('fill-val-app').style.width = statsStateObject.app + "%";
+            document.getElementById('txt-val-power').innerText = statsStateObject.power + "%";
+            document.getElementById('fill-val-power').style.width = statsStateObject.power + "%";
+            document.getElementById('txt-val-police').innerText = statsStateObject.police + "%";
+            document.getElementById('fill-val-police').style.width = statsStateObject.police + "%";
+            document.getElementById('runtime-score-display-value').innerText = currentAcquiredScore;
+
+            // ANIMATE STRUCTURAL MAP VECTOR POSITION ARRAYS
+            document.getElementById('node-vector-a').setAttribute('cx', 80 + (statsStateObject.power / 3.5));
+            document.getElementById('node-vector-b').setAttribute('cy', 70 + (statsStateObject.env / 4.5));
+
+            // CRITICAL POLICE RADAR SIREN TRIGGERS (>70% Tracking activates global flash state)
+            if (statsStateObject.police > 70 && activeProtocolMode !== 'sb') {
+                document.getElementById('master-simulation-body-canvas').classList.add('siren-system-triggered');
+                dispatchTerminalLogMessage("🚨 [ALERT]: WARNING! DISPATCH UNITS ROTATING NEAR CORE COMPARTMENT!");
             } else {
-                document.getElementById('init-env').value = 50;
-                document.getElementById('init-econ').value = 60;
-                document.getElementById('init-app').value = 55;
+                document.getElementById('master-simulation-body-canvas').classList.remove('siren-system-triggered');
             }
-            updateSetupVal('env'); updateSetupVal('econ'); updateSetupVal('app');
-        }
 
-        function updateSetupVal(type) {
-            let val = document.getElementById(`init-${type}`).value;
-            document.getElementById(`val-${type}`).innerText = val + "%";
-        }
-
-        function initiateGameEngine() {
-            // Apply Manual Selections To Active Simulator Session
-            stats.env = parseInt(document.getElementById('init-env').value);
-            stats.econ = parseInt(document.getElementById('init-econ').value);
-            stats.app = parseInt(document.getElementById('init-app').value);
-            stats.power = 55; // Core load starter
-
-            document.getElementById('screen-setup').classList.remove('active');
-            document.getElementById('screen-game').classList.add('active');
-            
-            logMessage("[SYSTEM]: Operational lines connected successfully.");
-            logMessage(`[MODE]: Running on ${activeMode.toUpperCase()} protocols.`);
-            renderUIElements();
-            cycleBriefingPhrases();
-        }
-
-        function renderUIElements() {
-            // Update individual displays
-            document.getElementById('txt-env').innerText = stats.env + "%";
-            document.getElementById('bar-env').style.width = stats.env + "%";
-            document.getElementById('txt-econ').innerText = stats.econ + "%";
-            document.getElementById('bar-econ').style.width = stats.econ + "%";
-            document.getElementById('txt-app').innerText = stats.app + "%";
-            document.getElementById('bar-app').style.width = stats.app + "%";
-            document.getElementById('txt-power').innerText = stats.power + "%";
-            document.getElementById('bar-power').style.width = stats.power + "%";
-            document.getElementById('runtime-score').innerText = currentScore;
-
-            // Simple vector animation offset injection based on grid balance
-            document.getElementById('node-1').setAttribute('cx', 90 + (stats.power / 5));
-            document.getElementById('node-2').setAttribute('cy', 70 + (stats.env / 6));
-
-            // Verify Game Loss parameters
-            if(activeMode !== 'sb') {
-                if(stats.env <= 0 || stats.econ <= 0 || stats.app <= 0 || stats.power <= 0) {
-                    triggerGameOverSequence("CRITICAL COLLAPSE", "One of your primary simulation sectors hit zero.");
-                } else if(stats.env >= 100 || stats.econ >= 100 || stats.app >= 100 || stats.power >= 100) {
-                    triggerGameOverSequence("SYSTEM OVERLOAD", "System energy built up too fast, frying circuits.");
+            // CRITICAL VERIFICATION METRIC MATRIX BOUNDARIES
+            if (activeProtocolMode !== 'sb') {
+                if (statsStateObject.police >= 100) {
+                    launchTerminationScreen("🚓 HANDCUFFED & ARRESTED!", "Federal deployment units cracked through the firewall networks, blew up the server sirens, and placed you under immediate arrest for systemic illicit market coordination!");
+                } else if (statsStateObject.env <= 0 || statsStateObject.econ <= 0 || statsStateObject.app <= 0 || statsStateObject.power <= 0) {
+                    launchTerminationScreen("GRID ARCHITECTURE COLLAPSE", "A structural balancing metric drained completely to zero percent, forcing emergency safety containment networks to fry.");
                 }
             }
         }
 
-        function executeDecision(id) {
-            // STRICT COMPLETION RULE: Positives are clamped to max 5 or 6 points
-            let pointDelta = Math.floor(Math.random() * 2) + 5; // Yields exactly 5 or 6 points
+        // MATRIX ACTIONS CHANNEL ROUTER
+        function processInteractiveAction(matrixChannelId) {
+            // STRICT POOL CAP MATH: Positive points allocations are clamped precisely to 5 or 6 max points
+            let staticPointGainAllocation = Math.floor(Math.random() * 2) + 5; 
+            let suspicionEscalationCoefficient = (activeProtocolMode === 'srv') ? 2 : 1;
 
-            if (id === 1) {
-                stats.env += pointDelta; // Handled dynamically via cap rule
-                stats.econ -= 8;
-                stats.app -= 4;
-                stats.power -= 8;
-                logMessage(`[ORDER]: Green energy boosted (+${pointDelta} Env). Industrial output slowed down.`);
-            } else if (id === 2) {
-                stats.env -= 4;
-                stats.econ += pointDelta; // Yields exactly 5 or 6 points
-                stats.app -= 8;
-                stats.power += pointDelta; // Yields exactly 5 or 6 points
-                logMessage(`[OVERRIDE]: Core generator capacity optimized (+${pointDelta} Power).`);
+            if (matrixChannelId === 1) {
+                statsStateObject.env += staticPointGainAllocation;
+                statsStateObject.power -= 10;
+                statsStateObject.police -= 12;
+                dispatchTerminalLogMessage(`[MATRIX RUN]: Clean routing line enabled. Nature indices expanded (+${staticPointGainAllocation}).`);
+            } else if (matrixChannelId === 2) {
+                statsStateObject.power += staticPointGainAllocation;
+                statsStateObject.env -= 8;
+                statsStateObject.police += (10 * suspicionEscalationCoefficient);
+                dispatchTerminalLogMessage(`[MATRIX RUN]: Auxiliary dynamos overdriven. Distribution load increased (+${staticPointGainAllocation}).`);
+            } else if (matrixChannelId === 3) {
+                statsStateObject.econ += staticPointGainAllocation;
+                statsStateObject.app -= 14;
+                statsStateObject.police += (30 * suspicionEscalationCoefficient);
+                dispatchTerminalLogMessage(`[MATRIX RUN]: Encrypted black transfers finalized. Bank pools increased (+${staticPointGainAllocation}). Security risk raised!`);
+            } else if (matrixChannelId === 4) {
+                statsStateObject.app += staticPointGainAllocation;
+                statsStateObject.econ -= 12;
+                statsStateObject.police -= 5;
+                dispatchTerminalLogMessage(`[MATRIX RUN]: Open public distributions launched. Approval trackers jumped (+${staticPointGainAllocation}).`);
             }
 
-            // Award game loop progression points
-            currentScore += pointDelta;
-            
-            // Turn variations processing
-            processTurnTickEffects();
-            cycleBriefingPhrases();
-            renderUIElements();
+            currentAcquiredScore += staticPointGainAllocation;
+
+            // Background operational leakage processing
+            if (activeProtocolMode === 'srv') {
+                statsStateObject.power -= 2;
+            }
+
+            scrambleNewsWireTicker();
+            shuffleCabinetDossierTexts();
+            synchronizeAndRefreshUIElements();
         }
 
-        function processSliderShift() {
-            let val = document.getElementById('slider-carbon-tax').value;
-            document.getElementById('tax-display-text').innerText = val + "%";
-            document.getElementById('slider-feedback-msg').innerText = `Shift Delta: Current rate yields dynamic system adjustments per cycle.`;
+        function executeGovernorUpdateShift() {
+            let actualValueString = document.getElementById('control-slider-governor').value;
+            document.getElementById('txt-val-slider-governor').innerText = actualValueString + "%";
         }
 
-        function processTurnTickEffects() {
-            // Continuous environmental drain logic simulation
-            let val = parseInt(document.getElementById('slider-carbon-tax').value);
-            if(val > 25) {
-                stats.env += 1;
-                stats.econ -= 2;
+        // FINANCIAL BRIEF SYSTEM LOWER DECK ROUTINE
+        function buyPoliceBribeDeduction() {
+            if (currentAcquiredScore >= 15) {
+                currentAcquiredScore -= 15;
+                statsStateObject.police -= 45;
+                dispatchTerminalLogMessage("💰 [MARKET OPERATION]: Encrypted wire cleared to target legal elements. Security suspicion dropped 45%.");
+                synchronizeAndRefreshUIElements();
             } else {
-                stats.env -= 2;
-                stats.econ += 1;
-            }
-
-            if(activeMode === 'srv') {
-                stats.power -= 2; // Passive pressure tracking
+                dispatchTerminalLogMessage("❌ [TRANSACTION ERROR]: Insufficient scorecard value accumulation to pass bribe authorization parameters.");
             }
         }
 
-        function buyPoliticalBribe() {
-            if(currentScore >= 12) {
-                currentScore -= 12;
-                stats.app += 15;
-                stats.econ += 10;
-                if(stats.app > 100) stats.app = 100;
-                if(stats.econ > 100) stats.econ = 100;
-                logMessage("💰 [BRIBE]: Paid local systems. Trust and Cash metrics stabilized safely.");
-                renderUIElements();
-            } else {
-                logMessage("❌ [SYSTEM ERROR]: You need at least 12 scoreboard points to route safety funding.");
-            }
+        function scrambleNewsWireTicker() {
+            let targetSelectionIndex = Math.floor(Math.random() * newsTickerReelDatabase.length);
+            document.getElementById('live-wire-news-ticker').innerText = newsTickerReelDatabase[targetSelectionIndex];
         }
 
-        function cycleBriefingPhrases() {
-            let index = Math.floor(Math.random() * briefingsTextPool.length);
-            document.getElementById('brief-fin').innerText = briefingsTextPool[index].f;
-            document.getElementById('brief-cli').innerText = briefingsTextPool[index].c;
-            document.getElementById('brief-int').innerText = briefingsTextPool[index].i;
+        function shuffleCabinetDossierTexts() {
+            let indexSelectorValue = Math.floor(Math.random() * briefingsDossierTextDatabase.length);
+            document.getElementById('brief-node-fin').innerText = briefingsDossierTextDatabase[indexSelectorValue].f;
+            document.getElementById('brief-node-cli').innerText = briefingsDossierTextDatabase[indexSelectorValue].c;
+            document.getElementById('brief-node-int').innerText = briefingsDossierTextDatabase[indexSelectorValue].i;
         }
 
-        function logMessage(msg) {
-            let container = document.getElementById('log-terminal');
-            container.innerHTML += `<br>${msg}`;
-            container.scrollTop = container.scrollHeight;
+        function dispatchTerminalLogMessage(rawStringText) {
+            let logTerminalElementNode = document.getElementById('terminal-readout-window');
+            logTerminalElementNode.innerHTML += `<br>${rawStringText}`;
+            logTerminalElementNode.scrollTop = logTerminalElementNode.scrollHeight;
         }
 
-        function triggerGameOverSequence(title, reason) {
-            document.getElementById('modal-heading').innerText = title;
-            document.getElementById('modal-desc').innerText = reason;
-            document.getElementById('end-game-modal').classList.add('active');
+        function launchTerminationScreen(headerTextString, descriptionTextString) {
+            document.getElementById('modal-alert-title-header').innerText = headerTextString;
+            document.getElementById('modal-alert-desc-paragraph').innerText = descriptionTextString;
+            document.getElementById('global-alert-modal-blocker').classList.add('overlay-visible');
         }
     </script>
 </body>
