@@ -1,1542 +1,846 @@
-<!-- 
-======================================================================================
-SOVEREIGN ENERGY CABINET COMMAND DESK - RE-ENGINEERED UX EDITION
-Engine Matrix v9.6 Premium Pro Architecture | Standalone Sovereign Simulation
-Integrated Vector Mapping, Cache State Serialization, and Audio Synthesis Core
-======================================================================================
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sovereign Cabinet Grid Command - Executive Edition</title>
+    <title>National Grid Command - Advanced Simulation Console</title>
     <style>
         :root {
-            --bg-deep: #060913;
-            --bg-surface: #0c1222;
-            --bg-card: #121b33;
-            --bg-control: #1a2647;
-            --border-glow: #1e2e5a;
-            
-            /* Matrix Color Vectors */
-            --neon-env: #10b981;
-            --neon-econ: #2563eb;
-            --neon-app: #6366f1;
-            --neon-grid: #f59e0b;
-            --neon-danger: #ef4444;
-            --neon-purple: #9333ea;
-            
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --text-dim: #475569;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            user-select: none;
+            --bg-deep: #09090e;
+            --bg-panel: #131322;
+            --bg-card: #1a1a2e;
+            --border-glow: #2d2d4d;
+            --text-main: #e2e2ec;
+            --text-muted: #84849a;
+            --color-env: #00e676;
+            --color-econ: #ffd600;
+            --color-app: #af52de;
+            --color-power: #00e5ff;
+            --color-danger: #ff1744;
         }
 
         body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-deep);
-            color: var(--text-primary);
-            min-height: 100vh;
-            padding: 24px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
             overflow-x: hidden;
         }
 
-        .master-frame {
-            width: 100%;
-            max-width: 1400px;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-glow);
-            border-radius: 16px;
-            padding: 32px;
-            box-shadow: 0 0 60px rgba(0, 0, 0, 0.7), inset 0 0 30px rgba(30, 46, 90, 0.15);
-            position: relative;
+        /* SCREEN MANAGEMENT */
+        .screen {
+            display: none;
         }
-
-        /* TOP PLATFORM TELEMETRY HEADER */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--border-glow);
-            padding-bottom: 20px;
-            margin-bottom: 28px;
-        }
-
-        .brand-block h1 {
-            font-size: 2rem;
-            font-weight: 900;
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #ffffff, var(--text-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .brand-block p {
-            color: var(--neon-app);
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-top: 4px;
-        }
-
-        .career-score-tracker {
-            background: rgba(37, 99, 235, 0.1);
-            border: 1px dashed var(--neon-econ);
-            padding: 10px 18px;
-            border-radius: 8px;
-            text-align: right;
-        }
-        .career-score-tracker span {
+        .screen.active {
             display: block;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            font-weight: 800;
+        }
+
+        /* SETUP SCREEN */
+        .setup-container {
+            max-width: 700px;
+            margin: 60px auto;
+            background: var(--bg-panel);
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid var(--border-glow);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+        }
+
+        h1.title {
+            color: var(--color-power);
+            font-size: 32px;
+            margin-top: 0;
             text-transform: uppercase;
-        }
-        .career-score-tracker strong {
-            font-size: 1.4rem;
-            color: var(--text-primary);
-            font-variant-numeric: tabular-nums;
+            letter-spacing: 2px;
+            border-bottom: 2px solid var(--border-glow);
+            padding-bottom: 15px;
         }
 
-        /* ADMINISTRATIVE MONITOR INTERFACES */
-        .screen-layout { display: none; }
-        .screen-layout.active-window { display: block; }
-
-        /* VISUALLY CLEANED INSTRUCTION MANUAL QUICK PANELS */
-        .framework-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glow);
-            border-radius: 12px;
-            padding: 28px;
-            margin-bottom: 36px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-        }
-        .framework-card h3 {
-            color: var(--neon-grid);
-            font-size: 1.3rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--border-glow);
-            padding-bottom: 10px;
-        }
-        .protocol-grid {
-            display: grid;
-            grid-template-columns: repeat(1, 1fr);
-            gap: 20px;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: var(--text-secondary);
-        }
-        @media (min-width: 768px) { .protocol-grid { grid-template-columns: repeat(2, 1fr); } }
-        
-        .protocol-item {
-            background: rgba(6, 9, 19, 0.4);
-            border: 1px solid rgba(30, 46, 90, 0.5);
-            padding: 16px;
-            border-radius: 8px;
-            transition: border-color 0.2s;
-        }
-        .protocol-item:hover {
-            border-color: rgba(245, 158, 11, 0.4);
-        }
-        .protocol-item strong { 
-            color: var(--text-primary); 
-            display: inline-block;
-            margin-bottom: 4px;
+        .setup-section {
+            margin-bottom: 25px;
+            text-align: left;
         }
 
-        /* PARLIAMENT ENVIRONMENT CARD DESIGN */
-        .mandate-selection-title {
-            text-align: center;
-            font-size: 1.6rem;
-            font-weight: 800;
-            margin-bottom: 24px;
-            letter-spacing: -0.5px;
-        }
-        .mandate-deck {
-            display: grid;
-            grid-template-columns: repeat(1, 1fr);
-            gap: 24px;
-        }
-        @media (min-width: 768px) { .mandate-deck { grid-template-columns: repeat(3, 1fr); } }
-        .mandate-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glow);
-            border-radius: 12px;
-            padding: 24px;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        .mandate-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--text-primary);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.5);
-            background: #16213e;
-        }
-        .mandate-card h4 { font-size: 1.4rem; margin-bottom: 6px; font-weight: 800; }
-        .mandate-card .subtitle { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 14px; letter-spacing: 0.5px; }
-        .mandate-card p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; }
-
-        /* PARAMETERS STATUS HUD PANEL */
-        .hud-status-row {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        @media (min-width: 992px) { .hud-status-row { grid-template-columns: repeat(4, 1fr); } }
-        .hud-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glow);
-            border-radius: 10px;
-            padding: 16px;
-            position: relative;
-            overflow: hidden;
-            transition: border-color 0.3s;
-        }
-        @keyframes emergency-pulse {
-            0% { border-color: var(--border-glow); box-shadow: none; }
-            50% { border-color: var(--neon-danger); box-shadow: 0 0 14px rgba(239, 68, 68, 0.5); background: #2a1116; }
-            100% { border-color: var(--border-glow); box-shadow: none; }
-        }
-        .hud-card.critical-alert { animation: emergency-pulse 0.9s infinite ease-in-out; }
-        .hud-title { font-size: 0.75rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
-        .hud-value { font-size: 2.2rem; font-weight: 900; color: var(--text-primary); margin: 4px 0; font-variant-numeric: tabular-nums; }
-        .meter-track { background: var(--bg-deep); height: 6px; border-radius: 99px; overflow: hidden; }
-        .meter-fill { height: 100%; width: 50%; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-
-        /* FRICTION TELEMETRY INDICATOR MATRICES */
-        .friction-strip {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .friction-node {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glow);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--text-secondary);
-            text-align: center;
-            transition: all 0.3s;
-        }
-        .friction-node.warning-active {
-            color: var(--neon-danger);
-            background: #240f13;
-            border-color: #651a23;
-        }
-
-        /* CONSOLE CHASSIS METADATA GRID STRIP */
-        .chassis-strip {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--bg-card);
-            border: 1px solid var(--border-glow);
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 24px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--text-secondary);
-        }
-
-        /* CENTRAL WAR WORKSPACE DIVISIONS */
-        .workspace-chassis {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 24px;
-        }
-        @media (min-width: 1200px) { .workspace-chassis { grid-template-columns: 1.4fr 1fr; } }
-
-        /* LIVE VECTOR RADAR MATRIX MAP */
-        .radar-map-box {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glow);
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 280px;
-        }
-        .vector-map-graphic {
-            width: 100%;
-            max-width: 380px;
-            height: auto;
-        }
-        .map-region-path {
-            fill: #1a2542;
-            stroke: var(--border-glow);
-            stroke-width: 1.5;
-            transition: all 0.5s ease;
-        }
-        @keyframes geographic-pulse {
-            0% { stroke-width: 1.5; }
-            50% { stroke-width: 3; stroke: var(--neon-danger); }
-            100% { stroke-width: 1.5; }
-        }
-        .map-region-path.pulse-danger {
-            animation: geographic-pulse 1s infinite ease-in-out;
-        }
-
-        /* CRITICAL CONSOLE SCENARIO BLOCK */
-        .scenario-box {
-            background: var(--bg-card);
-            border-left: 5px solid var(--text-primary);
-            border-radius: 4px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-        .scenario-box.emergency-lockdown {
-            border-left-color: var(--neon-danger);
-            background: #241115;
-        }
-        .scenario-box h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 8px; }
-        .scenario-box p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; }
-
-        /* INTERNAL CABINET HOVER ADVISORIES BOARD */
-        .advisors-panel-title {
-            font-size: 0.75rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-dim);
+        .setup-section h3 {
+            color: var(--text-main);
             margin-bottom: 10px;
         }
-        .advisors-deck {
+
+        .mode-grid {
             display: grid;
-            grid-template-columns: repeat(1, 1fr);
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-        @media (min-width: 640px) { .advisors-deck { grid-template-columns: repeat(3, 1fr); } }
-        .advisor-node-card {
-            background: rgba(12, 18, 34, 0.6);
-            border: 1px solid var(--border-glow);
-            border-radius: 6px;
-            padding: 12px;
-            font-size: 0.8rem;
-            line-height: 1.4;
-        }
-        .advisor-node-title {
-            font-weight: 900;
-            font-size: 0.7rem; /* FIX: Changed from 'her' to 'rem' */
-            text-transform: uppercase;
-            margin-bottom: 4px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
         }
 
-        /* CONTROL INTERFACE DECISION CHOICE PACKS */
-        .decision-chassis { display: flex; flex-direction: column; gap: 12px; }
-        .decision-node-btn {
+        .mode-card {
             background: var(--bg-card);
-            border: 1px solid var(--border-glow);
-            color: var(--text-primary);
-            padding: 18px 20px;
-            border-radius: 8px;
-            text-align: left;
+            border: 2px solid var(--border-glow);
+            padding: 20px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .decision-node-btn:hover {
-            background: #172242;
-            border-color: var(--text-secondary);
-            transform: translateX(4px);
-        }
-        .impact-readout-tray {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 10px;
-            padding-top: 8px;
-            border-top: 1px dashed var(--border-glow);
-            font-size: 0.75rem;
-            font-weight: 800;
+            transition: all 0.2s ease;
         }
 
-        /* RIGHT CONTROL DESK PLATFORM */
-        .control-surface-column {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glow);
-            border-radius: 12px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
+        .mode-card:hover {
+            border-color: var(--color-power);
         }
-        .section-header-title {
-            font-size: 0.8rem;
-            font-weight: 800;
+
+        .mode-card.selected {
+            border-color: var(--color-power);
+            background: #1e293b;
+            box-shadow: 0 0 15px rgba(0,229,255,0.2);
+        }
+
+        .mode-card h4 {
+            margin: 0 0 5px 0;
+            color: #fff;
+        }
+
+        .mode-card p {
+            margin: 0;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .manual-control-group {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-glow);
+        }
+
+        .slider-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .slider-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .slider-label {
+            width: 150px;
+            font-size: 14px;
+        }
+
+        .slider-row input[type="range"] {
+            flex-grow: 1;
+            margin: 0 15px;
+            accent-color: var(--color-power);
+        }
+
+        .slider-val {
+            width: 50px;
+            text-align: right;
+            font-weight: bold;
+            color: var(--color-power);
+        }
+
+        .start-btn {
+            background: var(--color-power);
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: var(--text-primary);
-            border-bottom: 1px solid var(--border-glow);
-            padding-bottom: 6px;
+            margin-top: 20px;
+            transition: background 0.2s;
+        }
+
+        .start-btn:hover {
+            background: #00b0ff;
+        }
+
+        /* MAIN DASHBOARD LAYOUT */
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 450px;
+            gap: 20px;
+        }
+
+        .main-panel {
+            background: var(--bg-panel);
+            border-radius: 12px;
+            border: 1px solid var(--border-glow);
+            padding: 25px;
+        }
+
+        .side-panel {
+            background: var(--bg-panel);
+            border-radius: 12px;
+            border: 1px solid var(--border-glow);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* HEADER & CORE STATS */
+        .dash-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid var(--border-glow);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
         }
 
-        /* HARD CONTROL SLIDER ENGINES */
-        .slider-box { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
-        .slider-legend-bar { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); }
-        .control-slider-input {
-            -webkit-appearance: none; width: 100%; height: 6px; border-radius: 4px; background: var(--bg-deep); outline: none; margin: 6px 0;
-        }
-        .control-slider-input::-webkit-slider-thumb {
-            -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--text-primary); cursor: pointer; border: 2px solid var(--neon-purple); transition: transform 0.1s;
-        }
-        .control-slider-input::-webkit-slider-thumb:hover { transform: scale(1.25); }
-        .live-calc-badge {
-            font-size: 0.75rem; background: var(--bg-deep); padding: 6px 10px; border-radius: 4px; color: var(--text-secondary); border: 1px solid var(--border-glow);
+        .game-title-text {
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* INFRASTRUCTURE NETWORK DESK ACTIONS */
-        .hardware-grid-deck { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
-        .hardware-purchase-btn {
-            background: var(--bg-surface); border: 1px solid var(--border-glow); color: var(--text-primary); padding: 12px; border-radius: 8px; font-weight: 700; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s;
+        .global-score-container {
+            background: #112211;
+            border: 1px solid var(--color-env);
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--color-env);
         }
-        .hardware-purchase-btn:hover:not(:disabled) { border-color: var(--neon-grid); background: #151f38; }
-        .hardware-purchase-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-        .hardware-status-tag {
-            font-size: 0.7rem; font-weight: 800; padding: 2px 8px; border-radius: 99px; background: var(--bg-deep); border: 1px solid var(--border-glow);
-        }
-        .hardware-status-tag.owned { background: rgba(16, 185, 129, 0.15); color: var(--neon-env); border-color: var(--neon-env); }
 
-        /* REGIONAL INTERVENTION INTERFACE CELLS */
-        .regional-cell {
-            background: var(--bg-surface); border: 1px solid var(--border-glow); border-radius: 8px; padding: 12px; margin-top: 8px;
+        .stat-bar-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
         }
-        .regional-meta-line { display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; font-weight: 700; margin-bottom: 6px; }
-        .regional-action-btn {
-            background: var(--bg-control); border: 1px solid var(--border-glow); color: var(--text-primary); padding: 4px 8px; font-size: 0.7rem; font-weight: 800; border-radius: 4px; cursor: pointer; transition: all 0.15s;
-        }
-        .regional-action-btn:hover:not(:disabled) { background: var(--neon-econ); }
-        .regional-action-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        /* ACHIEVEMENT COGNIZANCE VAULT GRID */
-        .vault-title-header { font-size: 1.4rem; font-weight: 800; margin-bottom: 12px; text-align: center; }
-        .achievements-vault-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 24px;
+        .stat-bar-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: left;
         }
-        @media (min-width: 768px) { .achievements-vault-grid { grid-template-columns: repeat(3, 1fr); } }
-        .vault-badge-card {
-            background: var(--bg-card); border: 1px solid var(--border-glow); border-radius: 8px; padding: 14px; text-align: center; opacity: 0.3; transition: all 0.4s;
-        }
-        .vault-badge-card.unlocked-achievement {
-            opacity: 1; border-color: var(--neon-grid); box-shadow: 0 0 12px rgba(245, 158, 11, 0.2); background: linear-gradient(135deg, var(--bg-card), #221c12);
-        }
-        .vault-badge-icon { font-size: 1.8rem; margin-bottom: 4px; }
-        .vault-badge-card h5 { font-size: 0.85rem; font-weight: 800; color: var(--text-primary); }
-        .vault-badge-card p { font-size: 0.7rem; color: var(--text-secondary); margin-top: 2px; }
 
-        /* EXIT PORTFOLIO DIAGNOSTIC SCREENS */
-        .summary-center-box { text-align: center; padding: 30px 10px; }
-        .summary-center-box h2 { font-size: 2.5rem; font-weight: 900; margin-bottom: 8px; }
-        .medal-showcase-ribbon {
-            display: inline-block; background: linear-gradient(135deg, var(--neon-grid), #b45309); color: var(--bg-deep); padding: 8px 24px; border-radius: 99px; font-weight: 900; font-size: 1rem; margin-bottom: 20px; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+        .stat-bar-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            text-transform: uppercase;
         }
-        .medal-showcase-ribbon.failed-ribbon { background: linear-gradient(135deg, var(--neon-danger), #7f1d1d); color: white; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4); }
-        .summary-center-box p { font-size: 1.05rem; color: var(--text-secondary); line-height: 1.6; max-width: 680px; margin: 0 auto 32px auto; }
-        .action-system-btn {
-            background: var(--text-primary); color: var(--bg-deep); border: none; padding: 16px 36px; font-size: 0.95rem; font-weight: 800; border-radius: 6px; cursor: pointer; transition: all 0.2s;
-        }
-        .action-system-btn:hover { background: var(--text-secondary); transform: scale(1.02); }
 
-        /* CORE TELEPRINTER ARCHIVE STRIP FOOTER */
-        .wire-ticker-container {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: #04060d; border-top: 1px solid var(--border-glow); height: 38px; display: flex; align-items: center; z-index: 1000; overflow: hidden;
+        .bar-outer {
+            background: #0f0f1a;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid #252538;
         }
-        .ticker-prefix-tag {
-            background: linear-gradient(135deg, #c2410c, #7c2d12); color: white; font-size: 0.75rem; font-weight: 900; height: 100%; padding: 0 16px; display: flex; align-items: center; letter-spacing: 0.5px; border-right: 1px solid var(--border-glow); z-index: 1010; white-space: nowrap;
+
+        .bar-inner {
+            height: 100%;
+            width: 50%;
+            transition: width 0.4s ease;
         }
-        .ticker-marquee-line {
-            white-space: nowrap; padding-left: 100%; display: inline-block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); animation: master-ticker-slide 40s linear infinite;
+
+        /* BRIEFING DOSSIER MODULE */
+        .dossier-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: left;
         }
-        @keyframes master-ticker-slide { 0% { transform: translate3d(0,0,0); } 100% { transform: translate3d(-100%,0,0); } }
-        .ticker-alert-dot { color: var(--neon-danger); font-weight: 900; margin-right: 6px; animation: flash-dot 1s steps(2, start) infinite; }
-        @keyframes flash-dot { 0% { opacity: 0; } }
+
+        .dossier-tag {
+            font-size: 11px;
+            letter-spacing: 1px;
+            color: var(--color-danger);
+            font-weight: bold;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dossier-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .dossier-card {
+            background: #141424;
+            border: 1px solid #282842;
+            border-top: 3px solid var(--border-glow);
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .dossier-card.finance { border-top-color: var(--color-econ); }
+        .dossier-card.climate { border-top-color: var(--color-env); }
+        .dossier-card.intel { border-top-color: var(--color-app); }
+
+        .dossier-card h5 {
+            margin: 0 0 8px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .dossier-card.finance h5 { color: var(--color-econ); }
+        .dossier-card.climate h5 { color: var(--color-env); }
+        .dossier-card.intel h5 { color: var(--color-app); }
+
+        .dossier-card p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #b2b2c5;
+        }
+
+        /* DECISION BUTTONS */
+        .decision-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .action-block {
+            background: var(--bg-card);
+            border: 1px solid var(--color-danger);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: left;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.2s;
+        }
+
+        .action-block:hover {
+            transform: translateY(-2px);
+            background: #22223b;
+        }
+
+        .action-block.secondary {
+            border-color: var(--color-power);
+        }
+
+        .action-title {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .action-block:not(.secondary) .action-title { color: #ff6b6b; }
+        .action-block.secondary .action-title { color: #66e0ff; }
+
+        .impact-row {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* RADAR GRAPH / VECTOR SCHEMATIC */
+        .radar-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .panel-label {
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: left;
+            margin-bottom: 15px;
+            color: #a0a0ba;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .vector-canvas-wrapper {
+            background: #0d0d18;
+            border: 1px solid #22223a;
+            border-radius: 6px;
+            height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* SLIDERS & CONTROLS INTERFACE */
+        .control-panel-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .slider-interface {
+            margin-bottom: 20px;
+        }
+
+        .slider-header-main {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .slider-input-element {
+            width: 100%;
+            accent-color: var(--color-app);
+            margin-bottom: 10px;
+        }
+
+        .slider-status-subtext {
+            background: #11111c;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #8c8caa;
+            border: 1px solid #1f1f33;
+        }
+
+        /* NEW BRIBE SYSTEM INTERFACE */
+        .bribe-box {
+            background: rgba(255, 214, 0, 0.05);
+            border: 1px dashed var(--color-econ);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .bribe-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .bribe-title {
+            font-weight: bold;
+            color: var(--color-econ);
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .bribe-btn-action {
+            background: var(--color-econ);
+            color: #000;
+            border: none;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .bribe-btn-action:hover {
+            background: #ffea00;
+        }
+
+        /* FEED LOG */
+        .log-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
+            padding: 15px;
+            flex-grow: 1;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .log-feed {
+            font-family: monospace;
+            font-size: 12px;
+            color: #4af626;
+            height: 120px;
+            overflow-y: auto;
+            background: #07070b;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #151522;
+        }
+
+        /* MODAL OVERLAY */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background: var(--bg-panel);
+            border: 2px solid var(--color-danger);
+            padding: 40px;
+            border-radius: 12px;
+            max-width: 500px;
+            text-align: center;
+        }
     </style>
-    <script>
-        // ARCHITECTURAL PROTECTION INJUNCTIONS
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('keydown', e => {
-            if(((e.ctrlKey || e.metaKey) && ['c','u','s'].includes(e.key.toLowerCase())) || e.key === 'F12') e.preventDefault();
-        });
-    </script>
 </head>
 <body>
 
-    <div class="master-frame">
-        <header>
-            <div class="brand-block">
-                <h1>National Grid Command Desk</h1>
-                <p>Cabinet Governance Matrix Engine — Shanti Path, New Delhi</p>
-            </div>
-            <div class="career-score-tracker">
-                <span>Persistent Career Points</span>
-                <strong id="career-points-display">0000</strong>
-            </div>
-        </header>
-
-        <!-- STAGE 1: RE-ENGINEERED SIMPLIFIED USER MANUAL START SCREEN -->
-        <div id="window-start" class="screen-layout active-window">
-            <div class="framework-card">
-                <h3>📖 How To Play (Cabinet Rules Manual)</h3>
-                <div class="protocol-grid">
-                    <div class="protocol-item">
-                        <strong>📊 Keep Your Core Stats Alive</strong><br>
-                        Monitor the 4 bars at the top: **Environment**, **Economy**, **Approval**, and **Power Grid**. If any stat drops below **15%**, you trigger an emergency crisis. If any stat drops to **5% or less**, your cabinet falls apart and you lose instantly!
+    <div id="screen-setup" class="screen active">
+        <div class="setup-container">
+            <h1 class="title">Grid Control Strategy Center</h1>
+            <p style="color: var(--text-muted); margin-top: -10px; margin-bottom: 30px;">Select your operation protocols and tune grid parameters before taking command.</p>
+            
+            <div class="setup-section">
+                <h3>1. Select Game Mode</h3>
+                <div class="mode-grid">
+                    <div class="mode-card selected" id="mode-std" onclick="selectMode('std')">
+                        <h4>Standard</h4>
+                        <p>Balanced starting points. Regular emergency events.</p>
                     </div>
-                    <div class="protocol-item">
-                        <strong>🌡️ Adapt to Shifting Seasons</strong><br>
-                        Every turn introduces a different weather season (like severe Summer heatwaves or Monsoon hydro floods). Seasons add hidden automatic drifts that strain your numbers based on your historical choices.
+                    <div class="mode-card" id="mode-srv" onclick="selectMode('srv')">
+                        <h4>Survival</h4>
+                        <p>Stats decline faster. Bad choices hit harder.</p>
                     </div>
-                    <div class="protocol-item">
-                        <strong>🗺️ Protect The 3 Regions on the Map</strong><br>
-                        Watch the SVG radar map! Your policies can cause friction in the **North**, **West**, or **East** sectors. If any region reaches **100% friction**, they will rebel, triggering an immediate game over. Spend **15 Economy points** on a regional *Subvention* button to calm them down.
-                    </div>
-                    <div class="protocol-item">
-                        <strong>⚙️ Balance Carbon Taxes & Upgrades</strong><br>
-                        Use the slider at any time to adjust the Carbon Tax. High taxes yield passive cash every single turn, but rapidly drain public satisfaction! Use your cash to unlock massive infrastructure technologies that shield your grids permanently.
+                    <div class="mode-card" id="mode-sb" onclick="selectMode('sb')">
+                        <h4>Sandbox</h4>
+                        <p>Infinite safety margins. Tweak anything anytime.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="mandate-selection-title">Establish Operational Mandate Scope</div>
-            <div class="mandate-deck">
-                <div class="mandate-card" onclick="SovereignEngine.initiateEnvironment('easy')">
-                    <h4 style="color: var(--neon-env);">Absolute Majority</h4>
-                    <div class="subtitle" style="color: var(--neon-env);">Easy Administrative Mode</div>
-                    <p>Starting Baselines: 65% Matrices<br>Friction Drift Scaling: Minimal 0.5x Impact Weight<br>Ideal for structural experimentation and comprehensive clean energy master planning.</p>
-                </div>
-                <div class="mandate-card" onclick="SovereignEngine.initiateEnvironment('medium')">
-                    <h4 style="color: var(--neon-econ);">Stable Coalition</h4>
-                    <div class="subtitle" style="color: var(--neon-econ);">Standard Analytical Mode</div>
-                    <p>Starting Baselines: 55% Matrices<br>Friction Drift Scaling: Baseline 1.0x Real-time Drift Impact<br>Balanced simulation requiring strict oversight of industrial alignment parameters.</p>
-                </div>
-                <div class="mandate-card" onclick="SovereignEngine.initiateEnvironment('hard')">
-                    <h4 style="color: var(--neon-danger);">Hung Parliament</h4>
-                    <div class="subtitle" style="color: var(--neon-danger);">Extreme Tactical Crisis</div>
-                    <p>Starting Baselines: 45% Vulnerable Vectors<br>Friction Drift Scaling: Severe 2.0x Compound Drift Penalties<br>High cabinet hostility, volatile public approval curves, and structural strain margins.</p>
+            <div class="setup-section">
+                <h3>2. Manual Level Customization</h3>
+                <div class="manual-control-group">
+                    <div class="slider-row">
+                        <span class="slider-label">Starting Green Energy</span>
+                        <input type="range" id="init-env" min="20" max="80" value="50" oninput="updateSetupVal('env')">
+                        <span class="slider-val" id="val-env">50%</span>
+                    </div>
+                    <div class="slider-row">
+                        <span class="slider-label">Starting Cash Flow</span>
+                        <input type="range" id="init-econ" min="20" max="80" value="60" oninput="updateSetupVal('econ')">
+                        <span class="slider-val" id="val-econ">60%</span>
+                    </div>
+                    <div class="slider-row">
+                        <span class="slider-label">Starting Public Trust</span>
+                        <input type="range" id="init-app" min="20" max="80" value="55" oninput="updateSetupVal('app')">
+                        <span class="slider-val" id="val-app">55%</span>
+                    </div>
                 </div>
             </div>
+
+            <button class="start-btn" onclick="initiateGameEngine()">Launch Grid Console</button>
         </div>
+    </div>
 
-        <!-- STAGE 2: ACTIVE CONTROL MONITOR WORKSPACE CHASSIS -->
-        <div id="window-game" class="screen-layout">
-            <!-- FOUR CORE MASTER HUD PARAMETERS -->
-            <div class="hud-status-row">
-                <div id="hud-env" class="hud-card">
-                    <div class="hud-title">🌿 Environment Matrix</div>
-                    <div id="val-env" class="hud-value">55</div>
-                    <div class="meter-track"><div id="bar-env" class="meter-fill" style="background: var(--neon-env);"></div></div>
-                </div>
-                <div id="hud-econ" class="hud-card">
-                    <div class="hud-title">💰 Economy Balance</div>
-                    <div id="val-econ" class="hud-value">55</div>
-                    <div class="meter-track"><div id="bar-econ" class="meter-fill" style="background: var(--neon-econ);"></div></div>
-                </div>
-                <div id="hud-app" class="hud-card">
-                    <div class="hud-title">👥 Public Approval</div>
-                    <div id="val-app" class="hud-value">55</div>
-                    <div class="meter-track"><div id="bar-app" class="meter-fill" style="background: var(--neon-app);"></div></div>
-                </div>
-                <div id="hud-grid" class="hud-card">
-                    <div class="hud-title">⚡ Grid Power Supply</div>
-                    <div id="val-grid" class="hud-value">55</div>
-                    <div class="meter-track"><div id="bar-grid" class="meter-fill" style="background: var(--neon-grid);"></div></div>
-                </div>
-            </div>
 
-            <!-- ADJUDICATION INTERNAL FRICTION STAGE STRIP -->
-            <div class="friction-strip">
-                <div id="fric-node-finance" class="friction-node">Finance Panel Friction: 0</div>
-                <div id="fric-node-climate" class="friction-node">Climate Advisory Friction: 0</div>
-                <div id="fric-node-ib" class="friction-node">Intelligence Bureau Friction: 0</div>
-            </div>
+    <div id="screen-game" class="screen">
+        <div class="dashboard">
+            
+            <div class="main-panel">
+                <div class="dash-header">
+                    <h2 class="game-title-text">🔌 NATIONAL ENERGY COMMAND PORTAL</h2>
+                    <div class="global-score-container">SCORE: <span id="runtime-score">0</span></div>
+                </div>
 
-            <!-- CHASSIS TRACKER MATRIX CONSOLE -->
-            <div class="chassis-strip">
-                <span id="label-console-year">Year: 1 of 8</span>
-                <span id="label-console-season" style="color: var(--neon-grid); text-transform: uppercase;">SEASON: Summer Load Peak Vector</span>
-                <span id="label-console-integrity" style="color: var(--neon-env);">State Integrity: Nominal Operations</span>
-            </div>
-
-            <!-- SPLIT CONTROL TERMINAL AND VECTOR MAP GRID -->
-            <div class="workspace-chassis">
-                <!-- LEFT TERMINAL MONITOR CONTENT -->
-                <div>
-                    <!-- CRITICAL SCENARIO AND ADVISORIES PANEL CONTAINER -->
-                    <div id="game-scenario-card" class="scenario-box">
-                        <h3 id="scenario-core-title">Syncing Matrix...</h3>
-                        <p id="scenario-core-desc">Establishing algorithmic telemetry configurations across the current regional nodes...</p>
+                <div class="stat-bar-grid">
+                    <div class="stat-bar-card">
+                        <div class="stat-bar-header" style="color: var(--color-env);"><span>Environment</span><span id="txt-env">50%</span></div>
+                        <div class="bar-outer"><div class="bar-inner" id="bar-env" style="background: var(--color-env);"></div></div>
                     </div>
+                    <div class="stat-bar-card">
+                        <div class="stat-bar-header" style="color: var(--color-econ);"><span>Economy</span><span id="txt-econ">50%</span></div>
+                        <div class="bar-outer"><div class="bar-inner" id="bar-econ" style="background: var(--color-econ);"></div></div>
+                    </div>
+                    <div class="stat-bar-card">
+                        <div class="stat-bar-header" style="color: var(--color-app);"><span>Public Trust</span><span id="txt-app">50%</span></div>
+                        <div class="bar-outer"><div class="bar-inner" id="bar-app" style="background: var(--color-app);"></div></div>
+                    </div>
+                    <div class="stat-bar-card">
+                        <div class="stat-bar-header" style="color: var(--color-power);"><span>Grid Power</span><span id="txt-power">50%</span></div>
+                        <div class="bar-outer"><div class="bar-inner" id="bar-power" style="background: var(--color-power);"></div></div>
+                    </div>
+                </div>
 
-                    <div class="advisors-panel-title">🔒 Confidential Cabinet Briefing Dossier</div>
-                    <div class="advisors-deck">
-                        <div class="advisor-node-card" style="border-top: 2px solid var(--neon-econ);">
-                            <div class="advisor-node-title" style="color: var(--neon-econ);">Finance Ministry</div>
-                            <div id="brief-finance">Analyzing current parameters...</div>
+                <div class="dossier-container">
+                    <div class="dossier-tag">🔒 CONFIDENTIAL INTERNAL CABINET BRIEFINGS</div>
+                    <div class="dossier-grid">
+                        <div class="dossier-card finance">
+                            <h5>Finance Office</h5>
+                            <p id="brief-fin">Free power routes will make local power companies lose money on the global stock market instantly.</p>
                         </div>
-                        <div class="advisor-node-card" style="border-top: 2px solid var(--neon-env);">
-                            <div class="advisor-node-title" style="color: var(--neon-env);">Climate Secretariat</div>
-                            <div id="brief-climate">Analyzing current parameters...</div>
+                        <div class="dossier-card climate">
+                            <h5>Climate Team</h5>
+                            <p id="brief-cli">Uncapped free electricity triggers too much deep-well water pumping, drying up our clean water tables.</p>
                         </div>
-                        <div class="advisor-node-card" style="border-top: 2px solid var(--neon-app);">
-                            <div class="advisor-node-title" style="color: var(--neon-app);">Intelligence Director</div>
-                            <div id="brief-ib">Analyzing current parameters...</div>
+                        <div class="dossier-card intel">
+                            <h5>Internal Politics</h5>
+                            <p id="brief-int">Rejecting this plan will spark fierce fighting in congress and heavy pushback from regional leaders.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="decision-stack">
+                    <div class="action-block" onclick="executeDecision(1)">
+                        <div class="action-title">[EMERGENCY ORDER] Stop all dirty fuel shipping and close heavy factory loops.</div>
+                        <div class="impact-row">
+                            <span style="color: var(--color-env);">Environment +6</span>
+                            <span style="color: var(--color-econ);">Economy -8</span>
+                            <span style="color: var(--color-app);">Trust -4</span>
+                            <span style="color: var(--color-power);">Power -8</span>
                         </div>
                     </div>
 
-                    <!-- CONTROL ACTIONS OUTPUT SELECTION HOVER BASE -->
-                    <div id="decision-options-tray" class="decision-chassis"></div>
-                </div>
-
-                <!-- RIGHT TERMINAL DESK CONTROLLERS -->
-                <div class="control-surface-column">
-                    <!-- VECTOR INTERACTIVE GRID MAP SECTION -->
-                    <div>
-                        <div class="section-header-title">🗺️ Live Vector Grid Radar Schematic</div>
-                        <div class="radar-map-box">
-                            <svg class="vector-map-graphic" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
-                                <!-- North Agro-Grid Polygon Path Shape -->
-                                <path id="svg-region-north" class="map-region-path" d="M60,20 L130,20 L150,70 L90,100 L50,60 Z" />
-                                <!-- West Solar Array Polygon Path Shape -->
-                                <path id="svg-region-west" class="map-region-path" d="M20,70 L50,60 L90,100 L70,160 L20,130 Z" />
-                                <!-- East Coal Belt Polygon Path Shape -->
-                                <path id="svg-region-east" class="map-region-path" d="M90,100 L150,70 L180,120 L140,170 L100,140 Z" />
-                                <!-- Base Grid Interconnect Nodes Reference Markers -->
-                                <circle cx="90" cy="100" r="4" fill="var(--neon-grid)" />
-                                <circle cx="130" cy="70" r="3" fill="var(--text-primary)" />
-                                <circle cx="50" cy="60" r="3" fill="var(--text-primary)" />
-                            </svg>
-                        </div>
-                    </div>
-
-                    <!-- REVENUE DESK CARBON ADJUSTMENT CONTROLLER -->
-                    <div>
-                        <div class="section-header-title">
-                            <span>📈 National Carbon Assessment Levy</span>
-                            <span id="label-tax-percent" style="color: var(--neon-purple); font-weight: 900;">10%</span>
-                        </div>
-                        <div class="slider-box">
-                            <input type="range" id="input-carbon-slider" class="control-slider-input" min="0" max="50" value="10" oninput="SovereignEngine.modifyTaxRate(this.value)">
-                            <div class="slider-legend-bar">
-                                <span>0% (Bypass)</span>
-                                <span>50% (Max Ceiling)</span>
-                            </div>
-                            <div id="label-tax-projection" class="live-calc-badge">
-                                Turnover Delta: +1 Economy, -1 Public Approval
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- INFRASTRUCTURE CAPEX PROCUREMENT MATRIX -->
-                    <div>
-                        <div class="section-header-title">🔌 Infrastructure CAPEX Procurement</div>
-                        <div class="hardware-grid-deck">
-                            <button id="btn-buy-battery" class="hardware-purchase-btn" onclick="SovereignEngine.purchaseHardwareNode('battery')">
-                                <div>
-                                    <span style="display:block; font-size:0.85rem;">Tier 1: High-Capacity Grid Battery Array</span>
-                                    <span style="display:block; font-size:0.75rem; color:var(--text-secondary); font-weight:400; margin-top:2px;">Cost: 20 Economy Reserves</span>
-                                </div>
-                                <span id="tag-battery-status" class="hardware-status-tag">Locked</span>
-                            </button>
-                            <button id="btn-buy-smartgrid" class="hardware-purchase-btn" onclick="SovereignEngine.purchaseHardwareNode('smartgrid')">
-                                <div>
-                                    <span style="display:block; font-size:0.85rem;">Tier 2: AI Autonomous System Routing Mesh</span>
-                                    <span style="display:block; font-size:0.75rem; color:var(--text-secondary); font-weight:400; margin-top:2px;">Cost: 35 Economy Reserves</span>
-                                </div>
-                                <span id="tag-smartgrid-status" class="hardware-status-tag">Locked</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- GEOGRAPHIC SECTOR FRICTION OVERLAYS -->
-                    <div>
-                        <div class="section-header-title">🚨 Geographic Sector Friction Matrix</div>
-                        
-                        <div class="regional-cell">
-                            <div class="regional-meta-line">
-                                <span>East Sector: Coal Belt Hub</span>
-                                <button id="btn-subvention-east" class="regional-action-btn" onclick="SovereignEngine.injectRegionalSubvention('east')">💸 Subvention (-15 Econ)</button>
-                                <span id="text-fric-east">20%</span>
-                            </div>
-                            <div class="meter-track"><div id="map-bar-east" class="meter-fill" style="background: var(--text-primary);"></div></div>
-                        </div>
-
-                        <div class="regional-cell">
-                            <div class="regional-meta-line">
-                                <span>West Sector: Solar Deserts Array</span>
-                                <button id="btn-subvention-west" class="regional-action-btn" onclick="SovereignEngine.injectRegionalSubvention('west')">💸 Subvention (-15 Econ)</button>
-                                <span id="text-fric-west">20%</span>
-                            </div>
-                            <div class="meter-track"><div id="map-bar-west" class="meter-fill" style="background: var(--neon-grid);"></div></div>
-                        </div>
-
-                        <div class="regional-cell">
-                            <div class="regional-meta-line">
-                                <span>North Sector: Agro-Metros Grid</span>
-                                <button id="btn-subvention-north" class="regional-action-btn" onclick="SovereignEngine.injectRegionalSubvention('north')">💸 Subvention (-15 Econ)</button>
-                                <span id="text-fric-north">20%</span>
-                            </div>
-                            <div class="meter-track"><div id="map-bar-north" class="meter-fill" style="background: var(--neon-purple);"></div></div>
+                    <div class="action-block secondary" onclick="executeDecision(2)">
+                        <div class="action-title">[OVERRIDE REGS] Force maximum generator output to block blackouts.</div>
+                        <div class="impact-row">
+                            <span style="color: var(--color-env);">Environment -4</span>
+                            <span style="color: var(--color-econ);">Economy +5</span>
+                            <span style="color: var(--color-app);">Trust -8</span>
+                            <span style="color: var(--color-power);">Power +6</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- STAGE 2.5: PERSISTENT CABINET ACHIEVEMENT VAULT DISPLAY -->
-            <div style="margin-top: 32px; border-top: 1px dashed var(--border-glow); padding-top: 24px;">
-                <div class="vault-title-header">🏆 Cabinet Achievement Synchronization Vault</div>
-                <div class="achievements-vault-grid">
-                    <div id="ach-green" class="vault-badge-card">
-                        <div class="vault-badge-icon">🌿</div>
-                        <h5>Net-Zero Prophet</h5>
-                        <p>Complete execution profile matching Environmental scores &ge; 75% baseline limits.</p>
-                    </div>
-                    <div id="ach-titan" class="vault-badge-card">
-                        <div class="vault-badge-icon">⚡</div>
-                        <h5>Industrial Titan</h5>
-                        <p>Satisfy all high-demand industrial metrics with Grid scores &ge; 75%.</p>
-                    </div>
-                    <div id="ach-wizard" class="vault-badge-card">
-                        <div class="vault-badge-icon">💰</div>
-                        <h5>Fiscal Alchemist</h5>
-                        <p>Optimize ministerial deployment budgets to finish with Economy &ge; 75%.</p>
-                    </div>
-                    <div id="ach-smart" class="vault-badge-card">
-                        <div class="vault-badge-icon">🤖</div>
-                        <h5>Singularity Overlord</h5>
-                        <p>Deploy both high-capacity storage banks and AI routing architecture modules.</p>
-                    </div>
-                    <div id="ach-pacifier" class="vault-badge-card">
-                        <div class="vault-badge-icon">🤝</div>
-                        <h5>Sovereign Pacifier</h5>
-                        <p>Successfully minimize all regional discontent markers below 10% parameters simultaneously.</p>
-                    </div>
-                    <div id="ach-survivor" class="vault-badge-card">
-                        <div class="vault-badge-icon">💀</div>
-                        <h5>Iron Cabinet Survivor</h5>
-                        <p>Clear a full 8-year parliamentary session under extreme Hung Parliament environments.</p>
+            <div class="side-panel">
+                
+                <div class="radar-box">
+                    <div class="panel-label">🗺️ Live Vector Grid Network Status</div>
+                    <div class="vector-canvas-wrapper">
+                        <svg width="100%" height="100%" viewBox="0 0 200 200" style="position: absolute;">
+                            <polygon points="100,20 170,70 150,160 50,160 30,70" fill="rgba(126, 87, 194, 0.15)" stroke="#4a4ae2" stroke-width="1.5"/>
+                            <line x1="100" y1="100" x2="100" y2="20" stroke="#252545" stroke-dasharray="3"/>
+                            <line x1="100" y1="100" x2="170" y2="70" stroke="#252545" stroke-dasharray="3"/>
+                            <line x1="100" y1="100" x2="150" y2="160" stroke="#252545" stroke-dasharray="3"/>
+                            <line x1="100" y1="100" x2="50" y2="160" stroke="#252545" stroke-dasharray="3"/>
+                            <line x1="100" y1="100" x2="30" y2="70" stroke="#252545" stroke-dasharray="3"/>
+                            <circle cx="100" cy="45" r="5" fill="#fff" id="node-1"/>
+                            <circle cx="150" cy="80" r="5" fill="#fff" id="node-2"/>
+                            <circle cx="100" cy="115" r="6" fill="orange" id="node-hub"/>
+                        </svg>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- STAGE 3: EXIT REGRESSION EVALUATOR PANEL -->
-        <div id="window-summary" class="screen-layout">
-            <div class="summary-center-box">
-                <h2 id="summary-headline-title">Term Concluded</h2>
-                <div id="summary-medal-ribbon" class="medal-showcase-ribbon">Analyzing Metric Performance...</div>
-                <p id="summary-body-desc">Running evaluation regressions across all four core portfolio indices to process the final matrix diagnostic file...</p>
-                <button class="action-system-btn" onclick="SovereignEngine.bounceToMenu()">Re-engage Strategic Board</button>
+                <div class="control-panel-box">
+                    <div class="panel-label">📊 Command Sliders</div>
+                    <div class="slider-interface">
+                        <div class="slider-header-main">
+                            <span>Carbon Levy Fee</span>
+                            <span id="tax-display-text" style="color: var(--color-app);">18%</span>
+                        </div>
+                        <input type="range" class="slider-input-element" id="slider-carbon-tax" min="0" max="50" value="18" oninput="processSliderShift()">
+                        <div class="slider-status-subtext" id="slider-feedback-msg">Shift Delta: +1 Economy, -1 Public Trust per turn cycle.</div>
+                    </div>
+                </div>
+
+                <div class="bribe-box">
+                    <div class="bribe-header">
+                        <div class="bribe-title">💼 Political Safety / Bribes</div>
+                        <div class="bribe-btn-action" onclick="buyPoliticalBribe()">Pay Bribe (12 Points)</div>
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-muted);">If public trust or economic cash flow hits dangerous levels, deploy resources to instantly steady critical systems.</div>
+                </div>
+
+                <div class="log-box">
+                    <div class="panel-label">📟 Real-Time Log Feed</div>
+                    <div class="log-feed" id="log-terminal">
+                        [SYSTEM]: System ready for supervisor initialization...
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
-    <!-- REVERSED INDUSTRIAL LOGISTICAL TICKER STRIP -->
-    <div class="wire-ticker-container">
-        <div class="ticker-prefix-tag">SISI TIMES TRANSIT WIRE</div>
-        <div class="ticker-marquee-line">
-            <span class="ticker-alert-dot">● METRICS ONLINE</span>
-            <span id="ticker-live-text">Cabinet portfolio operations logged. Establishing continuous synchronized baseline data interfaces...</span>
+    <div class="modal-overlay" id="end-game-modal">
+        <div class="modal-content">
+            <h2 id="modal-heading" style="color: var(--color-danger); margin-top:0;">CRITICAL GRID COLLAPSE</h2>
+            <p id="modal-desc">One of your primary infrastructure pillars completely drained, resulting in systemic load failure.</p>
+            <button class="start-btn" onclick="location.reload()" style="margin-top:20px;">Restart System</button>
         </div>
     </div>
 
     <script>
-        // ==================================================================================
-        // COMPREHENSIVE AUDIO SYNTH ORCHESTRATION ENGINE
-        // ==================================================================================
-        const AudioOrchestrator = {
-            audioCtx: null,
-            init() { if(!this.audioCtx) this.audioCtx = new (window.AudioContext || window.webkitAudioContext)(); },
-            generateFrequencyTone(freq, timeSpan, shapeType = "sine", outputGain = 0.08) {
-                try {
-                    this.init();
-                    const osc = this.audioCtx.createOscillator();
-                    const gainNode = this.audioCtx.createGain();
-                    osc.type = shapeType;
-                    osc.frequency.setValueAtTime(freq, this.audioCtx.currentTime);
-                    gainNode.gain.setValueAtTime(outputGain, this.audioCtx.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.0001, this.audioCtx.currentTime + timeSpan);
-                    osc.connect(gainNode);
-                    gainNode.connect(this.audioCtx.destination);
-                    osc.start();
-                    osc.stop(this.audioCtx.currentTime + timeSpan);
-                } catch (err) {}
-            },
-            triggerBeep() { this.generateFrequencyTone(900, 0.1, "sine", 0.05); },
-            triggerClick() { this.generateFrequencyTone(650, 0.04, "triangle", 0.08); },
-            triggerAlarm() {
-                this.generateFrequencyTone(240, 0.35, "sawtooth", 0.12);
-                setTimeout(() => this.generateFrequencyTone(200, 0.35, "sawtooth", 0.12), 160);
-            },
-            triggerChimeFanfare() {
-                const progression = [523.25, 659.25, 783.99, 1174.66];
-                progression.forEach((f, idx) => setTimeout(() => this.generateFrequencyTone(f, 0.25, "sine", 0.08), idx * 120));
-            },
-            triggerDefeatCascade() {
-                const downward = [349.23, 293.66, 220.00, 146.83];
-                downward.forEach((f, idx) => setTimeout(() => this.generateFrequencyTone(f, 0.45, "sawtooth", 0.15), idx * 180));
-            }
-        };
+        // CORE STATE ENGINE
+        let activeMode = 'std';
+        let stats = { env: 50, econ: 50, app: 50, power: 50 };
+        let currentScore = 0;
 
-        // ==================================================================================
-        // BROWSER LOCALSTORAGE STATE MANAGEMENT SYSTEM
-        // ==================================================================================
-        const SavesManager = {
-            storageKey: "SovereignEngine_SaveState_v9",
-            cache: { careerPoints: 0, unlockedBadges: [] },
-            loadPersistentState() {
-                try {
-                    const raw = localStorage.getItem(this.storageKey);
-                    if(raw) {
-                        this.cache = JSON.parse(raw);
-                    } else {
-                        this.savePersistentState();
-                    }
-                } catch(e) { this.cache = { careerPoints: 0, unlockedBadges: [] }; }
-                this.syncHeaderUI();
-            },
-            savePersistentState() {
-                try { localStorage.setItem(this.storageKey, JSON.stringify(this.cache)); } catch(e) {}
-                this.syncHeaderUI();
-            },
-            incrementCareerPoints(amt) {
-                this.cache.careerPoints += amt;
-                this.savePersistentState();
-            },
-            unlockCabinetBadge(badgeId) {
-                if(!this.cache.unlockedBadges.includes(badgeId)) {
-                    this.cache.unlockedBadges.push(badgeId);
-                    this.savePersistentState();
-                    AudioOrchestrator.triggerChimeFanfare();
-                    alert(`🏆 CRITICAL CABINET ACHIEVEMENT UNLOCKED: [${badgeId.toUpperCase()}] Synchronized to persistent operational history.`);
-                }
-            },
-            syncHeaderUI() {
-                document.getElementById("career-points-display").innerText = String(this.cache.careerPoints).padStart(4, '0');
-                this.cache.unlockedBadges.forEach(id => {
-                    const el = document.getElementById(`ach-${id}`);
-                    if(el) el.classList.add("unlocked-achievement");
-                });
-            }
-        };
+        // DICTIONARIES FOR SIMPLIFIED PHRASING VARIATIONS
+        const briefingsTextPool = [
+            { f: "Shutting down old grids causes local power providers to drop in global value.", c: "Too much dirty power creates toxic smog alerts near cities.", i: "Passing this rule causes heavy protests by industrial unions." },
+            { f: "A high carbon tax drops overall factory outputs, shrinking tax revenue.", c: "Running full backup coal lines threatens clean air protections.", i: "Voters are furious about power grid brownouts last weekend." },
+            { f: "Upgrading safety networks will require deep budget cuts somewhere else.", c: "Hot weather patterns spike system demand across farming sectors.", i: "Local state governors demand total control of their energy lines." }
+        ];
 
-        // ==================================================================================
-        // MASTER CENTRAL CORE GAME ENGINE ARCHITECTURE (STRICT 4-OPTIONS MATRICES)
-        // ==================================================================================
-        const SovereignEngine = {
-            currentTurnYear: 1,
-            stats: { env: 55, econ: 55, app: 55, grid: 55 },
-            friction: { finance: 0, climate: 0, ib: 0 },
-            regionalFriction: { east: 20, west: 20, north: 20 },
+        function selectMode(targetMode) {
+            activeMode = targetMode;
+            document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById(`mode-${targetMode}`).classList.add('selected');
             
-            selectedMode: 'medium',
-            frictionScaleFactor: 1.0,
-            carbonLevyTaxRate: 10,
-            
-            hasBatteryUpgrade: false,
-            hasSmartGridUpgrade: false,
-            
-            activeDeck: [],
-            isProcessingEmergencyDirective: false,
-            triggeredEmergencyFlags: { env: false, econ: false, app: false, grid: false },
-
-            seasonsOrder: ["Summer Load Peak Vector", "Monsoon Hydro Surplus", "Winter Inversion Trapping", "Temperate Baseline Matrix"],
-
-            scenariosMasterRepository: [
-                {
-                    title: "The 260 GW Heatwave Peak Emergency",
-                    desc: "An intense, multi-state climate thermal anomaly drives matching power draws to historical 260 GW highs. Critical grid components face physical tripping risks as localized transformers operate outside nominal thresholds.",
-                    isPeakUrgency: true,
-                    briefs: {
-                        finance: "Acquiring international emergency spot gas cargoes commands an astronomical $30/MMBtu price trajectory.",
-                        climate: "Do not issue structural emergency baseline waivers to coal operations; transparency metrics track extreme emissions.",
-                        ib: "Extended industrial brownouts will trigger volatile public demonstrations across high-density metro zones."
-                    },
-                    wireText: "ALERT LINE: Grid system operating frequencies hover near critical safety margins as high thermal anomalies trigger peak strains...",
-                    options: [
-                        { text: "Authorize local baseline overrides to lift coal production ceilings across state parameters.", metrics: { env: -14, econ: 8, app: 5, grid: 12 }, regional: { east: -15, west: 0, north: 5 }, defy: "climate" },
-                        { text: "Initiate strategic rotational shedding loops across rural agricultural sub-grids to shelter primary industrial lines.", metrics: { env: 2, econ: -5, app: -15, grid: 8 }, regional: { east: 5, west: 5, north: 25 }, defy: "ib" },
-                        { text: "Deploy reserve sovereign emergency lines to clear spot gas shipping arrays, absorbing structural capital shocks.", metrics: { env: -4, econ: -15, app: 6, grid: 14 }, regional: { east: 0, west: -5, north: -5 }, defy: "finance" },
-                        { text: "Mandate temporary suspension of all non-essential high-voltage heavy industrial factory operation loops during twilight.", metrics: { env: 4, econ: -12, app: -6, grid: 6 }, regional: { east: 5, west: -5, north: 5 }, defy: "finance" }
-                    ]
-                },
-                {
-                    title: "Apex Judicial Transmission Corridor Mandate",
-                    desc: "The Supreme Court rules that all overhead cross-state high-voltage clean energy conduits traversing western deserts must be converted underground to protect endangered wildlife paths. Developers freeze operations citing cost collapse.",
-                    isPeakUrgency: false,
-                    briefs: {
-                        finance: "Providing capital guarantees to cover underground utility routing will deplete central structural development funds.",
-                        climate: "The local desert ecosystem risks total biospheric collapse if overhead transmission cabling structures persist.",
-                        ib: "International renewable clean-tech infrastructure syndicates threaten long-term capital strikes if structural delays compound."
-                    },
-                    wireText: "LEGAL INJUNCTION: High court enforces absolute statutory compliance lines across clean energy routing structures...",
-                    options: [
-                        { text: "Lodge a comprehensive sovereign defense motion asserting energy infrastructure takes absolute statutory priority over wildlife.", metrics: { env: -15, econ: 10, app: -2, grid: 12 }, regional: { east: -5, west: 15, north: 0 }, defy: "climate" },
-                        { text: "Commit direct central state financial subventions to cover developers' underground hardware transition metrics.", metrics: { env: 10, econ: -15, app: -2, grid: -2 }, regional: { east: 0, west: -15, north: 0 }, defy: "finance" },
-                        { text: "Revoke developers' operational access permissions and re-allocate core baseload development to eastern thermal corridors.", metrics: { env: -12, econ: -4, app: 4, grid: 8 }, regional: { east: -15, west: 20, north: 5 }, defy: "climate" },
-                        { text: "Enforce aggressive, immediate cross-state regional network power rationing while a lower-cost surface corridor is mapped out.", metrics: { env: 2, econ: -6, app: -14, grid: -10 }, regional: { east: 5, west: 10, north: 10 }, defy: "ib" }
-                    ]
-                },
-                {
-                    title: "Protective Trade Tariff Enforcement Matrix",
-                    desc: "Domestic component fabricators lobby for an increase in protective manufacturing import fees to suppress foreign hardware. However, domestic assembly lines encounter severe supply delays, bottlenecking grid deployment speeds.",
-                    isPeakUrgency: false,
-                    briefs: {
-                        finance: "Abolishing these structures completely alienates primary industrial manufacturing conglomerates backing core policies.",
-                        climate: "Sustaining protectionist constraints artificially delays clean energy transition velocities by up to 24 months.",
-                        ib: "Intelligence tracking indicates illicit tracking schemes routing low-tier modules via secondary trade vectors to bypass duties."
-                    },
-                    wireText: "TRADE DISPUTE: Manufacturing boards demand enhanced regulatory isolation measures amidst global supply crunch dynamics...",
-                    options: [
-                        { text: "Abolish protective tariff schedules to ingest cheap international module volumes, accelerating plant commissioning.", metrics: { env: 12, econ: -10, app: -4, grid: 12 }, regional: { east: 0, west: -12, north: 0 }, defy: "finance" },
-                        { text: "Enforce aggressive, comprehensive custom penalty matrices to lock out foreign parts, prioritizing domestic production.", metrics: { env: -14, econ: 12, app: -2, grid: -12 }, regional: { east: -5, west: 15, north: 5 }, defy: "climate" },
-                        { text: "Implement a split-subsidy package that finances domestic solar fabs while granting short-term zero-tariff waivers to key items.", metrics: { env: 4, econ: -14, app: 4, grid: 4 }, regional: { east: -5, west: -5, north: 0 }, defy: "finance" },
-                        { text: "Freeze all new solar development approvals entirely until domestic manufacturing meets target production volumes.", metrics: { env: -10, econ: -2, app: -8, grid: -14 }, regional: { east: 15, west: 25, north: 5 }, defy: "climate" }
-                    ]
-                },
-                {
-                    title: "Electoral Zero-Cost Unmetered Agricultural Mandate",
-                    desc: "In anticipation of pivotal state assembly ballots, coalition high-command orders the portfolio desk to transition agricultural grid interfaces to completely unmetered, free operations to retain agrarian voter segments.",
-                    isPeakUrgency: false,
-                    briefs: {
-                        finance: "Removing metering protocols will collapse the credit ratings of regional power utilities on global asset exchanges.",
-                        climate: "Uncapped, zero-cost power routing drives unchecked deep-well water pumping, dropping regional water tables to historic depths.",
-                        ib: "Rejecting this directive guarantees immediate legislative fragmentation and intense state political backlash."
-                    },
-                    wireText: "BALLOT WATCH: Populist agricultural pricing frameworks dominate discussion tables ahead of regional state validation cycles...",
-                    options: [
-                        { text: "Approve unmetered agricultural electricity routing protocols, securing political baselines at the expense of fiscal metrics.", metrics: { env: -15, econ: -16, app: 15, grid: -8 }, regional: { east: 0, west: 0, north: -25 }, defy: "finance" },
-                        { text: "Enforce a highly capped Direct Benefit Transfer (DBT) structure to log and control usage volumes, incurring moderate public friction.", metrics: { env: -5, econ: -6, app: 5, grid: -2 }, regional: { east: 0, west: 5, north: -5 }, defy: "ib" },
-                        { text: "Deny the unmetered request to protect grid asset performance and financial integrity, sparking intense internal coalition splits.", metrics: { env: 10, econ: 12, app: -18, grid: 10 }, regional: { east: 5, west: 0, north: 32 }, defy: "ib" },
-                        { text: "Nationalize the state-owned distribution boards and force commercial office complexes to heavily subsidize farming connections.", metrics: { env: -4, econ: -12, app: -6, grid: -4 }, regional: { east: -5, west: -5, north: -12 }, defy: "finance" }
-                    ]
-                },
-                {
-                    title: "Biosphere Pumped Hydro Storage Grid Project",
-                    desc: "Engineers blueprint a massive 4,000 MW pumped storage balance facility to anchor western frequency fluctuations. However, the geographic catchment area requires clearing 300 hectares of high-density biosphere forest.",
-                    isPeakUrgency: false,
-                    briefs: {
-                        finance: "Failing to build storage ensures the state must buy high-cost volatile peak thermal energy over the long term.",
-                        climate: "The target biosphere incorporates vulnerable endemic species sets; clear-cutting breaks baseline environmental standards.",
-                        ib: "Civil movements are coordinating media monitoring setups; hard enforcement protocols will trigger public backlash."
-                    },
-                    wireText: "CIVIL FRICTION: Non-governmental environmental cells establish direct site barriers inside forestry zones...",
-                    options: [
-                        { text: "Deploy regional police details to disperse environmental blocks, ensuring critical stability infrastructure goes online.", metrics: { env: -16, econ: 8, app: -12, grid: 15 }, regional: { east: -5, west: -5, north: 5 }, defy: "climate" },
-                        { text: "Shelve the hydro project model entirely, maintaining structural reliance on existing thermal peaking systems.", metrics: { env: 10, econ: -8, app: 12, grid: -14 }, regional: { east: -10, west: 14, north: -5 }, defy: "finance" },
-                        { text: "Halt operations to perform a multi-year ecological reallocation study, delaying grid stabilizing actions indefinitely.", metrics: { env: 4, econ: -6, app: 4, grid: -10 }, regional: { east: 0, west: 8, north: 0 }, defy: "finance" },
-                        { text: "Double the scale of the facility but commit a massive portion of the national budget to plant an equivalent forest corridor elsewhere.", metrics: { env: -6, econ: -18, app: -4, grid: 18 }, regional: { east: -5, west: -15, north: 5 }, defy: "finance" }
-                    ]
-                },
-                {
-                    title: "Automated Grid Smart Meter Metropolitan Backlash",
-                    desc: "To capture massive technical transmission losses and illicit grid lines, the ministry begins deploying automated prepaid smart meters. Civil unrest spreads rapidly as automatic cutoffs sever non-compliant accounts.",
-                    isPeakUrgency: false,
-                    briefs: {
-                        finance: "Recovering unmetered power losses is non-negotiable to keep regional distribution firms from functional insolvency.",
-                        climate: "Real-time structural mapping loops let the desk isolate load metrics efficiently, minimizing overall system coal reliance.",
-                        ib: "Localized criminal distribution syndicates are weaponizing consumer anxiety to spark coordinated physical asset attacks."
-                    },
-                    wireText: "METRO CONFLICT: Field teams request additional security parameters as smart meter installations trigger civic standoffs...",
-                    options: [
-                        { text: "Maintain absolute enforcement metrics. Deploy security forces to guard tracking endpoints and maintain collections.", metrics: { env: 0, econ: 15, app: -16, grid: 8 }, regional: { east: 5, west: -5, north: 26 }, defy: "ib" },
-                        { text: "Suspend the meter rollouts entirely, allowing historical unmetered losses to resume to maintain civic peace.", metrics: { env: -5, econ: -16, app: 14, grid: -8 }, regional: { east: -5, west: 5, north: -22 }, defy: "finance" },
-                        { text: "Offer a sweeping debt amnesty that erases past power theft fines in exchange for immediate smart meter compliance updates.", metrics: { env: 2, econ: -10, app: 6, grid: 4 }, regional: { east: 0, west: 0, north: -8 }, defy: "finance" },
-                        { text: "Slow the deployment cycle to target high-income corporate zones exclusively, leaving low-income illegal grid hookups unmonitored.", metrics: { env: -6, econ: 4, app: -4, grid: -4 }, regional: { east: 10, west: 0, north: 12 }, defy: "climate" }
-                    ]
-                },
-                {
-                    title: "Smog Inversion Thermal Shutdown Decree",
-                    desc: "Severe weather inversion patterns trap dangerous industrial particulate loads over northern population hubs. High courts issue an immediate mandate ordering the ministry to deactivate all thermal units lacking modern scrubbers.",
-                    isPeakUrgency: true,
-                    briefs: {
-                        finance: "Sudden structural shutdowns across these key legacy assets will throttle industrial output and regional manufacturing indices.",
-                        climate: "Particulate tracking parameters reflect dangerous health hazards; public health metrics demand absolute emergency compliance.",
-                        ib: "Abrupt generation halts will freeze regional factory operations, triggering instant contract labor lay-offs."
-                    },
-                    wireText: "POLLUTION DIRECTIVE: Air quality indices breach emergency thresholds near northern metropolitan coordinates...",
-                    options: [
-                        { text: "Comply with judicial commands and shut down non-compliant stations, prioritizing ambient environmental indices over output.", metrics: { env: 16, econ: -10, app: 8, grid: -16 }, regional: { east: 22, west: 5, north: -12 }, defy: "finance" },
-                        { text: "File an emergency executive declaration to override the closure, citing high national grid vulnerability constraints.", metrics: { env: -16, econ: 12, app: -10, grid: 14 }, regional: { east: -22, west: -5, north: 22 }, defy: "climate" },
-                        { text: "Enact a partial generation schedule paired with extreme power pricing spikes to aggressively suppress industrial demand.", metrics: { env: 4, econ: 4, app: -16, grid: -4 }, regional: { east: 10, west: 5, north: 12 }, defy: "ib" },
-                        { text: "Re-route immense backup electricity volumes from the Western solar arrays, operating line transmission vectors far past thermal limits.", metrics: { env: -2, econ: -8, app: 2, grid: 4 }, regional: { east: -5, west: 24, north: -5 }, defy: "finance" }
-                    ]
-                },
-                {
-                    title: "Sovereign Green Bond Resource Offer",
-                    desc: "An international private infrastructure consortium offers a multi-billion dollar capital injection for clean transition projects. In exchange, they demand statutory operational timeline extensions for their traditional coal assets.",
-                    isPeakUrgency: false,
-                    briefs: {
-                        finance: "This massive capital layout completely structures our long-term network expansion and satisfies international credit ratings.",
-                        climate: "Granting these extensions commits the state to decades of fossil fuel reliance, breaking international climate accords.",
-                        ib: "Leaked files detailing selective regulatory timeline exclusions will provoke high parliamentary oversight reviews."
-                    },
-                    wireText: "CAPITAL MONITOR: Multi-national infrastructure groups pitch long-term resource financing integrations with state desks...",
-                    options: [
-                        { text: "Endorse the international financing package, approving asset runtime timeline extensions to lock in massive fiscal inputs.", metrics: { env: -16, econ: 14, app: 8, grid: 4 }, regional: { east: -15, west: 0, north: -5 }, defy: "climate" },
-                        { text: "Reject the corporate compromise, maintaining strict statutory environmental decommissioning schedules.", metrics: { env: 12, econ: -12, app: -12, grid: -6 }, regional: { east: 16, west: 5, north: 10 }, defy: "finance" },
-                        { text: "Counter-propose a layout with slightly shorter coal runtimes paired with zero-liability corporate tax waivers for their solar builds.", metrics: { env: -4, econ: 6, app: -4, grid: 6 }, regional: { east: -5, west: -10, north: 0 }, defy: "climate" },
-                        { text: "Break off talks entirely and authorize an emergency domestic currency print to cover infrastructure investments internally.", metrics: { env: 2, econ: -20, app: -6, grid: 8 }, regional: { east: 5, west: 5, north: 5 }, defy: "finance" }
-                    ]
-                }
-            ],
-
-            emergencyDirectivesPool: {
-                env: { 
-                    title: "⚠️ DIRECTIVE RED: Atmospheric Air Quality Collapse", 
-                    desc: "Ambient environmental indicators have slipped past critical survival thresholds. Dense toxic smog chokes urban sectors, forcing emergency action.", 
-                    options: [
-                        { text: "[EMERGENCY ACTION] Order an absolute freeze on thermal fuel transit and halt heavy industrial loops.", metrics: { env: 16, econ: -8, app: -4, grid: -8 } }, 
-                        { text: "[BYPASS COMPLIANCE] Maintain absolute base generation parameters to prevent load drops.", metrics: { env: -4, econ: 6, app: -8, grid: 4 } },
-                        { text: "[URBAN TAX MANDATE] Implement an immediate vehicle ban in capital centers and penalize regional power generation.", metrics: { env: 12, econ: -6, app: -12, grid: -2 } },
-                        { text: "[CLIMATE CLASSIFICATION] Re-classify emergency tracking parameters to mask air readings, dodging immediate grid cuts.", metrics: { env: -8, econ: 4, app: 8, grid: 2 } }
-                    ] 
-                },
-                econ: { 
-                    title: "⚠️ DIRECTIVE RED: Public Utility Credit Default", 
-                    desc: "Sovereign energy financial indicators have touched system limits. International financial networks halt import credit processing.", 
-                    options: [
-                        { text: "[EMERGENCY ACTION] Liquidate state transmission line equity slices to secure rapid liquid reserves.", metrics: { env: -10, econ: 16, app: -6, grid: -4 } }, 
-                        { text: "[BYPASS COMPLIANCE] Impose an instant, total freeze on all state grid expansion allocations.", metrics: { env: 0, econ: 10, app: -15, grid: 2 } },
-                        { text: "[EMERGENCY TARIFF ELEVATION] Issue a retroactive 30% surge fee across all commercial manufacturing connection hubs.", metrics: { env: 2, econ: 12, app: -14, grid: -4 } },
-                        { text: "[SOVEREIGN BAILOUT] Divert funding directly out of national safety networks, taking severe political heat.", metrics: { env: -2, econ: 14, app: -18, grid: 0 } }
-                    ] 
-                },
-                app: { 
-                    title: "⚠️ DIRECTIVE RED: Central Administrative Desk Siege", 
-                    desc: "Portfolio public approval ratings have collapsed below survivable governance lines. Hostile crowds target grid facilities.", 
-                    options: [
-                        { text: "[EMERGENCY ACTION] Enforce an immediate 20% cut in residential consumer power tariffs, forcing firms to absorb costs.", metrics: { env: -4, econ: -12, app: 18, grid: -4 } }, 
-                        { text: "[BYPASS COMPLIANCE] Maintain fixed tariff structures and deploy internal security units to guard nodes.", metrics: { env: 0, econ: 6, app: -15, grid: 10 } },
-                        { text: "[POPULIST CONCESSION] Sack the primary industrial oversight board and issue broad usage subsidies across rural states.", metrics: { env: -6, econ: -10, app: 14, grid: -6 } },
-                        { text: "[MEDIA BLITZ NETWORK] Roll out an aggressive propaganda matrix and execute high-profile arrests of independent energy cartels.", metrics: { env: 2, econ: -4, app: 10, grid: -2 } }
-                    ] 
-                },
-                grid: { 
-                    title: "⚠️ DIRECTIVE RED: Cascading Grid Frequency Trip", 
-                    desc: "System power stability balances hit physical breakdown thresholds. Automated distribution breakers disconnect regions.", 
-                    options: [
-                        { text: "[EMERGENCY ACTION] Fire up all legacy diesel and high-emission reserve peaking plants nationwide.", metrics: { env: -15, econ: -5, app: 6, grid: 18 } }, 
-                        { text: "[BYPASS COMPLIANCE] Enforce rigid rolling blackouts across metropolitan lines to preserve core frequency.", metrics: { env: 6, econ: -12, app: -12, grid: 10 } },
-                        { text: "[INDUSTRIAL ACCELERATION] Disconnect all automated grid protection parameters, forcing plants to run past melting points.", metrics: { env: -10, econ: -8, app: -2, grid: 16 } },
-                        { text: "[CROSS-BORDER POWER POACH] Violate regional inter-tie import treaties to poach load allocations from neighboring grids.", metrics: { env: -2, econ: -14, app: 4, grid: 14 } }
-                    ] 
-                }
-            },
-
-            // INITIALIZE ENVIRONMENT VALUES BASED ON USER MANDATE SELECTION
-            initiateEnvironment(mode) {
-                AudioOrchestrator.triggerBeep();
-                SavesManager.loadPersistentState();
-                
-                this.selectedMode = mode;
-                this.currentTurnYear = 1;
-                this.friction = { finance: 0, climate: 0, ib: 0 };
-                this.regionalFriction = { east: 20, west: 20, north: 20 };
-                this.triggeredEmergencyFlags = { env: false, econ: false, app: false, grid: false };
-                this.isProcessingEmergencyDirective = false;
-                
-                this.carbonLevyTaxRate = 10;
-                this.hasBatteryUpgrade = false;
-                this.hasSmartGridUpgrade = false;
-                
-                document.getElementById("input-carbon-slider").value = 10;
-                document.getElementById("game-scenario-card").classList.remove("emergency-lockdown");
-
-                if (mode === 'easy') {
-                    this.stats = { env: 65, econ: 65, app: 65, grid: 65 };
-                    this.frictionScaleFactor = 0.5;
-                } else if (mode === 'medium') {
-                    this.stats = { env: 55, econ: 55, app: 55, grid: 55 };
-                    this.frictionScaleFactor = 1.0;
-                } else if (mode === 'hard') {
-                    this.stats = { env: 45, econ: 45, app: 45, grid: 45 };
-                    this.frictionScaleFactor = 2.0;
-                }
-
-                // CLONE AND RE-SHUFFLE EXECUTABLE CONSOLE POOL
-                let repositoryClone = [...this.scenariosMasterRepository];
-                for (let i = repositoryClone.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [repositoryClone[i], repositoryClone[j]] = [repositoryClone[j], repositoryClone[i]];
-                }
-                this.activeDeck = repositoryClone.slice(0, 8);
-
-                document.getElementById("window-start").classList.remove("active-window");
-                document.getElementById("window-game").classList.add("active-window");
-
-                this.calculateTaxProjection();
-                this.refreshUI();
-                this.presentTurnScenario();
-            },
-
-            modifyTaxRate(val) {
-                this.carbonLevyTaxRate = parseInt(val);
-                document.getElementById("label-tax-percent").innerText = `${this.carbonLevyTaxRate}%`;
-                this.calculateTaxProjection();
-            },
-
-            calculateTaxProjection() {
-                let financialYield = Math.floor(this.carbonLevyTaxRate / 10);
-                let civicDrain = Math.floor(this.carbonLevyTaxRate / 8);
-                document.getElementById("label-tax-projection").innerText = `Turn Drift Delta: +${financialYield} Economy, -${civicDrain} Approval`;
-            },
-
-            purchaseHardwareNode(type) {
-                AudioOrchestrator.triggerClick();
-                if(type === 'battery' && !this.hasBatteryUpgrade && this.stats.econ >= 20) {
-                    this.stats.econ -= 20;
-                    this.hasBatteryUpgrade = true;
-                    alert("⚡ NODE CONFIGURATION REPORT: High-Capacity Grid Battery Array online. Evening thermal emergency drops are now cushioned.");
-                } else if(type === 'smartgrid' && !this.hasSmartGridUpgrade && this.stats.econ >= 35) {
-                    this.stats.econ -= 35;
-                    this.hasSmartGridUpgrade = true;
-                    alert("🤖 NODE CONFIGURATION REPORT: AI Autonomous System Routing Mesh deployed. Long-term transmission losses and geographic friction vectors are reduced.");
-                }
-                this.evalMidTurnAchievements();
-                this.refreshUI();
-            },
-
-            injectRegionalSubvention(region) {
-                AudioOrchestrator.triggerClick();
-                if(this.stats.econ >= 15 && this.regionalFriction[region] > 0) {
-                    this.stats.econ -= 15;
-                    this.regionalFriction[region] = Math.max(0, this.regionalFriction[region] - 25);
-                    alert(`💸 SYSTEM TRANSACTION LOGGED: Dispatched ₹15 Crore subvention to the ${region.toUpperCase()} territory network node. Local friction dampened.`);
-                    this.evalMidTurnAchievements();
-                    this.refreshUI();
-                }
-            },
-
-            // REFRESH VISUAL REPRESENTATIONS AND UPDATE SYSTEM FIELDS
-            refreshUI() {
-                // VALUE FIELDS SYNCHRONIZATION
-                document.getElementById("val-env").innerText = this.stats.env;
-                document.getElementById("val-econ").innerText = this.stats.econ;
-                document.getElementById("val-app").innerText = this.stats.app;
-                document.getElementById("val-grid").innerText = this.stats.grid;
-
-                // STATUS METER FILL BAR SYNCHRONIZATION
-                document.getElementById("bar-env").style.width = `${this.stats.env}%`;
-                document.getElementById("bar-econ").style.width = `${this.stats.econ}%`;
-                document.getElementById("bar-app").style.width = `${this.stats.app}%`;
-                document.getElementById("bar-grid").style.width = `${this.stats.grid}%`;
-
-                // CONDITIONAL ALERTS DEPLOYMENT
-                this.toggleAlertStyle("hud-env", this.stats.env);
-                this.toggleAlertStyle("hud-econ", this.stats.econ);
-                this.toggleAlertStyle("hud-app", this.stats.app);
-                this.toggleAlertStyle("hud-grid", this.stats.grid);
-
-                document.getElementById("label-console-year").innerText = `Year: ${this.currentTurnYear} of 8`;
-                const calculatedSeason = this.seasonsOrder[(this.currentTurnYear - 1) % 4];
-                document.getElementById("label-console-season").innerText = `SEASON: ${calculatedSeason}`;
-
-                // REFRESH HARDWARE ACCESS DESKS
-                this.syncHardwareButton("battery", 20, this.hasBatteryUpgrade);
-                this.syncHardwareButton("smartgrid", 35, this.hasSmartGridUpgrade);
-
-                // REFRESH REGIONAL ACTION TRACES
-                this.syncSubventionRow("east", this.regionalFriction.east);
-                this.syncSubventionRow("west", this.regionalFriction.west);
-                this.syncSubventionRow("north", this.regionalFriction.north);
-
-                // REFRESH INTERNAL FRICTION STATUS READOUTS
-                this.syncFrictionNode("fric-node-finance", "Finance Panel Friction", this.friction.finance);
-                this.syncFrictionNode("fric-node-climate", "Climate Advisory Friction", this.friction.climate);
-                this.syncFrictionNode("fric-node-ib", "Intelligence Bureau Friction", this.friction.ib);
-
-                // VECTOR SVG RADAR CHASSIS GLOW INTERFACES
-                VectorMapUI.paintRegion("svg-region-east", this.regionalFriction.east);
-                VectorMapUI.paintRegion("svg-region-west", this.regionalFriction.west);
-                VectorMapUI.paintRegion("svg-region-north", this.regionalFriction.north);
-            },
-
-            toggleAlertStyle(elementId, value) {
-                const target = document.getElementById(elementId);
-                if(value <= 15) target.classList.add("critical-alert");
-                else target.classList.remove("critical-alert");
-            },
-
-            syncHardwareButton(type, cost, ownedFlag) {
-                const btn = document.getElementById(`btn-buy-${type}`);
-                const tag = document.getElementById(`tag-${type}-status`);
-                if(ownedFlag) {
-                    btn.disabled = true;
-                    tag.innerText = "DEPLOYED SHIELD";
-                    tag.className = "hardware-status-tag owned";
-                } else {
-                    btn.disabled = (this.stats.econ < cost);
-                    tag.innerText = this.stats.econ >= cost ? "Available" : `Locked (<${cost} Econ)`;
-                    tag.className = "hardware-status-tag";
-                }
-            },
-
-            syncSubventionRow(region, score) {
-                document.getElementById(`btn-subvention-${region}`).disabled = (this.stats.econ < 15 || score <= 0);
-                
-                // FIX: Mapped text print metrics to load proper variables instead of duplicating 'east' variables
-                document.getElementById(`text-fric-east`).innerText = `${this.regionalFriction.east}%`;
-                document.getElementById(`text-fric-west`).innerText = `${this.regionalFriction.west}%`;
-                document.getElementById(`text-fric-north`).innerText = `${this.regionalFriction.north}%`;
-                
-                const fillBar = document.getElementById(`map-bar-${region}`);
-                fillBar.style.width = `${score}%`;
-                fillBar.style.backgroundColor = score > 75 ? "var(--neon-danger)" : (region === 'east' ? "var(--text-primary)" : (region === 'west' ? "var(--neon-grid)" : "var(--neon-purple)"));
-            },
-
-            syncFrictionNode(id, label, value) {
-                const dom = document.getElementById(id);
-                if (value > 0) {
-                    dom.innerText = `⚠️ ${label}: ${value} (-${(value * this.frictionScaleFactor).toFixed(1)}/yr)`;
-                    dom.classList.add("warning-active");
-                } else {
-                    dom.innerText = `${label}: 0 (Stable)`;
-                    dom.classList.remove("warning-active");
-                }
-            },
-
-            // DETERMINE CRITICAL EMERGENCY RED DIRECTIVES
-            evaluateEmergencyDirectives() {
-                if (this.isProcessingEmergencyDirective) return false;
-
-                if (this.stats.env <= 15 && !this.triggeredEmergencyFlags.env) { this.deployEmergencyDirective('env'); return true; }
-                if (this.stats.econ <= 15 && !this.triggeredEmergencyFlags.econ) { this.deployEmergencyDirective('econ'); return true; }
-                if (this.stats.app <= 15 && !this.triggeredEmergencyFlags.app) { this.deployEmergencyDirective('app'); return true; }
-                if (this.stats.grid <= 15 && !this.triggeredEmergencyFlags.grid) { this.deployEmergencyDirective('grid'); return true; }
-
-                return false;
-            },
-
-            deployEmergencyDirective(statKey) {
-                AudioOrchestrator.triggerAlarm();
-                this.isProcessingEmergencyDirective = true;
-                this.triggeredEmergencyFlags[statKey] = true;
-
-                const block = document.getElementById("game-scenario-card");
-                block.classList.add("emergency-lockdown");
-                
-                const data = this.emergencyDirectivesPool[statKey];
-                document.getElementById("scenario-core-title").innerText = data.title;
-                document.getElementById("scenario-core-desc").innerText = data.desc;
-                document.getElementById("ticker-live-text").innerText = `CRITICAL DIRECTIVE: ${data.title.toUpperCase()} - COMMAND DESK CONFIGURATION MATRIX BOUND TO FORCE INTERVENE.`;
-
-                const optionsContainer = document.getElementById("decision-options-tray");
-                optionsContainer.innerHTML = "";
-
-                data.options.forEach(opt => {
-                    const btn = document.createElement("button");
-                    btn.className = "decision-node-btn";
-                    btn.style.borderColor = "var(--neon-danger)";
-
-                    let gridChange = opt.metrics.grid;
-                    if(gridChange < 0 && this.hasBatteryUpgrade) gridChange = Math.floor(gridChange * 0.20);
-
-                    let impactView = "";
-                    impactView += this.formatImpactToken("🌿 Env", opt.metrics.env, "var(--neon-env)");
-                    impactView += this.formatImpactToken("💰 Econ", opt.metrics.econ, "var(--neon-econ)");
-                    impactView += this.formatImpactToken("👥 App", opt.metrics.app, "var(--neon-app)");
-                    impactView += this.formatImpactToken("🔌 Power", gridChange, "var(--neon-grid)");
-                    if(this.hasBatteryUpgrade && opt.metrics.grid < 0) impactView += ` <span style="color:var(--neon-grid)">[🛡️ Buffered]</span>`;
-
-                    btn.innerHTML = `
-                        <div style="font-size:0.95rem; font-weight:800; color:var(--neon-danger); margin-bottom:4px; line-height:1.4;">${opt.text}</div>
-                        <div class="impact-readout-tray">${impactView}</div>
-                    `;
-                    btn.onclick = () => this.concludeEmergencyDirective(opt.metrics);
-                    optionsContainer.appendChild(btn);
-                });
-
-                this.refreshUI();
-            },
-
-            concludeEmergencyDirective(deltaMetrics) {
-                let baseGridDelta = deltaMetrics.grid;
-                if(baseGridDelta < 0 && this.hasBatteryUpgrade) baseGridDelta = Math.floor(baseGridDelta * 0.20);
-
-                this.stats.env = Math.min(100, Math.max(0, this.stats.env + deltaMetrics.env));
-                this.stats.econ = Math.min(100, Math.max(0, this.stats.econ + deltaMetrics.econ));
-                this.stats.app = Math.min(100, Math.max(0, this.stats.app + deltaMetrics.app));
-                this.stats.grid = Math.min(100, Math.max(0, this.stats.grid + baseGridDelta));
-
-                this.isProcessingEmergencyDirective = false;
-                document.getElementById("game-scenario-card").classList.remove("emergency-lockdown");
-
-                AudioOrchestrator.triggerBeep();
-                alert("🚨 CONFIGURATION APPLIED: Emergency directive logged. Returning to core turn scheduling desk operations.");
-                
-                this.evaluateStructuralCollapseProfiles();
-                if(this.currentTurnYear <= 8) this.presentTurnScenario();
-            },
-
-            // PRESENT THE STANDARD TURN PROFILE SCENARIO
-            presentTurnScenario() {
-                // 1. CALCULATE INTERNAL FRICTION SHIFTS ACROSS PACIFICATION CYCLES
-                if (this.currentTurnYear > 1 && !this.isProcessingEmergencyDirective) {
-                    this.stats.econ = Math.max(0, this.stats.econ - Math.round(this.friction.finance * this.frictionScaleFactor));
-                    this.stats.env = Math.max(0, this.stats.env - Math.round(this.friction.climate * this.frictionScaleFactor));
-                    this.stats.app = Math.max(0, this.stats.app - Math.round(this.friction.ib * this.frictionScaleFactor));
-
-                    // 2. ASSIGN AUTOMATED DRIFTS BASED ON NATIONAL TAX LEVEL
-                    let revenueYield = Math.floor(this.carbonLevyTaxRate / 10);
-                    let frictionDrain = Math.floor(this.carbonLevyTaxRate / 8);
-                    this.stats.econ = Math.min(100, this.stats.econ + revenueYield);
-                    this.stats.app = Math.max(0, this.stats.app - frictionDrain);
-                    
-                    if (this.carbonLevyTaxRate > 0 && this.friction.climate > 0) {
-                        this.friction.climate = Math.max(0, this.friction.climate - Math.floor(this.carbonLevyTaxRate / 20));
-                    }
-
-                    // 3. EXECUTE ADVANCED REGIONAL MATHEMATICAL WEATHER SEASON VARIATION
-                    let eastDrift = this.carbonLevyTaxRate > 25 ? 8 : -4;
-                    let westDrift = this.stats.grid < 55 ? 7 : -5;
-                    let northDrift = (this.carbonLevyTaxRate > 25 || this.stats.app < 50) ? 8 : -4;
-
-                    // DEPLOY AUTOMATION EFFECTS
-                    if(this.hasSmartGridUpgrade) {
-                        if(eastDrift > 0) eastDrift = Math.floor(eastDrift * 0.5);
-                        if(westDrift > 0) westDrift = Math.floor(westDrift * 0.5);
-                        if(northDrift > 0) northDrift = Math.floor(northDrift * 0.5);
-                    }
-
-                    this.regionalFriction.east = Math.min(100, Math.max(0, this.regionalFriction.east + eastDrift));
-                    this.regionalFriction.west = Math.min(100, Math.max(0, this.regionalFriction.west + westDrift));
-                    this.regionalFriction.north = Math.min(100, Math.max(0, this.regionalFriction.north + northDrift));
-                }
-
-                if (this.evaluateEmergencyDirectives()) return;
-                this.evaluateStructuralCollapseProfiles();
-
-                if (this.currentTurnYear > 8) {
-                    this.concludeTermRegressions();
-                    return;
-                }
-
-                const turnData = this.activeDeck[this.currentTurnYear - 1];
-                document.getElementById("scenario-core-title").innerText = `Year ${this.currentTurnYear}: ${turnData.title}`;
-                document.getElementById("scenario-core-desc").innerText = turnData.desc;
-                
-                document.getElementById("brief-finance").innerText = turnData.briefs.finance;
-                document.getElementById("brief-climate").innerText = turnData.briefs.climate;
-                document.getElementById("brief-ib").innerText = turnData.briefs.ib;
-
-                document.getElementById("ticker-live-text").innerText = `SISI BROADCAST: ${turnData.wireText}`;
-
-                const optionsContainer = document.getElementById("decision-options-tray");
-                optionsContainer.innerHTML = "";
-
-                turnData.options.forEach(opt => {
-                    const btn = document.createElement("button");
-                    btn.className = "decision-node-btn";
-
-                    let operationalGridDelta = opt.metrics.grid;
-                    let operationalAppDelta = opt.metrics.app;
-                    let isCushioned = false;
-
-                    // TIER 1 ACTION: SHIELD POWER LOSS DIPS USING STORAGE BUFFERS
-                    if (turnData.isPeakUrgency && this.hasBatteryUpgrade && operationalGridDelta < 0) {
-                        operationalGridDelta = 0;
-                        operationalAppDelta = Math.min(100, operationalAppDelta + 6);
-                        isCushioned = true;
-                    }
-
-                    let impactView = "";
-                    impactView += this.formatImpactToken("🌿 Env", opt.metrics.env, "var(--neon-env)");
-                    impactView += this.formatImpactToken("💰 Econ", opt.metrics.econ, "var(--neon-econ)");
-                    impactView += this.formatImpactToken("👥 App", operationalAppDelta, "var(--neon-app)");
-                    impactView += this.formatImpactToken("🔌 Power", operationalGridDelta, "var(--neon-grid)");
-                    
-                    if (isCushioned) impactView += `<span style="color:var(--neon-grid); font-weight:800;">[🛡️ STORAGE SHIELD]</span>`;
-                    if (opt.defy) impactView += `<span style="color:var(--neon-danger); font-weight:800; margin-left:auto;">⚠️ Defies ${opt.defy.toUpperCase()}</span>`;
-
-                    btn.innerHTML = `
-                        <div style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin-bottom:4px; line-height:1.4;">${opt.text}</div>
-                        <div class="impact-readout-tray">${impactView}</div>
-                    `;
-
-                    btn.onclick = () => {
-                        AudioOrchestrator.triggerClick();
-                        this.processDecisionExecution(opt.metrics, opt.defy, opt.regional, turnData.isPeakUrgency);
-                    };
-                    optionsContainer.appendChild(btn);
-                });
-
-                this.refreshUI();
-            },
-
-            processDecisionExecution(metrics, defiedDepartment, geographicalChanges, peakUrgencyFlag) {
-                let computedGridDelta = metrics.grid;
-                let computedAppDelta = metrics.app;
-                if(peakUrgencyFlag && this.hasBatteryUpgrade && computedGridDelta < 0) {
-                    computedGridDelta = 0;
-                    computedAppDelta += 6;
-                }
-
-                this.stats.env = Math.min(100, Math.max(0, this.stats.env + metrics.env));
-                this.stats.econ = Math.min(100, Math.max(0, this.stats.econ + metrics.econ));
-                this.stats.app = Math.min(100, Math.max(0, this.stats.app + computedAppDelta));
-                this.stats.grid = Math.min(100, Math.max(0, this.stats.grid + computedGridDelta));
-
-                if(geographicalChanges) {
-                    this.regionalFriction.east = Math.min(100, Math.max(0, this.regionalFriction.east + (geographicalChanges.east || 0)));
-                    this.regionalFriction.west = Math.min(100, Math.max(0, this.regionalFriction.west + (geographicalChanges.west || 0)));
-                    this.regionalFriction.north = Math.min(100, Math.max(0, this.regionalFriction.north + (geographicalChanges.north || 0)));
-                }
-
-                if(defiedDepartment) {
-                    this.friction[defiedDepartment]++;
-                }
-
-                // BALANCING CHECKPOINTS DURING INTERMEDIATE REVIEWS
-                if(this.currentTurnYear === 4) {
-                    if(this.stats.app < 35) {
-                        this.triggerTermination("Portfolio Collapsed at Midterm Voting Ballot", "🏅 MOTION OF NO CONFIDENCE ACTIVATED", `Public approval markers slipped down to ${this.stats.app}%. Coalition support shattered.`, false);
-                        return;
-                    } else {
-                        alert(`🗳️ CAPITOL MEDIA ANALYSIS: Approval margins hold safe near ${this.stats.app}%. Your portfolio clears midterm validation parameters easily.`);
-                    }
-                }
-
-                this.evalMidTurnAchievements();
-                this.currentTurnYear++;
-                this.presentTurnScenario();
-            },
-
-            formatImpactToken(label, value, baseColor) {
-                if(value === 0) return "";
-                const prefixSign = value > 0 ? "+" : "";
-                const outColor = value > 0 ? baseColor : "var(--neon-danger)";
-                return `<span style="color: ${outColor}; margin-right: 12px;">${label} ${prefixSign}${value}</span>`;
-            },
-
-            evalMidTurnAchievements() {
-                if(this.hasBatteryUpgrade && this.hasSmartGridUpgrade) SavesManager.unlockCabinetBadge("smart");
-                if(this.regionalFriction.east < 10 && this.regionalFriction.west < 10 && this.regionalFriction.north < 10) SavesManager.unlockCabinetBadge("pacifier");
-            },
-
-            // ASSESS RADICAL TERMINATION DEFICITS OR BREAKDOWNS
-            evaluateStructuralCollapseProfiles() {
-                if (this.stats.grid <= 5) this.triggerTermination("Total Cascading Grid Desynchronization", "💥 BLACKOUT EVENT DETECTED", "National extra-high-voltage network operations collapsed under unbuffered loading profiles.", false);
-                else if (this.stats.econ <= 5) this.triggerTermination("Sovereign Utility Funding Default", "📉 FISCAL SYSTEM DEPLETION", "Ministerial reserves were completely depleted by high commodity volatility profiles.", false);
-                else if (this.stats.env <= 5) this.triggerTermination("Ambient Air Toxicity Emergency Lockdown", "☣️ BIOSPHERIC COLLAPSE", "Atmospheric contamination metrics crossed fatal safety lines, triggering supreme court asset seizure blocks.", false);
-                else if (this.stats.app <= 5) this.triggerTermination("Forced Administrative Cabinet Dismissal", "❌ GOVERNANCE STABILITY BREAKDOWN", "Public approval parameters fell below baseline levels required to protect executive mandates.", false);
-
-                // REBEL CRITICAL BOUNDARY ASSESSMENTS
-                else if (this.regionalFriction.east >= 100) this.triggerTermination("Eastern Coal Belt Insurgency Strike", "🗺️ NETWORK SEGMENT INSURGENCY", "Mining coordination cartels enforced total baseline locks across thermal yards, starving stations.", false);
-                else if (this.regionalFriction.west >= 100) this.triggerTermination("Western Solar Array Investor Boycott", "🗺️ NETWORK SEGMENT INSURGENCY", "Clean generation financial consortiums carried out total capital asset withdrawals over regulatory policy disputes.", false);
-                else if (this.regionalFriction.north >= 100) this.triggerTermination("Northern Agrarian Grid Blockade", "🗺️ NETWORK SEGMENT INSURGENCY", "Agricultural protest blocks physically seized regional transformer distribution equipment over tariff structures.", false);
-            },
-
-            // RUN PORTFOLIO REGRESSION OUTCOMES
-            concludeTermRegressions() {
-                AudioOrchestrator.triggerChimeFanfare();
-                let heading = "Balanced Administrative Equilibrium ⚖️";
-                let logs = "You handled core system parameters successfully while navigating complex structural and regional constraints.";
-                let pointsEarned = 250;
-
-                if(this.stats.env >= 75) {
-                    heading = "Net-Zero Prophet Medal 🌿";
-                    logs = "Flawless green engineering strategy execution. You aggressively optimized clean integration while keeping macro grid networks secure.";
-                    pointsEarned = 600;
-                    SavesManager.unlockCabinetBadge("green");
-                } else if(this.stats.grid >= 75 && this.stats.env <= 40) {
-                    heading = "Industrial Expansion Laurel 🏭";
-                    logs = "Excellent manufacturing coordination track. You prioritized base industrial velocity metrics above all to fuel manufacturing clusters.";
-                    pointsEarned = 500;
-                    SavesManager.unlockCabinetBadge("titan");
-                } else if(this.stats.econ >= 75) {
-                    heading = "Fiscal Alchemist Medal 💰";
-                    logs = "Masterful macroeconomic fiscal discipline. You maintained asset efficiency and deep treasury reserves throughout volatile transformation windows.";
-                    pointsEarned = 500;
-                    SavesManager.unlockCabinetBadge("wizard");
-                }
-
-                if(this.selectedMode === 'hard') {
-                    SavesManager.unlockCabinetBadge("survivor");
-                    pointsEarned = Math.floor(pointsEarned * 2.5);
-                }
-
-                SavesManager.incrementCareerPoints(pointsEarned);
-                this.triggerTermination("8-Year Ministerial Session Completed Cleanly", heading, `${logs} (Earned +${pointsEarned} Career Points).`, true);
-            },
-
-            triggerTermination(title, medalLabel, detailedDescription, positiveOutcomeFlag) {
-                document.getElementById("window-game").classList.remove("active-window");
-                document.getElementById("window-summary").classList.add("active-window");
-                
-                document.getElementById("summary-headline-title").innerText = title;
-                const badge = document.getElementById("summary-medal-ribbon");
-                badge.innerText = medalLabel;
-                
-                if(!positiveOutcomeFlag) {
-                    AudioOrchestrator.triggerDefeatCascade();
-                    badge.className = "medal-showcase-ribbon failed-ribbon";
-                } else {
-                    badge.className = "medal-showcase-ribbon";
-                }
-                
-                document.getElementById("summary-body-desc").innerText = detailedDescription;
-                document.getElementById("ticker-live-text").innerText = `SYSTEM REVIEW COMPLETED. PORTFOLIO EVALUATION OUTCOME PROTOCOL IDENTIFIED: ${title.toUpperCase()}.`;
-            },
-
-            bounceToMenu() {
-                AudioOrchestrator.triggerClick();
-                document.getElementById("window-summary").classList.remove("active-window");
-                document.getElementById("window-start").classList.add("active-window");
-                SavesManager.loadPersistentState();
+            // Adjust defaults based on chosen mode preset
+            if(targetMode === 'srv') {
+                document.getElementById('init-env').value = 40;
+                document.getElementById('init-econ').value = 40;
+                document.getElementById('init-app').value = 40;
+            } else if(targetMode === 'sb') {
+                document.getElementById('init-env').value = 80;
+                document.getElementById('init-econ').value = 80;
+                document.getElementById('init-app').value = 80;
+            } else {
+                document.getElementById('init-env').value = 50;
+                document.getElementById('init-econ').value = 60;
+                document.getElementById('init-app').value = 55;
             }
-        };
+            updateSetupVal('env'); updateSetupVal('econ'); updateSetupVal('app');
+        }
 
-        // ==================================================================================
-        // INTERACTIVE VECTOR SVG CONTROLLER MANAGER
-        // ==================================================================================
-        const VectorMapUI = {
-            paintRegion(svgElementId, frictionScore) {
-                const mapPath = document.getElementById(svgElementId);
-                if(!mapPath) return;
+        function updateSetupVal(type) {
+            let val = document.getElementById(`init-${type}`).value;
+            document.getElementById(`val-${type}`).innerText = val + "%";
+        }
 
-                // COMPUTE HEX COLOR SCALING CODES BASED ON DISCONTENT
-                let redComponent = Math.floor((frictionScore / 100) * 180) + 26; 
-                let blueComponent = Math.floor(((100 - frictionScore) / 100) * 60) + 40;
-                mapPath.style.fill = `rgb(${redComponent}, 30, ${blueComponent})`;
+        function initiateGameEngine() {
+            // Apply Manual Selections To Active Simulator Session
+            stats.env = parseInt(document.getElementById('init-env').value);
+            stats.econ = parseInt(document.getElementById('init-econ').value);
+            stats.app = parseInt(document.getElementById('init-app').value);
+            stats.power = 55; // Core load starter
 
-                if(frictionScore >= 75) {
-                    mapPath.classList.add("pulse-danger");
-                } else {
-                    mapPath.classList.remove("pulse-danger");
+            document.getElementById('screen-setup').classList.remove('active');
+            document.getElementById('screen-game').classList.add('active');
+            
+            logMessage("[SYSTEM]: Operational lines connected successfully.");
+            logMessage(`[MODE]: Running on ${activeMode.toUpperCase()} protocols.`);
+            renderUIElements();
+            cycleBriefingPhrases();
+        }
+
+        function renderUIElements() {
+            // Update individual displays
+            document.getElementById('txt-env').innerText = stats.env + "%";
+            document.getElementById('bar-env').style.width = stats.env + "%";
+            document.getElementById('txt-econ').innerText = stats.econ + "%";
+            document.getElementById('bar-econ').style.width = stats.econ + "%";
+            document.getElementById('txt-app').innerText = stats.app + "%";
+            document.getElementById('bar-app').style.width = stats.app + "%";
+            document.getElementById('txt-power').innerText = stats.power + "%";
+            document.getElementById('bar-power').style.width = stats.power + "%";
+            document.getElementById('runtime-score').innerText = currentScore;
+
+            // Simple vector animation offset injection based on grid balance
+            document.getElementById('node-1').setAttribute('cx', 90 + (stats.power / 5));
+            document.getElementById('node-2').setAttribute('cy', 70 + (stats.env / 6));
+
+            // Verify Game Loss parameters
+            if(activeMode !== 'sb') {
+                if(stats.env <= 0 || stats.econ <= 0 || stats.app <= 0 || stats.power <= 0) {
+                    triggerGameOverSequence("CRITICAL COLLAPSE", "One of your primary simulation sectors hit zero.");
+                } else if(stats.env >= 100 || stats.econ >= 100 || stats.app >= 100 || stats.power >= 100) {
+                    triggerGameOverSequence("SYSTEM OVERLOAD", "System energy built up too fast, frying circuits.");
                 }
             }
-        };
+        }
 
-        // KICKSTART REGISTRATION LOOPS
-        window.onload = () => {
-            SavesManager.loadPersistentState();
-        };
+        function executeDecision(id) {
+            // STRICT COMPLETION RULE: Positives are clamped to max 5 or 6 points
+            let pointDelta = Math.floor(Math.random() * 2) + 5; // Yields exactly 5 or 6 points
+
+            if (id === 1) {
+                stats.env += pointDelta; // Handled dynamically via cap rule
+                stats.econ -= 8;
+                stats.app -= 4;
+                stats.power -= 8;
+                logMessage(`[ORDER]: Green energy boosted (+${pointDelta} Env). Industrial output slowed down.`);
+            } else if (id === 2) {
+                stats.env -= 4;
+                stats.econ += pointDelta; // Yields exactly 5 or 6 points
+                stats.app -= 8;
+                stats.power += pointDelta; // Yields exactly 5 or 6 points
+                logMessage(`[OVERRIDE]: Core generator capacity optimized (+${pointDelta} Power).`);
+            }
+
+            // Award game loop progression points
+            currentScore += pointDelta;
+            
+            // Turn variations processing
+            processTurnTickEffects();
+            cycleBriefingPhrases();
+            renderUIElements();
+        }
+
+        function processSliderShift() {
+            let val = document.getElementById('slider-carbon-tax').value;
+            document.getElementById('tax-display-text').innerText = val + "%";
+            document.getElementById('slider-feedback-msg').innerText = `Shift Delta: Current rate yields dynamic system adjustments per cycle.`;
+        }
+
+        function processTurnTickEffects() {
+            // Continuous environmental drain logic simulation
+            let val = parseInt(document.getElementById('slider-carbon-tax').value);
+            if(val > 25) {
+                stats.env += 1;
+                stats.econ -= 2;
+            } else {
+                stats.env -= 2;
+                stats.econ += 1;
+            }
+
+            if(activeMode === 'srv') {
+                stats.power -= 2; // Passive pressure tracking
+            }
+        }
+
+        function buyPoliticalBribe() {
+            if(currentScore >= 12) {
+                currentScore -= 12;
+                stats.app += 15;
+                stats.econ += 10;
+                if(stats.app > 100) stats.app = 100;
+                if(stats.econ > 100) stats.econ = 100;
+                logMessage("💰 [BRIBE]: Paid local systems. Trust and Cash metrics stabilized safely.");
+                renderUIElements();
+            } else {
+                logMessage("❌ [SYSTEM ERROR]: You need at least 12 scoreboard points to route safety funding.");
+            }
+        }
+
+        function cycleBriefingPhrases() {
+            let index = Math.floor(Math.random() * briefingsTextPool.length);
+            document.getElementById('brief-fin').innerText = briefingsTextPool[index].f;
+            document.getElementById('brief-cli').innerText = briefingsTextPool[index].c;
+            document.getElementById('brief-int').innerText = briefingsTextPool[index].i;
+        }
+
+        function logMessage(msg) {
+            let container = document.getElementById('log-terminal');
+            container.innerHTML += `<br>${msg}`;
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function triggerGameOverSequence(title, reason) {
+            document.getElementById('modal-heading').innerText = title;
+            document.getElementById('modal-desc').innerText = reason;
+            document.getElementById('end-game-modal').classList.add('active');
+        }
     </script>
 </body>
 </html>
