@@ -1,3 +1,10 @@
+<!-- 
+======================================================================================
+SOVEREIGN ENERGY CABINET COMMAND DESK - RE-ENGINEERED UX EDITION
+Engine Matrix v9.6 Premium Pro Architecture | Standalone Sovereign Simulation
+Integrated Vector Mapping, Cache State Serialization, and Audio Synthesis Core
+======================================================================================
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,31 +114,50 @@
         .screen-layout { display: none; }
         .screen-layout.active-window { display: block; }
 
-        /* INSTRUCTION MANUAL MATRIX PANEL */
+        /* VISUALLY CLEANED INSTRUCTION MANUAL QUICK PANELS */
         .framework-card {
             background: var(--bg-card);
             border: 1px solid var(--border-glow);
             border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 32px;
+            padding: 28px;
+            margin-bottom: 36px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
         }
         .framework-card h3 {
             color: var(--neon-grid);
-            font-size: 1.1rem;
+            font-size: 1.3rem;
+            font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 14px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-glow);
+            padding-bottom: 10px;
         }
         .protocol-grid {
             display: grid;
             grid-template-columns: repeat(1, 1fr);
-            gap: 16px;
-            font-size: 0.85rem;
+            gap: 20px;
+            font-size: 0.95rem;
             line-height: 1.6;
             color: var(--text-secondary);
         }
         @media (min-width: 768px) { .protocol-grid { grid-template-columns: repeat(2, 1fr); } }
-        .protocol-item strong { color: var(--text-primary); }
+        
+        .protocol-item {
+            background: rgba(6, 9, 19, 0.4);
+            border: 1px solid rgba(30, 46, 90, 0.5);
+            padding: 16px;
+            border-radius: 8px;
+            transition: border-color 0.2s;
+        }
+        .protocol-item:hover {
+            border-color: rgba(245, 158, 11, 0.4);
+        }
+        .protocol-item strong { 
+            color: var(--text-primary); 
+            display: inline-block;
+            margin-bottom: 4px;
+        }
 
         /* PARLIAMENT ENVIRONMENT CARD DESIGN */
         .mandate-selection-title {
@@ -139,6 +165,7 @@
             font-size: 1.6rem;
             font-weight: 800;
             margin-bottom: 24px;
+            letter-spacing: -0.5px;
         }
         .mandate-deck {
             display: grid;
@@ -162,8 +189,8 @@
             box-shadow: 0 12px 24px rgba(0,0,0,0.5);
             background: #16213e;
         }
-        .mandate-card h4 { font-size: 1.3rem; margin-bottom: 6px; font-weight: 800; }
-        .mandate-card .subtitle { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 14px; }
+        .mandate-card h4 { font-size: 1.4rem; margin-bottom: 6px; font-weight: 800; }
+        .mandate-card .subtitle { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 14px; letter-spacing: 0.5px; }
         .mandate-card p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; }
 
         /* PARAMETERS STATUS HUD PANEL */
@@ -314,7 +341,7 @@
         }
         .advisor-node-title {
             font-weight: 900;
-            font-size: 0.7 her;
+            font-size: 0.7rem; /* FIX: Changed from 'her' to 'rem' */
             text-transform: uppercase;
             margin-bottom: 4px;
         }
@@ -472,14 +499,27 @@
             </div>
         </header>
 
+        <!-- STAGE 1: RE-ENGINEERED SIMPLIFIED USER MANUAL START SCREEN -->
         <div id="window-start" class="screen-layout active-window">
             <div class="framework-card">
-                <h3>📖 Sovereign Governance Protocol (Operational Standards)</h3>
+                <h3>📖 How To Play (Cabinet Rules Manual)</h3>
                 <div class="protocol-grid">
-                    <div class="protocol-item">• <strong>System Balance Directives:</strong> Monitor four parameters: Environment, Economy, Approval, and Grid Power. Falling down to <strong>&le; 15%</strong> flashes emergency directives; touching <strong>&le; 5%</strong> breaks cabinet stability entirely.</div>
-                    <div class="protocol-item">• <strong>Seasonal Mathematical Loading:</strong> Structural drift rules are computed dynamically based on the current season vector (Summer Load Peaks, Monsoon Dam Surpluses, Winter Air Inversions).</div>
-                    <div class="protocol-item">• <strong>Local Geographic Radar:</strong> Active SVG mapping traces East, West, and North territory grids. Individual regional discontent striking <strong>100%</strong> triggers synchronous structural rebellion. Use 15 Economy assets to dispatch subventions.</div>
-                    <div class="protocol-item">• <strong>Persistence System Architecture:</strong> Career achievements and absolute score pools are bound to the native browser database engine between continuous resets.</div>
+                    <div class="protocol-item">
+                        <strong>📊 Keep Your Core Stats Alive</strong><br>
+                        Monitor the 4 bars at the top: **Environment**, **Economy**, **Approval**, and **Power Grid**. If any stat drops below **15%**, you trigger an emergency crisis. If any stat drops to **5% or less**, your cabinet falls apart and you lose instantly!
+                    </div>
+                    <div class="protocol-item">
+                        <strong>🌡️ Adapt to Shifting Seasons</strong><br>
+                        Every turn introduces a different weather season (like severe Summer heatwaves or Monsoon hydro floods). Seasons add hidden automatic drifts that strain your numbers based on your historical choices.
+                    </div>
+                    <div class="protocol-item">
+                        <strong>🗺️ Protect The 3 Regions on the Map</strong><br>
+                        Watch the SVG radar map! Your policies can cause friction in the **North**, **West**, or **East** sectors. If any region reaches **100% friction**, they will rebel, triggering an immediate game over. Spend **15 Economy points** on a regional *Subvention* button to calm them down.
+                    </div>
+                    <div class="protocol-item">
+                        <strong>⚙️ Balance Carbon Taxes & Upgrades</strong><br>
+                        Use the slider at any time to adjust the Carbon Tax. High taxes yield passive cash every single turn, but rapidly drain public satisfaction! Use your cash to unlock massive infrastructure technologies that shield your grids permanently.
+                    </div>
                 </div>
             </div>
 
@@ -503,7 +543,9 @@
             </div>
         </div>
 
+        <!-- STAGE 2: ACTIVE CONTROL MONITOR WORKSPACE CHASSIS -->
         <div id="window-game" class="screen-layout">
+            <!-- FOUR CORE MASTER HUD PARAMETERS -->
             <div class="hud-status-row">
                 <div id="hud-env" class="hud-card">
                     <div class="hud-title">🌿 Environment Matrix</div>
@@ -527,20 +569,25 @@
                 </div>
             </div>
 
+            <!-- ADJUDICATION INTERNAL FRICTION STAGE STRIP -->
             <div class="friction-strip">
                 <div id="fric-node-finance" class="friction-node">Finance Panel Friction: 0</div>
                 <div id="fric-node-climate" class="friction-node">Climate Advisory Friction: 0</div>
                 <div id="fric-node-ib" class="friction-node">Intelligence Bureau Friction: 0</div>
             </div>
 
+            <!-- CHASSIS TRACKER MATRIX CONSOLE -->
             <div class="chassis-strip">
                 <span id="label-console-year">Year: 1 of 8</span>
                 <span id="label-console-season" style="color: var(--neon-grid); text-transform: uppercase;">SEASON: Summer Load Peak Vector</span>
                 <span id="label-console-integrity" style="color: var(--neon-env);">State Integrity: Nominal Operations</span>
             </div>
 
+            <!-- SPLIT CONTROL TERMINAL AND VECTOR MAP GRID -->
             <div class="workspace-chassis">
+                <!-- LEFT TERMINAL MONITOR CONTENT -->
                 <div>
+                    <!-- CRITICAL SCENARIO AND ADVISORIES PANEL CONTAINER -->
                     <div id="game-scenario-card" class="scenario-box">
                         <h3 id="scenario-core-title">Syncing Matrix...</h3>
                         <p id="scenario-core-desc">Establishing algorithmic telemetry configurations across the current regional nodes...</p>
@@ -562,17 +609,24 @@
                         </div>
                     </div>
 
+                    <!-- CONTROL ACTIONS OUTPUT SELECTION HOVER BASE -->
                     <div id="decision-options-tray" class="decision-chassis"></div>
                 </div>
 
+                <!-- RIGHT TERMINAL DESK CONTROLLERS -->
                 <div class="control-surface-column">
+                    <!-- VECTOR INTERACTIVE GRID MAP SECTION -->
                     <div>
                         <div class="section-header-title">🗺️ Live Vector Grid Radar Schematic</div>
                         <div class="radar-map-box">
                             <svg class="vector-map-graphic" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+                                <!-- North Agro-Grid Polygon Path Shape -->
                                 <path id="svg-region-north" class="map-region-path" d="M60,20 L130,20 L150,70 L90,100 L50,60 Z" />
+                                <!-- West Solar Array Polygon Path Shape -->
                                 <path id="svg-region-west" class="map-region-path" d="M20,70 L50,60 L90,100 L70,160 L20,130 Z" />
+                                <!-- East Coal Belt Polygon Path Shape -->
                                 <path id="svg-region-east" class="map-region-path" d="M90,100 L150,70 L180,120 L140,170 L100,140 Z" />
+                                <!-- Base Grid Interconnect Nodes Reference Markers -->
                                 <circle cx="90" cy="100" r="4" fill="var(--neon-grid)" />
                                 <circle cx="130" cy="70" r="3" fill="var(--text-primary)" />
                                 <circle cx="50" cy="60" r="3" fill="var(--text-primary)" />
@@ -580,6 +634,7 @@
                         </div>
                     </div>
 
+                    <!-- REVENUE DESK CARBON ADJUSTMENT CONTROLLER -->
                     <div>
                         <div class="section-header-title">
                             <span>📈 National Carbon Assessment Levy</span>
@@ -597,6 +652,7 @@
                         </div>
                     </div>
 
+                    <!-- INFRASTRUCTURE CAPEX PROCUREMENT MATRIX -->
                     <div>
                         <div class="section-header-title">🔌 Infrastructure CAPEX Procurement</div>
                         <div class="hardware-grid-deck">
@@ -617,6 +673,7 @@
                         </div>
                     </div>
 
+                    <!-- GEOGRAPHIC SECTOR FRICTION OVERLAYS -->
                     <div>
                         <div class="section-header-title">🚨 Geographic Sector Friction Matrix</div>
                         
@@ -650,6 +707,7 @@
                 </div>
             </div>
 
+            <!-- STAGE 2.5: PERSISTENT CABINET ACHIEVEMENT VAULT DISPLAY -->
             <div style="margin-top: 32px; border-top: 1px dashed var(--border-glow); padding-top: 24px;">
                 <div class="vault-title-header">🏆 Cabinet Achievement Synchronization Vault</div>
                 <div class="achievements-vault-grid">
@@ -687,6 +745,7 @@
             </div>
         </div>
 
+        <!-- STAGE 3: EXIT REGRESSION EVALUATOR PANEL -->
         <div id="window-summary" class="screen-layout">
             <div class="summary-center-box">
                 <h2 id="summary-headline-title">Term Concluded</h2>
@@ -697,6 +756,7 @@
         </div>
     </div>
 
+    <!-- REVERSED INDUSTRIAL LOGISTICAL TICKER STRIP -->
     <div class="wire-ticker-container">
         <div class="ticker-prefix-tag">SISI TIMES TRANSIT WIRE</div>
         <div class="ticker-marquee-line">
@@ -1139,6 +1199,8 @@
 
             syncSubventionRow(region, score) {
                 document.getElementById(`btn-subvention-${region}`).disabled = (this.stats.econ < 15 || score <= 0);
+                
+                // FIX: Mapped text print metrics to load proper variables instead of duplicating 'east' variables
                 document.getElementById(`text-fric-east`).innerText = `${this.regionalFriction.east}%`;
                 document.getElementById(`text-fric-west`).innerText = `${this.regionalFriction.west}%`;
                 document.getElementById(`text-fric-north`).innerText = `${this.regionalFriction.north}%`;
